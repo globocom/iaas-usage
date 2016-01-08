@@ -1,14 +1,12 @@
 import unittest
 from flask import json
 from mock import patch, Mock
-from app import ProjectResource, app
+from app import app
 
 
 class ProjectResourceTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.resource = ProjectResource()
-
         self.app = app.test_client()
 
     def tearDown(self):
