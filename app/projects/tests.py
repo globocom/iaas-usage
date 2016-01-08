@@ -46,13 +46,13 @@ class ProjectResourceTestCase(unittest.TestCase):
         list_projects_mock.listProjects.assert_called_with(expected_resp)
 
     def test_list_projects(self):
-        list_projects_mock = self.mock_cloudstack_list_project({"count": 1, "project":[{"id":"28f40084-2aed-11e5-8fce-76b2dd27c282", "name":"project"}]})
+        list_projects_mock = self.mock_cloudstack_list_project({"count": 1, "project":[{"id":"28f40084-2aed-11e5-8fce-76b2dd27c282", "name":"project", "vmtotal": 1}]})
 
         request = dict(account_name="account", domain_id='28f40084-2aed-11e5-8fce-76b2dd27c282')
         response = self.app.get('/api/v1/lab/project/', data=request)
 
         self.assertEquals(200, response.status_code)
-        self.assertEquals([{"id":"28f40084-2aed-11e5-8fce-76b2dd27c282", "name":"project"}], json.loads(response.data))
+        self.assertEquals([{"id":"28f40084-2aed-11e5-8fce-76b2dd27c282", "name":"project", "vm_count": 1}], json.loads(response.data))
         expected_resp = {'simple': 'true', 'account': request['account_name'], 'domainid': request['domain_id'],'listall': 'true'}
         list_projects_mock.listProjects.assert_called_with(expected_resp)
 
