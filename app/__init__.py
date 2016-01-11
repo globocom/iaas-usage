@@ -14,6 +14,8 @@ logger = app.logger
 app.config.from_object('config')
 
 #URL Mappings
-api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint = 'project')
-api.add_resource(UserResource, '/api/v1/<region>/user/<string:id>', endpoint = 'user')
-api.add_resource(VirtualMachineResource, '/api/v1/<region>/virtual_machine/', endpoint = 'virtual_machine')
+api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
+api.add_resource(UserResource, '/api/v1/<region>/user/<string:id>', endpoint='user')
+api.add_resource(VirtualMachineResource, '/api/v1/<region>/virtual_machine/', endpoint='virtual_machine')
+
+from app import views
