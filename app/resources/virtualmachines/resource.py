@@ -6,7 +6,7 @@ import app
 
 class VirtualMachineResource(CloudstackResource):
 
-    #TODO: add OS type to vm attributes
+    # TODO: add OS type to vm attributes
     def get(self, region):
         self._validate_params()
         response = self.get_cloudstack(region).listVirtualMachines(self._filter_by())
@@ -61,7 +61,7 @@ class VirtualMachineResource(CloudstackResource):
                     "host_id": vm.get("hostid", None),
                     "service_offering_name": vm["serviceofferingname"],
                     "service_offering_id": vm["serviceofferingid"],
-                    "ha_enable": vm["haenable"]
+                    "ha_enabled": vm["haenable"]
                 }
                 for vm in response['virtualmachine']
             ]
