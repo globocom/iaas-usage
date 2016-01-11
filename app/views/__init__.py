@@ -5,3 +5,8 @@ from flask import render_template
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/menu2')
+def menu1():
+    return render_template('menu2.html')
