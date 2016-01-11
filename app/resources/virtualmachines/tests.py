@@ -48,14 +48,16 @@ class VirtualMachinesResourceTestCase(unittest.TestCase):
         response = self.app.get('/api/v1/lab/virtual_machine/', query_string=filters)
 
         self.assertEquals(200, response.status_code)
-        expected_params = {"listall": "true", "pagesize": "10", "page": "1", "projectid": "1", "zoneid": "1", "hostid": "1","serviceofferingid": "1", "state": "Running"}
+        expected_params = {"listall": "true", "pagesize": "10", "page": "1", "projectid": "1",
+                           "zoneid": "1", "hostid": "1","serviceofferingid": "1", "state": "Running"}
         list_users_mock.listVirtualMachines.assert_called_with(expected_params)
 
     def mock_cloudstack_list_vms(self, vms):
-        acs_mock = patch('app.virtualmachines.resource.VirtualMachineResource.get_cloudstack').start()
+        acs_mock = patch('app.resources.virtualmachines.resource.VirtualMachineResource.get_cloudstack').start()
         list_vms_mock = Mock()
         list_vms_mock.listVirtualMachines.return_value = vms
         acs_mock.return_value = list_vms_mock
         return list_vms_mock
+
 
 
