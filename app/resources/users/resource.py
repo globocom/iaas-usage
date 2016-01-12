@@ -4,8 +4,8 @@ import app
 
 class UserResource(CloudstackResource):
 
-    def get(self, region, id):
-        response = self.get_cloudstack(region).listUsers({"id": id})
+    def get(self, region, username):
+        response = self.get_cloudstack(region).listUsers({"username": username})
 
         if response.get('errortext') is not None:
             app.logger.error("Error while retrieving data from cloudstack: %s" % response['errortext'])
@@ -18,6 +18,7 @@ class UserResource(CloudstackResource):
             return [
                 {
                     "id": user["id"], "username": user["username"],
+                    "first_name": user["firstname"], "last_name": user["lastname"],
                     "account_name": user["account"], "domain_id": user["domainid"]
                 }
                 for user in response['user']

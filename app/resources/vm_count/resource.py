@@ -7,6 +7,7 @@ class VmCountResource(CloudstackResource):
 
     FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable']
 
+
     def get(self, region):
         self._validate_params()
         params = {"listall": "true", "projectid": self.args['project_id']}
@@ -24,5 +25,5 @@ class VmCountResource(CloudstackResource):
 
     def _validate_params(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('project_id', required=True, type=str, help='project_id should be informed')
+        parser.add_argument('project_id', required=True, type=str, help='project_id must be informed')
         self.args = parser.parse_args(req=request)
