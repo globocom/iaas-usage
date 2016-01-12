@@ -35,9 +35,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="projectCount in main.countVmsByProject">
-                            <td>{[projectCount.name]}</td>
-                            <td>{[projectCount.vm_count]}</td>
+                        <tr ng-repeat="project in main.countVmsByProject">
+                            <td>
+                                <div ng-show="project.vm_count > 0">
+                                    <a  href="/instances/{[project.name]}?project_id={[project.id]}">
+                                        {[project.name]}
+                                    </a>
+                                </div>
+                                <span ng-show="project.vm_count == 0">
+                                    {[project.name]}
+                                </span>
+                            </td>
+                            <td>{[project.vm_count]}</td>
                         </tr>
                         </tbody>
                     </table>

@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Instances</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li >
+                <a href="{{url_for('instances') }}">Instances</a>
+            </li>
+            <li class="active">
+                <strong>{{project_name}}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight" ng-init="main.loadProject('{{project_id}}')">
+	<!-- startrow1 -->
+    <div class="row">
+    	<div class="col-lg-4" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Service Offering</h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>Offerings</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(name, count) in main.project.serviceofferingname" >
+                            <td>{[name]}</td>
+                            <td>{[count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+	            </div>
+	        </div>
+      	</div>
+        <div class="col-lg-4" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>State</h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(state, count) in main.project.state" >
+                            <td>{[state]}</td>
+                            <td>{[count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Zone</h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(name, count) in main.project.zonename" >
+                            <td>{[name]}</td>
+                            <td>{[count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- endrow1 -->
+    <!-- startrow2 -->
+    <div class="row">
+    	<div class="col-lg-4" ></div>
+    	<div class="col-lg-4" >
+    		<div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>HA</h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>HA</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(name, count) in main.project.haenable" >
+                            <td>{[name]}</td>
+                            <td>{[count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+    	</div>
+    	<div class="col-lg-4" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Host</h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>Hosts</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(hostname, count) in main.project.hostname" >
+                            <td>{[hostname]}</td>
+                            <td>{[count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+	</div>
+	<!-- endrow2 -->
+
+	<!-- startrow3 -->
+	<div class="row" ng-init="main.listVirtualMachines('{{project_id}}')">
+		<div class="col-lg-12" >
+			<div class="ibox-title">
+                    <h5>Instances</h5>
+            </div>
+            <div class="ibox-content">
+                <table class="table table-bordered" >
+                    <thead>
+                	    <tr>
+                            <th>Name</th>
+                            <th>Internal Name</th>
+                            <th>State</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="instance in main.instances" >
+                        	<td>{[instance.name]}</td>
+                            <td>{[instance.instance_name]}</td>
+                            <td>{[instance.state]}</td>
+                        </tr>
+                        </tbody>
+                </table>
+			</div>
+		</div>
+	</div><!-- endrow3 -->
+</div>
+{% endblock %}
