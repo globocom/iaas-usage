@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Instances</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Instances</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12" ng-init="main.countVmsByProject()">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Instances by project </h5>
+                </div>
+                <div class="ibox-content">
+
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>Projects</th>
+                            <th>Instances</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="projectCount in main.countVmsByProject">
+                            <td>{[projectCount.name]}</td>
+                            <td>{[projectCount.vm_count]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

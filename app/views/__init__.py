@@ -7,6 +7,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/menu2')
+@app.route('/instances')
 def menu1():
-    return render_template('menu2.html')
+    return render_template('instances.html')

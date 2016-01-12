@@ -23,10 +23,10 @@
             </li>
 
             <li  {% if request.path == '/' %}class="active"{% endif %} >
-                <a href="/" ><i class="fa fa-laptop"></i> <span class="nav-label">Main page</span> </a>
+                <a href="/" ><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span> </a>
             </li>
-            <li {% if request.path == '/menu2' %}class="active"{% endif %} >
-                <a href="/menu2" ><i class="fa fa-desktop"></i> <span class="nav-label">Minor page</span></a>
+            <li {% if request.path == '/instances' %}class="active"{% endif %} >
+                <a href="/instances" ><i class="fa fa-desktop"></i> <span class="nav-label">Instances</span></a>
             </li>
         </ul>
 
