@@ -33,7 +33,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     //     })
 }
 angular
-    .module('inspinia')
+    .module('iaasusage')
     .config(config)
     .run(function($rootScope, $state) {
         $rootScope.$state = $state;

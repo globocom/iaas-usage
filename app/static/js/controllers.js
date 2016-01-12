@@ -16,5 +16,5 @@ function MainCtrl() {
 
 
 angular
-    .module('inspinia')
+    .module('iaasusage')
     .controller('MainCtrl', MainCtrl)

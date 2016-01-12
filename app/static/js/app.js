@@ -3,7 +3,7 @@
  *
  */
 (function () {
-    var app = angular.module('inspinia', [
+    var app = angular.module('iaasusage', [
         'ui.router',                    // Routing
         'oc.lazyLoad',                  // ocLazyLoad
         'ui.bootstrap',                 // Ui Bootstrap
