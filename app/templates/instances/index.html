@@ -24,15 +24,15 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Instances by project </h5>
+                    <div ibox-tools></div>
                 </div>
                 <div class="ibox-content">
-
-                    <table class="table table-bordered" >
+                    <table  datatable="ng" dt-options="dtOptions" class="table table-striped table-bordered table-hover dataTables-example" >
                         <thead>
-                        <tr>
-                            <th>Projects</th>
-                            <th>Instances</th>
-                        </tr>
+                            <tr>
+                                <th>Projects</th>
+                                <th>Instances</th>
+                            </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="project in main.countVmsByProject">
@@ -50,7 +50,6 @@
                         </tr>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>

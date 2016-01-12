@@ -46,7 +46,7 @@ function iboxTools($timeout) {
     return {
         restrict: 'A',
         scope: true,
-        templateUrl: 'views/common/ibox_tools.html',
+        templateUrl: 'static/views/common/ibox_tools.html',
         controller: function ($scope, $element) {
             // Function for collapse ibox
             $scope.showhide = function () {
@@ -78,7 +78,7 @@ function iboxToolsFullScreen($timeout) {
     return {
         restrict: 'A',
         scope: true,
-        templateUrl: 'views/common/ibox_tools_full_screen.html',
+        templateUrl: 'static/views/common/ibox_tools_full_screen.html',
         controller: function ($scope, $element) {
             // Function for collapse ibox
             $scope.showhide = function () {
