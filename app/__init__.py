@@ -5,7 +5,7 @@ from flask_restful import Api
 from app.projects.resource import ProjectResource
 from app.users.resource import UserResource
 from app.virtualmachines.resource import VirtualMachineResource
-from app.vm_count.resource import VmCountResource
+from app.virtualmachines.resource import VmCountResource
 
 app = Flask(__name__)
 api = Api(app)
