@@ -24,7 +24,7 @@ class VirtualMachineResource(CloudstackResource):
         self.args = parser.parse_args(req=request)
 
     def _filter_by(self):
-        params = {"listall": "true"}
+        params = {"listall": "true", "simple": "true"}
         if request.args.get('project_id') is not None:
             params['projectid'] = request.args['project_id']
 
