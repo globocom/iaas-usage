@@ -65,7 +65,7 @@ class ProjectResourceTestCase(unittest.TestCase):
         list_projects_mock.listProjects.assert_called_with(expected_resp)
 
     def mock_cloudstack_list_project(self, projects):
-        acs_mock = patch('app.resources.projects.resource.ProjectResource.get_cloudstack').start()
+        acs_mock = patch('app.projects.resource.ProjectResource.get_cloudstack').start()
         list_projects_mock = Mock()
         list_projects_mock.listProjects.return_value = projects
         acs_mock.return_value = list_projects_mock

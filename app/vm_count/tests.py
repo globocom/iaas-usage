@@ -51,7 +51,7 @@ class VmCountResourceTestCase(unittest.TestCase):
         self.assertEquals(2, vm_count['haenable']['true'])
 
     def mock_cloudstack_list_vms(self, vms):
-        acs_mock = patch('app.resources.vm_count.resource.VmCountResource.get_cloudstack').start()
+        acs_mock = patch('app.vm_count.resource.VmCountResource.get_cloudstack').start()
         list_vms_mock = Mock()
         list_vms_mock.listVirtualMachines.return_value = vms
         acs_mock.return_value = list_vms_mock

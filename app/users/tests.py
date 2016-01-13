@@ -52,7 +52,7 @@ class UserResourceTestCase(unittest.TestCase):
         list_users_mock.listUsers.assert_called_with({'username': username})
 
     def mock_cloudstack_list_users(self, users):
-        acs_mock = patch('app.resources.users.resource.UserResource.get_cloudstack').start()
+        acs_mock = patch('app.users.resource.UserResource.get_cloudstack').start()
         list_users_mock = Mock()
         list_users_mock.listUsers.return_value = users
         acs_mock.return_value = list_users_mock

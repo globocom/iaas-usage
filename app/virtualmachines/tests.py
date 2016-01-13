@@ -53,7 +53,7 @@ class VirtualMachinesResourceTestCase(unittest.TestCase):
         list_users_mock.listVirtualMachines.assert_called_with(expected_params)
 
     def mock_cloudstack_list_vms(self, vms):
-        acs_mock = patch('app.resources.virtualmachines.resource.VirtualMachineResource.get_cloudstack').start()
+        acs_mock = patch('app.virtualmachines.resource.VirtualMachineResource.get_cloudstack').start()
         list_vms_mock = Mock()
         list_vms_mock.listVirtualMachines.return_value = vms
         acs_mock.return_value = list_vms_mock
