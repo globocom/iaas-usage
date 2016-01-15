@@ -9,8 +9,8 @@
         'ui.bootstrap',                 // Ui Bootstrap
     ])
     app.config(['$interpolateProvider', function($interpolateProvider) {
-  		$interpolateProvider.startSymbol('{[');
-  		$interpolateProvider.endSymbol(']}');
-	}]);
+        $interpolateProvider.startSymbol('{[');
+        $interpolateProvider.endSymbol(']}');
+    }]);
 })();
 

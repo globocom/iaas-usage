@@ -7,7 +7,7 @@
                     <a class="dropdown-toggle" dropdown-toggle href>
                             <span class="clear">
                                 <span class="block m-t-xs">
-                                    <strong class="font-bold">{{main.userName}}</strong>
+                                    <strong class="font-bold">{[main.userName]}</strong>
                              </span>
                                 <span class="text-muted text-xs block">Example menu<b class="caret"></b></span>
                             </span>
@@ -19,14 +19,16 @@
                 <div class="logo-element">
                     IN+
                 </div>
-
             </li>
 
             <li ui-sref-active="active">
-                <a ui-sref="index.main"><i class="fa fa-laptop"></i> <span class="nav-label">Main page</span> </a>
+                <a ui-sref="index.main" >
+                    <i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span> </a>
             </li>
-            <li ui-sref-active="active">
-                <a ui-sref="index.minor"><i class="fa fa-desktop"></i> <span class="nav-label">Minor page</span></a>
+            <li ng-class="{active: $state.includes('index.instances')}" >
+                <a ui-sref="index.instances.list" >
+                    <i class="fa fa-desktop"></i> 
+                    <span class="nav-label">Instances</span></a>
             </li>
         </ul>
 

@@ -1,34 +1,63 @@
-{% extends 'layout.html' %}
+<!DOCTYPE html>
+<html ng-app="iaasusage">
 
-{% block content %}
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Dashboard</h2>
-        <ol class="breadcrumb">
-            <li >
-                <a href="/">Home</a>
-            </li>
-            <li class="active">
-                <strong>Dashboard</strong>
-            </li>
-        </ol>
-    </div>
-    <div class="col-lg-2">
+<head>
 
-    </div>
-</div>
-        <div class="wrapper wrapper-content animated fadeInRight">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="text-center m-t-lg">
-                        <h1>
-                            Dashboard
-                        </h1>
-                        <small>
-                            Dashboard =D
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IaaS - Usage</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+</head>
+
+<body id="MainController" ng-controller="MainCtrl as main">
+
+
+<div ui-view></div>
+
+<!-- jQuery and Bootstrap -->
+<script src="{{ url_for('static', filename='js/jquery/jquery-2.1.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/jquery-ui/jquery-ui.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+
+<!-- MetsiMenu -->
+<script src="{{ url_for('static', filename='js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+
+<!-- SlimScroll -->
+<script src="{{ url_for('static', filename='js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+<!-- Peace JS -->
+<script src="{{ url_for('static', filename='js/plugins/pace/pace.min.js') }}"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="{{ url_for('static', filename='js/inspinia.js') }}"></script>
+
+<!-- Main Angular scripts-->
+<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/oclazyload/ocLazyLoad.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ui-router/angular-ui-router.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap/ui-bootstrap-tpls-0.12.0.min.js') }}"></script>
+
+
+<!-- Anglar App Script -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/directives.js') }}"></script>
+<script src="{{ url_for('static', filename='js/controllers.js') }}"></script>
+    <pre>
+      <!-- Here's some values to keep an eye on in the sample in order to understand $state and $stateParams -->
+      $state = {[$state.current.name]}
+      $stateParams = {[$stateParams]}
+      $state full url = {[ $state.$current.url.source ]}
+      <!-- $state.$current is not a public api, we are using it to
+           display the full url for learning purposes-->
+    </pre>
+</body>
+
+</html>
