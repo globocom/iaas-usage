@@ -20,7 +20,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('index', {
             abstract: true,
             url: '/index',
-            templateUrl: viewPrefix + 'common/content.html',
+            templateUrl: viewPrefix + 'common/content.html'
         })
         .state('index.main', {
             url: '/main',

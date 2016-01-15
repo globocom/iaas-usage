@@ -1,4 +1,4 @@
-<div class="wrapper wrapper-content animated fadeInRight" ng-init="main.loadProject()">
+<div class="wrapper wrapper-content animated fadeInRight" ng-init="instanceCtrl.loadProject()">
 	<!-- startrow1 -->
     <div class="row">
     	<div class="col-lg-4" >
@@ -15,7 +15,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in main.project.serviceofferingname" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.project.serviceofferingname" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -38,7 +38,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(state, count) in main.project.state" >
+                        <tr ng-repeat="(state, count) in instanceCtrl.project.state" >
                             <td>{[state]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -63,7 +63,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in main.project.zonename" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.project.zonename" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -92,7 +92,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in main.project.haenable" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.project.haenable" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -116,7 +116,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(hostname, count) in main.project.hostname" >
+                        <tr ng-repeat="(hostname, count) in instanceCtrl.project.hostname" >
                             <td>{[hostname]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -130,7 +130,7 @@
 	<!-- endrow2 -->
 
 	<!-- startrow3 -->
-	<div class="row" ng-init="main.listVirtualMachines()">
+	<div class="row" ng-init="instanceCtrl.listVirtualMachines()">
 		<div class="col-lg-12" >
 			<div class="ibox-title">
                     <h5>Instances</h5>
@@ -145,7 +145,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="instance in main.instances" >
+                        <tr ng-repeat="instance in instanceCtrl.instances" >
                         	<td>{[instance.name]}</td>
                             <td>{[instance.instance_name]}</td>
                             <td>{[instance.state]}</td>

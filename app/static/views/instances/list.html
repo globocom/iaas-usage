@@ -1,6 +1,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-12" ng-init="main.countVmsByProject()">
+        <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Instances by project </h5>
@@ -15,7 +15,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="project in main.countVmsByProject">
+                            <tr ng-repeat="project in instanceCtrl.countVmsByProject">
                                 <td>
                                     <div ng-show="project.vm_count > 0">
                                         <a  ui-sref="index.instances.project({projectName: project.name, projectId: project.id})" >
