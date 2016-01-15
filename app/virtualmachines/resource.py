@@ -3,6 +3,7 @@ from flask_restful import reqparse
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 import app
+import re
 
 
 class VirtualMachineResource(CloudstackResource):
@@ -41,6 +42,8 @@ class VirtualMachineResource(CloudstackResource):
 
         if request.args.get('state') is not None:
             params['state'] = request.args['state']
+
+        params.update(filter_by_tag())
 
         params['pagesize'] = request.args.get('page_size', "10")
         params['page'] = request.args.get('page', "1")
@@ -81,6 +84,8 @@ class VmCountResource(CloudstackResource):
     def get(self, region):
         self._validate_params()
         params = {"listall": "true", "projectid": self.args['project_id']}
+        params.update(filter_by_tag())
+
         response = self.get_cloudstack(region).listVirtualMachines(params)
 
         vm_count = {}
@@ -97,3 +102,12 @@ class VmCountResource(CloudstackResource):
         parser = reqparse.RequestParser()
         parser.add_argument('project_id', required=True, type=str, help='project_id must be informed')
         self.args = parser.parse_args(req=request)
+
+
+def filter_by_tag():
+    params = {}
+    tag_parameter_regex = re.compile('tags\[\d\]\..*')
+    for key in request.args.keys():
+        if tag_parameter_regex.match(key):
+            params[key] = request.args[key]
+    return params
