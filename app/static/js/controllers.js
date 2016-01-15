@@ -11,9 +11,14 @@ function MainCtrl($http, $stateParams, $state) {
 
     this.countVmsByProject = function() {
         console.log('load vms count ...')
-        $http.get('/api/v1/lab/project/?account_name=timeevolucaoinfra&domain_id=28f40084-2aed-11e5-8fce-76b2dd27c282')
-        .success(function(response) {
-            mainCtrl.countVmsByProject = response;
+        $http.get('/api/v1/lab/current_user/')
+        .success(function(response){
+            var account_name = response[0].account_name
+            var domain_id = response[0].domain_id
+            $http.get('/api/v1/lab/project/?account_name='+ account_name +'&domain_id=' + domain_id)
+            .success(function(response) {
+                mainCtrl.countVmsByProject = response;
+            })
         })
     }
 
@@ -24,6 +29,7 @@ function MainCtrl($http, $stateParams, $state) {
             mainCtrl.project = response;
         })
     }
+
     this.listVirtualMachines = function(){
         $http.get('/api/v1/lab/virtual_machine/?project_id=' + $stateParams.projectId)
         .success(function(response){

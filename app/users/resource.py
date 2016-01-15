@@ -1,3 +1,4 @@
+from flask_login import current_user
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 import app
@@ -6,8 +7,8 @@ import app
 class UserResource(CloudstackResource):
 
     @required_login
-    def get(self, region, username):
-        response = self.get_cloudstack(region).listUsers({"username": username})
+    def get(self, region):
+        response = self.get_cloudstack(region).listUsers({"username": current_user.username})
 
         if response.get('errortext') is not None:
             app.logger.error("Error while retrieving data from cloudstack: %s" % response['errortext'])

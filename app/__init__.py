@@ -20,7 +20,7 @@ logger = app.logger
 
 # Resource URL Mappings
 api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
-api.add_resource(UserResource, '/api/v1/<region>/user/<string:username>', endpoint='user')
+api.add_resource(UserResource, '/api/v1/<region>/current_user/', endpoint='user')
 api.add_resource(VirtualMachineResource, '/api/v1/<region>/virtual_machine/', endpoint='virtual_machine')
 api.add_resource(VmCountResource, '/api/v1/<region>/vm_count/', endpoint='vm_count')
 
