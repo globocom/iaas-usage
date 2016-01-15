@@ -8,9 +8,11 @@ class ProjectResourceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
+        mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
+        mock.return_value = True
 
     def tearDown(self):
-        pass
+        patch.stopall()
 
     def test_list_projects_given_empty_account_name(self):
         query = dict(domain_id='28f40084-2aed-11e5-8fce-76b2dd27c282')

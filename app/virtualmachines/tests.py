@@ -8,9 +8,11 @@ class VirtualMachinesResourceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
+        mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
+        mock.return_value = True
 
     def tearDown(self):
-        pass
+        patch.stopall()
 
     def test_list_users_given_cloudstack_api_error(self):
         list_users_mock = self.mock_cloudstack_list_vms({"errortext": "Unable to find vms"})
@@ -64,9 +66,11 @@ class VmCountResourceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
+        mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
+        mock.return_value = True
 
     def tearDown(self):
-        pass
+        patch.stopall()
 
     def test_list_vm_count_without_project_id(self):
         response = self.app.get('/api/v1/lab/vm_count/')

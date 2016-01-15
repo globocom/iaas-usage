@@ -1,9 +1,11 @@
+from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 import app
 
 
 class UserResource(CloudstackResource):
 
+    @required_login
     def get(self, region, username):
         response = self.get_cloudstack(region).listUsers({"username": username})
 

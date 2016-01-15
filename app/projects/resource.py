@@ -1,11 +1,13 @@
 from flask import request
 from flask_restful import reqparse
+from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 import app
 
 
 class ProjectResource(CloudstackResource):
 
+    @required_login
     def get(self, region):
         self._validate_params()
         account_name = self.args['account_name']

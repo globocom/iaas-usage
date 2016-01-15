@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import reqparse
+from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 import app
 
@@ -7,6 +8,7 @@ import app
 class VirtualMachineResource(CloudstackResource):
 
     # TODO: add OS type to vm attributes
+    @required_login
     def get(self, region):
         self._validate_params()
         response = self.get_cloudstack(region).listVirtualMachines(self._filter_by())
@@ -75,6 +77,7 @@ class VmCountResource(CloudstackResource):
 
     FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable']
 
+    @required_login
     def get(self, region):
         self._validate_params()
         params = {"listall": "true", "projectid": self.args['project_id']}

@@ -1,5 +1,6 @@
 Flask==0.10.1
 Flask-RESTful==0.3.1
+Flask-Login==0.2.11
 aniso8601==1.1.0
 funcsigs==0.4
 gunicorn==0.14.6
@@ -10,5 +11,7 @@ mock==1.3.0
 pbr==1.8.1
 python-dateutil==2.4.2
 pytz==2015.7
+requests==2.9.1
+requests-oauthlib==0.4.1
 six==1.10.0
 Werkzeug==0.11.3
