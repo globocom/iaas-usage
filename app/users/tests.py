@@ -10,6 +10,8 @@ class UserResourceTestCase(unittest.TestCase):
         self.app = app.test_client()
         mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
         mock.return_value = True
+        mock = patch('flask_login._get_user').start()
+        mock.return_value = Mock(username='test@email.com', name='test')
 
     def tearDown(self):
         patch.stopall()
@@ -17,22 +19,20 @@ class UserResourceTestCase(unittest.TestCase):
     def test_list_users_given_cloudstack_api_error(self):
         list_users_mock = self.mock_cloudstack_list_users({"errortext": "Unable to find user"})
 
-        username = 'test@email.com'
-        response = self.app.get('/api/v1/lab/user/' + username)
+        response = self.app.get('/api/v1/lab/current_user/')
 
         self.assertEquals(400, response.status_code)
         self.assertEquals("Unable to find user", json.loads(response.data)['message'])
-        list_users_mock.listUsers.assert_called_with({'username': username})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
 
     def test_list_users_given_empty_user_list(self):
         list_users_mock = self.mock_cloudstack_list_users({})
 
-        username = 'test@email.com'
-        response = self.app.get('/api/v1/lab/user/' + username)
+        response = self.app.get('/api/v1/lab/current_user/')
 
         self.assertEquals(200, response.status_code)
         self.assertEquals([], json.loads(response.data))
-        list_users_mock.listUsers.assert_called_with({'username': username})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
 
     def test_list_users(self):
         users = {"count": 1, "user": [{
@@ -42,8 +42,7 @@ class UserResourceTestCase(unittest.TestCase):
         }
         list_users_mock = self.mock_cloudstack_list_users(users)
 
-        username = 'test@email.com'
-        response = self.app.get('/api/v1/lab/user/' + username)
+        response = self.app.get('/api/v1/lab/current_user/')
 
         self.assertEquals(200, response.status_code)
         expected = [{
@@ -51,7 +50,7 @@ class UserResourceTestCase(unittest.TestCase):
             "account_name": "acc", "domain_id": "1","first_name": "First", "last_name": "Last"
         }]
         self.assertEquals(expected, json.loads(response.data))
-        list_users_mock.listUsers.assert_called_with({'username': username})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
 
     def mock_cloudstack_list_users(self, users):
         acs_mock = patch('app.users.resource.UserResource.get_cloudstack').start()
