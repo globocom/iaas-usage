@@ -38,7 +38,7 @@ function MainCtrl($http, $stateParams, $state) {
 };
 
 function InstancesCtrl($http){
-
+    
 }
 
 angular

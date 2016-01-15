@@ -25,7 +25,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('index.main', {
             url: '/main',
             templateUrl: viewPrefix + 'main.html',
-            data: { pageTitle: 'Example view' }
         })
         .state('index.instances', {
             abstract: true,
