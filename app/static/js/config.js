@@ -31,13 +31,18 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: '/instances',
             templateUrl: viewPrefix + 'instances/index.html'
         })
-        .state('index.instances.list',{
-            url: '',
-            templateUrl: viewPrefix + 'instances/list.html',
-        })
         .state('index.instances.vm_count', {
             url: '/:projectName/:projectId',
             templateUrl: viewPrefix + 'instances/vm_count.html'
+        })
+        .state('index.projects', {
+            abstract: true,
+            url: '/projects',
+            templateUrl: viewPrefix + 'projects/index.html'
+        })
+        .state('index.projects.list',{
+            url: '',
+            templateUrl: viewPrefix + 'projects/list.html',
         })
 }
 angular

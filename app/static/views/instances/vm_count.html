@@ -4,13 +4,13 @@
     	<div class="col-lg-4" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Service Offering</h5>
+                    <h5>Compute Offering</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-bordered" >
                         <thead>
                         <tr>
-                            <th>Offerings</th>
+                            <th>Compute Offering</th>
                             <th>Instances</th>
                         </tr>
                         </thead>
@@ -39,7 +39,11 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="(state, count) in instanceCtrl.vmCount.state" >
-                                <td>{[state]}</td>
+                                <td>
+                                    <span class="label" ng-class="{Running:'label-primary', Stopped:'label-danger', Destroyed:'label-danger', Starting:'label-success'}[state]">
+                                        {[state]}
+                                    </span>
+                                </td>
                                 <td>{[count]}</td>
                             </tr>
                         </tbody>
@@ -52,13 +56,13 @@
         <div class="col-lg-4" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Zone</h5>
+                    <h5>Zones</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-bordered" >
                         <thead>
                             <tr>
-                                <th>Zone</th>
+                                <th>Zone name</th>
                                 <th>Instances</th>
                             </tr>
                         </thead>
@@ -77,7 +81,6 @@
     <!-- endrow1 -->
     <!-- startrow2 -->
     <div class="row">
-    	<div class="col-lg-4" ></div>
     	<div class="col-lg-4" >
     		<div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -87,13 +90,17 @@
                     <table class="table table-bordered" >
                         <thead>
                             <tr>
-                                <th>HA</th>
+                                <th>High Availability</th>
                                 <th>Instances</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
-                                <td>{[name]}</td>
+                                <td>
+                                    <span ng-class="{true:'label label-primary', false:'label label-danger'}[name]">
+                                        {[name == 'true' ? 'Enabled' : 'Disabled']}
+                                    </span>
+                                </td>
                                 <td>{[count]}</td>
                             </tr>
                         </tbody>
@@ -105,13 +112,13 @@
     	<div class="col-lg-4" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Host</h5>
+                    <h5>Hosts</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-bordered" >
                         <thead>
                             <tr>
-                                <th>Hosts</th>
+                                <th>Host name</th>
                                 <th>Instances</th>
                             </tr>
                         </thead>
@@ -126,6 +133,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-4" ></div>
     </div>
     <!-- endrow2 -->
 
@@ -141,6 +149,8 @@
                         <tr>
                             <th>Name</th>
                             <th>Internal Name</th>
+                            <th>Host</th>
+                            <th>Zone</th>
                             <th>State</th>
                         </tr>
                     </thead>
@@ -148,7 +158,13 @@
                         <tr ng-repeat="instance in instanceCtrl.instances" >
                             <td>{[instance.name]}</td>
                             <td>{[instance.instance_name]}</td>
-                            <td>{[instance.state]}</td>
+                            <td>{[instance.host_name || '-']}</td>
+                            <td>{[instance.zone_name]}</td>
+                            <td>
+                                <span ng-class="{Running:'label label-primary', Stopped:'label label-danger'}[instance.state]">
+                                    {[instance.state]}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

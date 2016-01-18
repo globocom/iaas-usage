@@ -1,6 +1,6 @@
 var UserCtrl = function($scope, $http, $stateParams, $state, $q) {
     userCtrl = this;
-    this.user = null;
+    userCtrl.user = null;
 
     userCtrl.loadUser = function() {
         console.log('Loading user')
@@ -15,9 +15,9 @@ var UserCtrl = function($scope, $http, $stateParams, $state, $q) {
 function InstanceCtrl($scope, $http, $stateParams, $state){
     instanceCtrl = this
     this.title = 'Instances';
-    this.projectName = '';
-    this.vmCount = []
-    this.instances = []
+    instanceCtrl.projectName = '';
+    instanceCtrl.vmCount = []
+    instanceCtrl.instances = []
 
     instanceCtrl.getVmCount = function() {
         instanceCtrl.projectName = $stateParams.projectName
@@ -41,8 +41,8 @@ function InstanceCtrl($scope, $http, $stateParams, $state){
 
 function ProjectCtrl($scope, $http, $stateParams){
     projectCtrl = this
-    this.projects
-    //projectCtrl.project = {name: $stateParams.projectName, id: $stateParams.projectId}
+    projectCtrl.title = 'Instances by project';
+    projectCtrl.projects
 
     projectCtrl.listProjects = function(event, user) {
         user = user || userCtrl.user
