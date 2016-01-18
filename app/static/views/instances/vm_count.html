@@ -1,4 +1,4 @@
-<div class="wrapper wrapper-content animated fadeInRight" ng-init="instanceCtrl.loadProject()">
+<div class="wrapper wrapper-content animated fadeInRight" ng-init="instanceCtrl.getVmCount()">
 	<!-- startrow1 -->
     <div class="row">
     	<div class="col-lg-4" >
@@ -15,7 +15,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in instanceCtrl.project.serviceofferingname" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.vmCount.serviceofferingname" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -38,7 +38,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(state, count) in instanceCtrl.project.state" >
+                        <tr ng-repeat="(state, count) in instanceCtrl.vmCount.state" >
                             <td>{[state]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -63,7 +63,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in instanceCtrl.project.zonename" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.vmCount.zonename" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -92,7 +92,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in instanceCtrl.project.haenable" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -116,7 +116,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(hostname, count) in instanceCtrl.project.hostname" >
+                        <tr ng-repeat="(hostname, count) in instanceCtrl.vmCount.hostname" >
                             <td>{[hostname]}</td>
                             <td>{[count]}</td>
                         </tr>

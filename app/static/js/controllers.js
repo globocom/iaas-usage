@@ -25,26 +25,26 @@ function InstanceCtrl($http, $stateParams, $state){
         console.log("loading InstancesCtrl: " + mainCtrl)
         console.log(mainCtrl)
         this.mainCtrl = mainCtrl;
-        this.countVmsByProject();
+        this.listProjects();
     }
 
-    this.countVmsByProject = function() {
+    this.listProjects = function() {
         console.log('load vms count ...')
         $http.get('/api/v1/lab/current_user/')
         .success(function(response){
             var user = response[0]
             $http.get('/api/v1/lab/project/?account_name='+ user.account_name +'&domain_id=' + user.domain_id)
             .success(function(response) {
-                instanceCtrl.countVmsByProject = response;
+                instanceCtrl.projects = response;
             });
         })
     }
 
-    this.loadProject = function() {
+    this.getVmCount = function() {
         console.log('load project... ');
         $http.get('/api/v1/lab/vm_count/?project_id=' + $stateParams.projectId)
         .success(function(response){
-            instanceCtrl.project = response;
+            instanceCtrl.vmCount = response;
         })
     }
 
