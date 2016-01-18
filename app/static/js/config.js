@@ -35,9 +35,9 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: '',
             templateUrl: viewPrefix + 'instances/list.html',
         })
-        .state('index.instances.project', {
+        .state('index.instances.vm_count', {
             url: '/:projectName/:projectId',
-            templateUrl: viewPrefix + 'instances/project.html'
+            templateUrl: viewPrefix + 'instances/vm_count.html'
         })
 }
 angular

@@ -18,7 +18,7 @@
                             <tr ng-repeat="project in instanceCtrl.countVmsByProject">
                                 <td>
                                     <div ng-show="project.vm_count > 0">
-                                        <a  ui-sref="index.instances.project({projectName: project.name, projectId: project.id})" >
+                                        <a  ui-sref="index.instances.vm_count({projectName: project.name, projectId: project.id})" >
                                             {[project.name]}
                                         </a>
                                     </div>

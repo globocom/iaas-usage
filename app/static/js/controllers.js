@@ -12,7 +12,6 @@ var MainCtrl = function($http, $stateParams, $state, $q) {
             mainCtrl.user = response[0];
         })
     }
- 
 };
 
 function InstanceCtrl($http, $stateParams, $state){
@@ -31,11 +30,16 @@ function InstanceCtrl($http, $stateParams, $state){
 
     this.countVmsByProject = function() {
         console.log('load vms count ...')
-        $http.get('/api/v1/lab/project/?account_name='+ this.mainCtrl.user.account_name +'&domain_id=' + this.mainCtrl.user.domain_id)
-        .success(function(response) {
-            instanceCtrl.countVmsByProject = response;
-        });
+        $http.get('/api/v1/lab/current_user/')
+        .success(function(response){
+            var user = response[0]
+            $http.get('/api/v1/lab/project/?account_name='+ user.account_name +'&domain_id=' + user.domain_id)
+            .success(function(response) {
+                instanceCtrl.countVmsByProject = response;
+            });
+        })
     }
+
     this.loadProject = function() {
         console.log('load project... ');
         $http.get('/api/v1/lab/vm_count/?project_id=' + $stateParams.projectId)
@@ -50,7 +54,6 @@ function InstanceCtrl($http, $stateParams, $state){
             instanceCtrl.instances = response.virtual_machines;
         })
     }
-
 }
 
 angular
