@@ -2,10 +2,9 @@ var UserCtrl = function($scope, $http, $stateParams, $state, $q) {
     userCtrl = this;
     
     userCtrl.loadUser = function() {
+        console.log('Loading user')
         $http.get('/api/v1/lab/current_user/')
         .success(function(response){
-            console.log('Loading user')
-            console.log(response)
             $scope.user = response[0]
             $scope.$broadcast('userLoaded', $scope.user);
         })
@@ -27,7 +26,7 @@ function InstanceCtrl($scope, $http, $stateParams, $state){
     }
 
     instanceCtrl.getVmCount = function() {
-        console.log('load project... ');
+        console.log('Loading vm count')
         $http.get('/api/v1/lab/vm_count/?project_id=' + $stateParams.projectId)
         .success(function(response){
             $scope.vmCount = response;
@@ -35,6 +34,7 @@ function InstanceCtrl($scope, $http, $stateParams, $state){
     }
 
     instanceCtrl.listVirtualMachines = function(){
+        console.log('Loading virtual machines')
         $http.get('/api/v1/lab/virtual_machine/?project_id=' + $stateParams.projectId)
         .success(function(response){
             $scope.instances = response.virtual_machines;
