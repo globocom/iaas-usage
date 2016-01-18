@@ -15,7 +15,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in vmCount.serviceofferingname" >
+                        <tr ng-repeat="(name, count) in instanceCtrl.vmCount.serviceofferingname" >
                             <td>{[name]}</td>
                             <td>{[count]}</td>
                         </tr>
@@ -38,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(state, count) in vmCount.state" >
+                            <tr ng-repeat="(state, count) in instanceCtrl.vmCount.state" >
                                 <td>{[state]}</td>
                                 <td>{[count]}</td>
                             </tr>
@@ -92,7 +92,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(name, count) in vmCount.haenable" >
+                            <tr ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
                                 <td>{[name]}</td>
                                 <td>{[count]}</td>
                             </tr>
@@ -116,7 +116,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(hostname, count) in vmCount.hostname" >
+                            <tr ng-repeat="(hostname, count) in instanceCtrl.vmCount.hostname" >
                                 <td>{[hostname]}</td>
                                 <td>{[count]}</td>
                             </tr>
@@ -145,7 +145,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="instance in instances" >
+                        <tr ng-repeat="instance in instanceCtrl.instances" >
                             <td>{[instance.name]}</td>
                             <td>{[instance.instance_name]}</td>
                             <td>{[instance.state]}</td>

@@ -1,12 +1,20 @@
 <div ng-controller="InstanceCtrl as instanceCtrl">
     <div class="row wrapper border-bottom white-bg page-heading" >
         <div class="col-lg-10">
-            <h2>{[ instanceCtrl.title ]}</h2>
+            <h2>
+                {[ instanceCtrl.title ]}
+            </h2>
             <ol class="breadcrumb">
                 <li>
                     <a ui-sref="index.main" >Home</a>
                 </li>
-                <li >
+                <li ng-hide="!$state.includes('index.instances')">
+                    <a ui-sref="index.instances.list">Projects</a>
+                </li>
+                <li ng-hide="!$state.includes('index.instances.vm_count')">
+                    <a>{[ instanceCtrl.projectName ]}</a>
+                </li>
+                <li ng-hide="!$state.includes('index.instances.vm_count')">
                     <strong>{[ instanceCtrl.title ]}</strong>
                 </li>
             </ol>
