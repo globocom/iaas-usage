@@ -1,62 +1,50 @@
-/**
- * MainCtrl - controller
- */
-
-var MainCtrl = function($http, $stateParams, $state, $q) {
-    var mainCtrl = this;
+var UserCtrl = function($scope, $http, $stateParams, $state, $q) {
+    userCtrl = this;
     
-    this.loadUser = function() {
+    userCtrl.loadUser = function() {
         $http.get('/api/v1/lab/current_user/')
         .success(function(response){
+            console.log('Loading user')
             console.log(response)
-            mainCtrl.user = response[0];
+            $scope.user = response[0]
+            $scope.$broadcast('userLoaded', $scope.user);
         })
     }
 };
 
-function InstanceCtrl($http, $stateParams, $state){
+function InstanceCtrl($scope, $http, $stateParams, $state){
     var instanceCtrl = this
     this.title = 'Instances';
-    this.mainCtrl;
 
-    this.project = {name: $stateParams.projectName, id: $stateParams.projectId}
-    
-    this.load = function(mainCtrl) {
-        console.log("loading InstancesCtrl: " + mainCtrl)
-        console.log(mainCtrl)
-        this.mainCtrl = mainCtrl;
-        this.listProjects();
+    instanceCtrl.project = {name: $stateParams.projectName, id: $stateParams.projectId}
+
+    instanceCtrl.listProjects = function(event, user) {
+        console.log('Loading projects')
+        $http.get('/api/v1/lab/project/?account_name='+ user.account_name +'&domain_id=' + user.domain_id)
+        .success(function(response) {
+            $scope.projects = response;
+        });
     }
 
-    this.listProjects = function() {
-        console.log('load vms count ...')
-        $http.get('/api/v1/lab/current_user/')
-        .success(function(response){
-            var user = response[0]
-            $http.get('/api/v1/lab/project/?account_name='+ user.account_name +'&domain_id=' + user.domain_id)
-            .success(function(response) {
-                instanceCtrl.projects = response;
-            });
-        })
-    }
-
-    this.getVmCount = function() {
+    instanceCtrl.getVmCount = function() {
         console.log('load project... ');
         $http.get('/api/v1/lab/vm_count/?project_id=' + $stateParams.projectId)
         .success(function(response){
-            instanceCtrl.vmCount = response;
+            $scope.vmCount = response;
         })
     }
 
-    this.listVirtualMachines = function(){
+    instanceCtrl.listVirtualMachines = function(){
         $http.get('/api/v1/lab/virtual_machine/?project_id=' + $stateParams.projectId)
         .success(function(response){
-            instanceCtrl.instances = response.virtual_machines;
+            $scope.instances = response.virtual_machines;
         })
     }
+
+    $scope.$on('userLoaded', this.listProjects)
 }
 
 angular
     .module('iaasusage')
-    .controller('MainCtrl', MainCtrl)
+    .controller('UserCtrl', UserCtrl)
     .controller('InstanceCtrl', InstanceCtrl)
