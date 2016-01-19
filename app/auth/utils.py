@@ -16,7 +16,7 @@ def required_login(func):
         user_is_authenticated = current_user.is_authenticated()
 
         if is_api_uri and not user_is_authenticated:
-            return abort(401)
+            return abort(403)
         if not user_is_authenticated:
             client_id = app.config['OAUTH_CLIENT_ID']
             authorization_url = app.config['OAUTH_AUTH_URL']

@@ -42,12 +42,32 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         })
         .state('index.projects.list',{
             url: '',
-            templateUrl: viewPrefix + 'projects/list.html',
+            templateUrl: viewPrefix + 'projects/list.html'
         })
 }
+
+function HttpErrorInterceptor($httpProvider) {
+    $httpProvider.interceptors.push(function() {
+        return {
+            responseError: function(res, a) {
+                if(res.status == 403){
+                    toastr.warning("Session expired.");
+                    setTimeout(function(){
+                        window.location = '/'
+                    },5000)
+                }else if (res.status == 400 || res.status == 500){
+                    toastr.error(res.data.message);
+                }
+                return res;
+            }
+        };
+    });
+}
+
 angular
     .module('iaasusage')
     .config(config)
+    .config(HttpErrorInterceptor)
     .run(function($rootScope, $state) {
         $rootScope.$state = $state;
     });

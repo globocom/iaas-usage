@@ -32,8 +32,6 @@ function UserCtrl($scope, $http, $window, $state, apiService) {
         }).then(function successCallback(response){
             userCtrl.user = response.data[0]
             $scope.$broadcast('userLoaded', userCtrl.user);
-        }, function errorCallback(response){
-            toastr.error(response.data.message);
         });
     }
 
@@ -58,8 +56,6 @@ function InstanceCtrl($scope, $http, $stateParams, apiService){
             url: apiService.builAPIUrl('/vm_count/', {project_id: $stateParams.projectId})
         }).then(function successCallback(response){
             instanceCtrl.vmCount = response.data;
-        }, function errorCallback(response){
-            toastr.error(response.data.message);
         });
     }
 
@@ -70,8 +66,6 @@ function InstanceCtrl($scope, $http, $stateParams, apiService){
             url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
         }).then(function successCallback(response){
             instanceCtrl.instances = response.data.virtual_machines;
-        }, function errorCallback(response){
-            toastr.error(response.data.message);
         });
     }
 }
@@ -90,8 +84,6 @@ function ProjectCtrl($scope, $http, apiService){
                 url: apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id})
             }).then(function successCallback(response){
                 projectCtrl.projects = response.data;
-            }, function errorCallback(response){
-                toastr.error(response.data.message);
             });
         }
     }
