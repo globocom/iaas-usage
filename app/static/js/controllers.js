@@ -25,11 +25,16 @@ function UserCtrl($scope, $http, $window, $state, apiService) {
 
     userCtrl.loadUser = function() {
         console.log('Loading user')
-        $http.get(apiService.builAPIUrl('/current_user/'))
-        .success(function(response){
-            userCtrl.user = response[0]
-            $scope.$broadcast('userLoaded', $scope.user);
-        })
+
+        $http({
+            method: 'GET',
+            url: apiService.builAPIUrl('/current_user/')
+        }).then(function successCallback(response){
+            userCtrl.user = response.data[0]
+            $scope.$broadcast('userLoaded', userCtrl.user);
+        }, function errorCallback(response){
+            toastr.error(response.data.message);
+        });
     }
 
     $scope.$on('regionChanged', function(){
@@ -48,18 +53,26 @@ function InstanceCtrl($scope, $http, $stateParams, apiService){
     instanceCtrl.getVmCount = function() {
         console.log('Loading vm count')
         instanceCtrl.projectName = $stateParams.projectName
-        $http.get(apiService.builAPIUrl('/vm_count/', {project_id: $stateParams.projectId}))
-        .success(function(response){
-            instanceCtrl.vmCount = response;
-        })
+        $http({
+            method: 'GET',
+            url: apiService.builAPIUrl('/vm_count/', {project_id: $stateParams.projectId})
+        }).then(function successCallback(response){
+            instanceCtrl.vmCount = response.data;
+        }, function errorCallback(response){
+            toastr.error(response.data.message);
+        });
     }
 
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
-        $http.get(apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId}))
-        .success(function(response){
-            instanceCtrl.instances = response.virtual_machines;
-        })
+        $http({
+            method: 'GET',
+            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
+        }).then(function successCallback(response){
+            instanceCtrl.instances = response.data.virtual_machines;
+        }, function errorCallback(response){
+            toastr.error(response.data.message);
+        });
     }
 }
 
@@ -72,9 +85,13 @@ function ProjectCtrl($scope, $http, apiService){
         user = user || userCtrl.user
         if(angular.isUndefined(this.projects) && user != null){
             console.log('Loading projects')
-            $http.get(apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id}))
-            .success(function(response) {
-                projectCtrl.projects = response;
+            $http({
+                method: 'GET',
+                url: apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id})
+            }).then(function successCallback(response){
+                projectCtrl.projects = response.data;
+            }, function errorCallback(response){
+                toastr.error(response.data.message);
             });
         }
     }
