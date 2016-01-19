@@ -11,6 +11,15 @@ function RegionCtrl(regionService, $rootScope){
         if(region.key != regionService.getCurrentRegion().key){
             regionService.changeCurrentRegion(region)
             $rootScope.$broadcast('regionChanged')
+            regionCtrl.toggleSelector()
+        }
+    }
+
+    regionCtrl.toggleSelector = function(){
+        if(angular.isUndefined(regionCtrl.selectorClass)){
+            regionCtrl.selectorClass = 'sidebar-open'
+        }else{
+            regionCtrl.selectorClass = undefined
         }
     }
 
