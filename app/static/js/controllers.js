@@ -91,39 +91,9 @@ function ProjectCtrl($scope, $http, apiService){
     $scope.$on('userLoaded', projectCtrl.listProjects)
 }
 
-function RegionService($rootScope) {
-    return {
-        listRegions: function() {
-            return [
-                {key: 'ebt', value: 'RJEBT'},
-                {key: 'cta', value: 'RJCTA'},
-                {key: 'lab', value: 'RJLAB'}
-            ]
-        },
-        getCurrentRegion: function(){
-           return ($rootScope.currentRegion || {key: 'ebt', value: 'RJEBT'})
-        },
-        changeCurrentRegion: function(region){
-            $rootScope.currentRegion = region
-        }
-    };
-}
-
-function ApiService(regionService) {
-    return {
-        builAPIUrl: function(uri, params) {
-            query = params ? '?' + $.param(params) : '';
-            fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
-            return fullUri
-        }
-    };
-}
-
 angular
     .module('iaasusage')
     .controller('RegionCtrl', RegionCtrl)
     .controller('UserCtrl', UserCtrl)
     .controller('ProjectCtrl', ProjectCtrl)
-    .controller('InstanceCtrl', InstanceCtrl)
-    .factory('regionService', RegionService)
-    .factory('apiService', ApiService);
+    .controller('InstanceCtrl', InstanceCtrl);
