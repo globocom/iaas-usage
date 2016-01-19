@@ -46,7 +46,7 @@ function InstanceCtrl($scope, $http, $stateParams, apiService){
     instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
     instanceCtrl.vmCount = []
-    instanceCtrl.instances = []
+    instanceCtrl.instances = {itemsPerPage: 10, currentPage: 1, data: []}
 
     instanceCtrl.getVmCount = function() {
         console.log('Loading vm count')
@@ -63,9 +63,12 @@ function InstanceCtrl($scope, $http, $stateParams, apiService){
         console.log('Loading virtual machines')
         $http({
             method: 'GET',
-            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
+            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId,
+                                                             page_size: instanceCtrl.instances.itemsPerPage,
+                                                             page: instanceCtrl.instances.currentPage})
         }).then(function successCallback(response){
-            instanceCtrl.instances = response.data.virtual_machines;
+            instanceCtrl.instances.data = response.data.virtual_machines;
+            instanceCtrl.instances.totalItems = response.data.count;
         });
     }
 }
