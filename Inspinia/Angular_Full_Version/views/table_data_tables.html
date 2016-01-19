@@ -17,7 +17,7 @@
 
     </div>
 </div>
-<div class="wrapper wrapper-content animated fadeInRight" ng-controller="datatablesCtrl">
+<div class="wrapper wrapper-content animated fadeInRight" ng-controller="datatablesCtrl as datatablesCtrl">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -472,7 +472,7 @@
                     <div ibox-tools></div>
                 </div>
                 <div class="ibox-content">
-                    <table datatable="ng" dt-options="dtOptions"  class="table table-striped table-bordered table-hover dataTables-example">
+                    <table datatable="ng" dt-options="dtOptions" data-page-size="3" class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                         <tr>
                             <th>ID</th>
@@ -481,16 +481,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="person in main.persons">
-                            <td>{[ person.id ]}</td>
-                            <td>{[ person.firstName ]}</td>
-                            <td>{[ person.lastName ]}</td>
+                        <tr ng-repeat="person in datatablesCtrl.persons">
+                            <td>{{ person.id }}</td>
+                            <td>{{ person.firstName }}</td>
+                            <td>{{ person.lastName }}</td>
                         </tr>
                         </tbody>
                     </table>
 
 
                 </div>
+                | {{ datatablesCtrl.persons }} | {{datatablesCtrl}}|
             </div>
         </div>
     </div>

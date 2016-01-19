@@ -2922,7 +2922,7 @@ function loadingCtrl($scope, $timeout){
 
 
 function datatablesCtrl($scope,DTOptionsBuilder){
-
+    var datatablesCtrl = this;
     $scope.dtOptions = DTOptionsBuilder.newOptions()
         .withDOM('<"html5buttons"B>lTfgitp')
         .withButtons([
@@ -2946,7 +2946,7 @@ function datatablesCtrl($scope,DTOptionsBuilder){
     /**
      * persons - Data used in Tables view for Data Tables plugin
      */
-    $scope.persons = [
+    datatablesCtrl.persons = [
         {
             id: '1',
             firstName: 'Monica',
@@ -2972,6 +2972,57 @@ function datatablesCtrl($scope,DTOptionsBuilder){
             firstName: 'Kim',
             lastName: 'Rosowski'
         }
+        ,
+        {
+            id: '6',
+            firstName: 'Kim',
+            lastName: 'Rosowski'
+        }
+        ,
+        {
+            id: '7',
+            firstName: '7 Kim',
+            lastName: 'Rosowski'
+        }
+        ,
+        {
+            id: '8',
+            firstName: '8',
+            lastName: 'Rosowski'
+        }
+        ,
+        {
+            id: '9',
+            firstName: '9 ',
+            lastName: 'Rosowski'
+        }
+        ,
+        {
+            id: '10',
+            firstName: '10',
+            lastName: 'Rosowski'
+        },
+        {
+            id: '11',
+            firstName: '11',
+            lastName: 'Rosowski'
+        },
+        {
+            id: '12',
+            firstName: '12',
+            lastName: 'Rosowski'
+        },
+        {
+            id: '13',
+            firstName: '13 ',
+            lastName: 'Rosowski'
+        },
+        {
+            id: '14',
+            firstName: 'a 14 ',
+            lastName: 'Rosowski'
+        }
+
     ];
 
 }
