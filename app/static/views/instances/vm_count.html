@@ -39,11 +39,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="(state, count) in instanceCtrl.vmCount.state" >
-                                <td>
-                                    <span class="label" ng-class="{Running:'label-primary', Stopped:'label-danger', Destroyed:'label-danger', Starting:'label-success'}[state]">
-                                        {[state]}
-                                    </span>
-                                </td>
+                                <td>{[state]}</td>
                                 <td>{[count]}</td>
                             </tr>
                         </tbody>
@@ -96,11 +92,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
-                                <td>
-                                    <span ng-class="{true:'label label-primary', false:'label label-danger'}[name]">
-                                        {[name == 'true' ? 'Enabled' : 'Disabled']}
-                                    </span>
-                                </td>
+                                <td>{[name == 'true' ? 'Enabled' : 'Disabled']}</td>
                                 <td>{[count]}</td>
                             </tr>
                         </tbody>
