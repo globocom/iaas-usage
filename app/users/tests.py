@@ -30,8 +30,8 @@ class UserResourceTestCase(unittest.TestCase):
 
         response = self.app.get('/api/v1/lab/current_user/')
 
-        self.assertEquals(200, response.status_code)
-        self.assertEquals([], json.loads(response.data))
+        self.assertEquals(400, response.status_code)
+        self.assertEquals("No user returned for the username test@email.com", json.loads(response.data)['message'])
         list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
 
     def test_list_users(self):

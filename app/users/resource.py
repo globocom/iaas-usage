@@ -11,6 +11,9 @@ class UserResource(CloudstackResource):
     def get(self, region):
         response = self.get_cloudstack(region).listUsers({"username": current_user.username})
 
+        if not response:
+            return {"message": "No user returned for the username %s" % current_user.username}, 400
+
         if response.get('errortext') is not None:
             app.logger.error("Error while retrieving data from cloudstack: %s" % response['errortext'])
             return {"message": response['errortext']}, 400
