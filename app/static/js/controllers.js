@@ -1,28 +1,54 @@
-var UserCtrl = function($scope, $http, $stateParams, $state, $q) {
+function RegionCtrl(regionService, $rootScope){
+    regionCtrl = this
+    regionCtrl.regionList = regionService.listRegions()
+    regionCtrl.currentRegion = regionService.getCurrentRegion()
+
+    regionCtrl.listRegions = function(){
+        return regionCtrl.regionList
+    }
+
+    regionCtrl.changeRegion = function(region){
+        if(region.key != regionService.getCurrentRegion().key){
+            regionService.changeCurrentRegion(region)
+            $rootScope.$broadcast('regionChanged')
+        }
+    }
+
+    regionCtrl.getCurrentRegion = function(){
+        return regionService.getCurrentRegion()
+    }
+}
+
+function UserCtrl($scope, $http, $window, $state, apiService) {
     userCtrl = this;
     userCtrl.user = null;
 
     userCtrl.loadUser = function() {
         console.log('Loading user')
-        $http.get('/api/v1/lab/current_user/')
+        $http.get(apiService.builAPIUrl('/current_user/'))
         .success(function(response){
             userCtrl.user = response[0]
             $scope.$broadcast('userLoaded', $scope.user);
         })
     }
+
+    $scope.$on('regionChanged', function(){
+        $state.go('index.main');
+        userCtrl.loadUser()
+    })
 };
 
-function InstanceCtrl($scope, $http, $stateParams, $state){
+function InstanceCtrl($scope, $http, $stateParams, apiService){
     instanceCtrl = this
-    this.title = 'Instances';
+    projectCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
     instanceCtrl.vmCount = []
     instanceCtrl.instances = []
 
     instanceCtrl.getVmCount = function() {
-        instanceCtrl.projectName = $stateParams.projectName
         console.log('Loading vm count')
-        $http.get('/api/v1/lab/vm_count/?project_id=' + $stateParams.projectId)
+        instanceCtrl.projectName = $stateParams.projectName
+        $http.get(apiService.builAPIUrl('/vm_count/', {project_id: $stateParams.projectId}))
         .success(function(response){
             instanceCtrl.vmCount = response;
         })
@@ -30,16 +56,14 @@ function InstanceCtrl($scope, $http, $stateParams, $state){
 
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
-        $http.get('/api/v1/lab/virtual_machine/?project_id=' + $stateParams.projectId)
+        $http.get(apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId}))
         .success(function(response){
             instanceCtrl.instances = response.virtual_machines;
         })
     }
-
-    $scope.$on('userLoaded', this.listProjects)
 }
 
-function ProjectCtrl($scope, $http, $stateParams){
+function ProjectCtrl($scope, $http, apiService){
     projectCtrl = this
     projectCtrl.title = 'Instances by project';
     projectCtrl.projects
@@ -48,18 +72,49 @@ function ProjectCtrl($scope, $http, $stateParams){
         user = user || userCtrl.user
         if(angular.isUndefined(this.projects) && user != null){
             console.log('Loading projects')
-            $http.get('/api/v1/lab/project/?account_name='+ user.account_name +'&domain_id=' + user.domain_id)
+            $http.get(apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id}))
             .success(function(response) {
                 projectCtrl.projects = response;
             });
         }
     }
 
-    $scope.$on('userLoaded', this.listProjects)
+    $scope.$on('userLoaded', projectCtrl.listProjects)
+}
+
+function RegionService($rootScope) {
+    return {
+        listRegions: function() {
+            return [
+                {key: 'ebt', value: 'RJEBT'},
+                {key: 'cta', value: 'RJCTA'},
+                {key: 'lab', value: 'RJLAB'}
+            ]
+        },
+        getCurrentRegion: function(){
+           return ($rootScope.currentRegion || {key: 'ebt', value: 'RJEBT'})
+        },
+        changeCurrentRegion: function(region){
+            $rootScope.currentRegion = region
+        }
+    };
+}
+
+function ApiService(regionService) {
+    return {
+        builAPIUrl: function(uri, params) {
+            query = params ? '?' + $.param(params) : '';
+            fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
+            return fullUri
+        }
+    };
 }
 
 angular
     .module('iaasusage')
+    .controller('RegionCtrl', RegionCtrl)
     .controller('UserCtrl', UserCtrl)
     .controller('ProjectCtrl', ProjectCtrl)
     .controller('InstanceCtrl', InstanceCtrl)
+    .factory('regionService', RegionService)
+    .factory('apiService', ApiService);

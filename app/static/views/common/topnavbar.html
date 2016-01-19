@@ -1,19 +1,52 @@
-<div class="row border-bottom">
-    <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <span minimaliza-sidebar></span>
-            <form role="search" class="navbar-form-custom" method="post" action="">
-                <div class="form-group">
-                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+<script type="text/javascript">
+    $(document).ready(function () {
+         $('.right-sidebar-toggle').click(function () {
+            $('#right-sidebar').toggleClass('sidebar-open');
+         });
+    })
+</script>
+
+<div ng-controller="RegionCtrl as regionCtrl">
+    <div class="row border-bottom">
+        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <span minimaliza-sidebar></span>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a class="right-sidebar-toggle">
+                        <i class="fa fa-cloud"></i> <small class="label label-success">{[regionCtrl.getCurrentRegion().value]}</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div id="right-sidebar" style="opacity: 0.8;">
+        <div class="sidebar-container">
+            <div class="tab-content" >
+                <div id="tab-1" class="tab-pane active">
+                    <div class="sidebar-title">
+                        <h3> Select region</h3>
+                    </div>
+                    <ul class="sidebar-list">
+                        <li ng-repeat="region in regionCtrl.listRegions()">
+                             <div class="sidebar-message">
+                                 <div class="media-body">
+                                    <a href="#">
+                                        <span ng-click="regionCtrl.changeRegion(region)"> <i class="fa fa-globe" ></i> {[region.value]}</span>
+                                    </a>
+                                 </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-            </form>
+            </div>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <li>
-                <a href="/logout">
-                    <i class="fa fa-sign-out"></i> Log out
-                </a>
-            </li>
-        </ul>
-    </nav>
+    </div>
 </div>
