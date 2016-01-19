@@ -1,12 +1,13 @@
 from flask_login import current_user
 from app.auth.utils import required_login
-from app.cloudstack.cloudstack_base_resource import CloudstackResource
+from app.cloudstack.cloudstack_base_resource import CloudstackResource, handle_errors
 import app
 
 
 class UserResource(CloudstackResource):
 
     @required_login
+    @handle_errors
     def get(self, region):
         response = self.get_cloudstack(region).listUsers({"username": current_user.username})
 
