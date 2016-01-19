@@ -40,7 +40,7 @@ function UserCtrl($scope, $http, $window, $state, apiService) {
 
 function InstanceCtrl($scope, $http, $stateParams, apiService){
     instanceCtrl = this
-    projectCtrl.title = 'Instances';
+    instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
     instanceCtrl.vmCount = []
     instanceCtrl.instances = []
