@@ -11,7 +11,7 @@ class UserResourceTestCase(unittest.TestCase):
         mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
         mock.return_value = True
         mock = patch('flask_login._get_user').start()
-        mock.return_value = Mock(username='test@email.com', name='test')
+        mock.return_value = Mock(username='test@email.com', name='test', picture="gravatar.com/picture.jpg")
 
     def tearDown(self):
         patch.stopall()
@@ -47,7 +47,8 @@ class UserResourceTestCase(unittest.TestCase):
         self.assertEquals(200, response.status_code)
         expected = [{
             "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user", "is_admin": True,
-            "account_name": "acc", "domain_id": "1","first_name": "First", "last_name": "Last"
+            "account_name": "acc", "domain_id": "1","first_name": "First", "last_name": "Last",
+            "picture": "gravatar.com/picture.jpg"
         }]
         self.assertEquals(expected, json.loads(response.data))
         list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})

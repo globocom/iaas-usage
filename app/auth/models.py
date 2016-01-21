@@ -1,6 +1,6 @@
 class User:
 
-    def __init__(self, username, name):
+    def __init__(self, username, name, picture):
         self.id = username
         self.username = username
         self.name = name
@@ -8,6 +8,7 @@ class User:
         self.active = True
         self.anonymous = False
         self.roles = []
+        self.picture = picture
 
     def is_active(self):
         return self.is_active

@@ -33,6 +33,7 @@ def required_login(func):
 @login_manager.user_loader
 def load_user(user_id):
     if user_id is not None and session.get('user') is not None:
-        return User(session['user']['email'], session['user']['email'])
+        user = session['user']
+        return User(user['email'], user['email'], user['picture'])
     return None
 
