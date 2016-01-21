@@ -15,16 +15,31 @@ class CloudstackResource(Resource):
 
     def __get_configs(self, region):
 
-        region = region.upper()
+        if os.path.isfile("~/.cloudmonkey/config"):
+            app.logger.debug("Loading configs from cloudmonkey/config")
+            parser = SafeConfigParser()
+            parser.read(os.path.expanduser('~/.cloudmonkey/config'))
 
-        apikey = os.getenv(region + '_APIKEY', '')
-        secretkey = os.getenv(region + '_SECRETKEY', '')
-        api_url = os.getenv(region + '_URL', '')
-        verifysslcert = os.getenv(region + '_VERIFYSSLCERT', '').upper() == 'TRUE'
+            if parser.has_section(region):
+                apikey = parser.get(region, 'apikey')
+                api_url = parser.get(region, 'url')
+                secretkey = parser.get(region, 'secretkey')
+                verifysslcert = parser.getboolean(region, 'verifysslcert')
+            else:
+                raise EnvironmentError("Cloudmonkey config does not have the region " + region)
 
-        if apikey == '' or secretkey == '' or api_url == '':
-            app.logger.exception("Variables values for region " + region + " SIZE APIKEY: " + str(len(apikey)) + ", SIZE SECRETKEY: " + str(len(secretkey)) + ", URL: " + api_url + ", VERIFYSSLCERT: " + str(verifysslcert))
-            raise EnvironmentError("Should define env variables for region: {0} ( {0}_APIKEY, {0}_SECRETKEY, {0}_URL, {0}_VERIFYSSLCERT )".format(region))
+        else:
+            region = region.upper()
+            app.logger.debug("Loading from env variables: " + region)
+
+            apikey = os.getenv(region + '_APIKEY', '')
+            secretkey = os.getenv(region + '_SECRETKEY', '')
+            api_url = os.getenv(region + '_URL', '')
+            verifysslcert = os.getenv(region + '_VERIFYSSLCERT', '').upper() == 'TRUE'
+
+            if apikey == '' or secretkey == '' or api_url == '':
+                app.logger.exception("Variables values for region " + region + " SIZE APIKEY: " + str(len(apikey)) + ", SIZE SECRETKEY: " + str(len(secretkey)) + ", URL: " + api_url + ", VERIFYSSLCERT: " + str(verifysslcert))
+                raise EnvironmentError("Should define env variables for region: {0} ( {0}_APIKEY, {0}_SECRETKEY, {0}_URL, {0}_VERIFYSSLCERT )".format(region))
 
         return { "apikey": apikey, "api_url": api_url, "secretkey": secretkey, "verifysslcert": verifysslcert }
 
