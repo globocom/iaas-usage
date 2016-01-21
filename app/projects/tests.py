@@ -66,6 +66,21 @@ class ProjectResourceTestCase(unittest.TestCase):
                          'domainid': request['domain_id'], 'listall': 'true'}
         list_projects_mock.listProjects.assert_called_with(expected_resp)
 
+    def test_list_projects_with_admin_user(self):
+        mock_resp = {"count": 1, "project": [
+             {"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vmtotal": 1}]
+        }
+        list_projects_mock = self.mock_cloudstack_list_project(mock_resp)
+
+        request = dict(account_name="account", domain_id='28f40084-2aed-11e5-8fce-76b2dd27c282', is_admin='true')
+        response = self.app.get('/api/v1/lab/project/', query_string=request)
+
+        self.assertEquals(200, response.status_code)
+        expected_resp = [{"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vm_count": 1}]
+        self.assertEquals(expected_resp, json.loads(response.data))
+        expected_resp = {'simple': 'true', 'domainid': request['domain_id'], 'listall': 'true'}
+        list_projects_mock.listProjects.assert_called_with(expected_resp)
+
     def mock_cloudstack_list_project(self, projects):
         acs_mock = patch('app.projects.resource.ProjectResource.get_cloudstack').start()
         list_projects_mock = Mock()

@@ -93,7 +93,7 @@ function ProjectCtrl($scope, $http, apiService){
             console.log('Loading projects')
             $http({
                 method: 'GET',
-                url: apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id})
+                url: apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
             }).then(function successCallback(response){
                 projectCtrl.projects = response.data;
             });

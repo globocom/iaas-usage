@@ -14,7 +14,10 @@ class ProjectResource(CloudstackResource):
         account_name = self.args['account_name']
         domain_id = self.args['domain_id']
 
-        parameters = {"account": account_name, "domainid": domain_id,  "simple": "true", "listall": "true"}
+        parameters = {"domainid": domain_id,  "simple": "true", "listall": "true"}
+        if self.args.get('is_admin') != 'true':
+            parameters["account"] = account_name
+
         response = self.get_cloudstack(region).listProjects(parameters)
 
         if response.get('errortext') is not None:
@@ -27,6 +30,7 @@ class ProjectResource(CloudstackResource):
         parser = reqparse.RequestParser()
         parser.add_argument('account_name', required=True, type=str, help='account_name must be informed')
         parser.add_argument('domain_id', required=True, type=str, help='domain_id must be informed')
+        parser.add_argument('is_admin')
         self.args = parser.parse_args(req=request)
 
     def _to_json(self, response):

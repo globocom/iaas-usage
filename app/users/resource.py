@@ -26,7 +26,8 @@ class UserResource(CloudstackResource):
                 {
                     "id": user["id"], "username": user["username"],
                     "first_name": user["firstname"], "last_name": user["lastname"],
-                    "account_name": user["account"], "domain_id": user["domainid"]
+                    "account_name": user["account"], "domain_id": user["domainid"],
+                    "is_admin": (user["accounttype"] == 1)
                 }
                 for user in response['user']
             ]

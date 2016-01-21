@@ -36,7 +36,7 @@ class UserResourceTestCase(unittest.TestCase):
 
     def test_list_users(self):
         users = {"count": 1, "user": [{
-                 "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user",
+                 "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user","accounttype": 1,
                  "domainid": "1", "account": "acc", "firstname": "First", "lastname": "Last"
             }]
         }
@@ -46,7 +46,7 @@ class UserResourceTestCase(unittest.TestCase):
 
         self.assertEquals(200, response.status_code)
         expected = [{
-            "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user",
+            "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user", "is_admin": True,
             "account_name": "acc", "domain_id": "1","first_name": "First", "last_name": "Last"
         }]
         self.assertEquals(expected, json.loads(response.data))
