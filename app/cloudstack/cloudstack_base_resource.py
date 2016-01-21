@@ -15,10 +15,11 @@ class CloudstackResource(Resource):
 
     def __get_configs(self, region):
 
-        if os.path.isfile("~/.cloudmonkey/config"):
+        cloudmonkey_config = os.path.expanduser('~/.cloudmonkey/config')
+        if os.path.isfile(cloudmonkey_config):
             app.logger.debug("Loading configs from cloudmonkey/config")
             parser = SafeConfigParser()
-            parser.read(os.path.expanduser('~/.cloudmonkey/config'))
+            parser.read(cloudmonkey_config)
 
             if parser.has_section(region):
                 apikey = parser.get(region, 'apikey')
