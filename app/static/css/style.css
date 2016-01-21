@@ -8213,3 +8213,20 @@ body.md-skin {
     margin: 0;
   }
 }
+
+.vm-feature{
+  cursor:pointer;
+}
+
+.vm-feature:hover{
+  cursor:pointer;
+  border:solid;
+  border-radius: 4px;
+  border-color: #2F4050 !important;;
+}
+
+.vm-feature.feature-filter{
+  border:solid;
+  border-radius: 4px;
+  border-color: #2F4050 !important;
+}

@@ -50,12 +50,14 @@ function UserCtrl($scope, $http, $window, $state, apiService) {
     })
 };
 
-function InstanceCtrl($scope, $http, $stateParams, apiService, DTOptionsBuilder){
+function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOptionsBuilder){
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
     instanceCtrl.vmCount = []
     instanceCtrl.instances = []
+    instanceCtrl.instanceView = []
+    instanceCtrl.filters = {}
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
@@ -69,8 +71,33 @@ function InstanceCtrl($scope, $http, $stateParams, apiService, DTOptionsBuilder)
             url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
         }).then(function successCallback(response){
             instanceCtrl.instances = response.data.vms.virtual_machines;
+            instanceCtrl.instanceView = instanceCtrl.instances;
             instanceCtrl.vmCount = response.data.summary;
         });
+    }
+
+    instanceCtrl.filter = function(field, value){
+        console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
+
+        addedFilter = instanceCtrl.filters[field]
+
+        if(!addedFilter){
+            var filter = {}
+            filter[field] = value
+            $.extend(instanceCtrl.filters, filter)
+            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
+        }else{
+            if(addedFilter == value){
+                delete instanceCtrl.filters[field]
+                instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
+            }else{
+                toastr.warning("It's not possible to filter by more than one value from the same category.");
+            }
+        }
+    }
+
+    instanceCtrl.isFilteredField = function(field, value){
+        return instanceCtrl.filters[field] == value
     }
 }
 

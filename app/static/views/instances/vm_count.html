@@ -1,7 +1,7 @@
 <div class="wrapper wrapper-content animated fadeInRight" ng-init="instanceCtrl.listVirtualMachines()">
     <!-- startrow1 -->
     <div class="row">
-    	<div class="col-lg-4" >
+        <div class="col-lg-4" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Compute Offering</h5>
@@ -15,9 +15,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(name, count) in instanceCtrl.vmCount.serviceofferingname" >
-                            <td>{[name]}</td>
-                            <td>{[count]}</td>
+                        <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('service_offering_name', name)}" ng-repeat="(name, count) in instanceCtrl.vmCount.serviceofferingname" >
+                            <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[name]}</td>
+                            <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[count]}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -38,9 +38,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(state, count) in instanceCtrl.vmCount.state" >
-                                <td>{[state]}</td>
-                                <td>{[count]}</td>
+                            <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('state', name)}" ng-repeat="(name, count) in instanceCtrl.vmCount.state" >
+                                <td ng-click="instanceCtrl.filter('state', name)">{[name]}</td>
+                                <td ng-click="instanceCtrl.filter('state', name)">{[count]}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -63,9 +63,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(name, count) in instanceCtrl.vmCount.zonename" >
-                                <td>{[name]}</td>
-                                <td>{[count]}</td>
+                            <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('zone_name', name)}" ng-repeat="(name, count) in instanceCtrl.vmCount.zonename" >
+                                <td ng-click="instanceCtrl.filter('zone_name', name)">{[name]}</td>
+                                <td ng-click="instanceCtrl.filter('zone_name', name)">{[count]}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -77,8 +77,8 @@
     <!-- endrow1 -->
     <!-- startrow2 -->
     <div class="row">
-    	<div class="col-lg-4" >
-    		<div class="ibox float-e-margins">
+        <div class="col-lg-4" >
+            <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>HA</h5>
                 </div>
@@ -91,17 +91,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
-                                <td>{[name == 'true' ? 'Enabled' : 'Disabled']}</td>
-                                <td>{[count]}</td>
+                            <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('ha_enabled', name)}" ng-repeat="(name, count) in instanceCtrl.vmCount.haenable" >
+                                <td ng-click="instanceCtrl.filter('ha_enabled', name)">{[name == 'true' ? 'Enabled' : 'Disabled']}</td>
+                                <td ng-click="instanceCtrl.filter('ha_enabled', name)">{[count]}</td>
                             </tr>
                         </tbody>
                     </table>
 
                 </div>
             </div>
-    	</div>
-    	<div class="col-lg-4" >
+        </div>
+        <div class="col-lg-4" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Hosts</h5>
@@ -115,9 +115,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="(hostname, count) in instanceCtrl.vmCount.hostname" >
-                                <td>{[hostname]}</td>
-                                <td>{[count]}</td>
+                            <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('host_name', name)}" ng-repeat="(name, count) in instanceCtrl.vmCount.hostname" >
+                                <td ng-click="instanceCtrl.filter('host_name', name)">{[name]}</td>
+                                <td ng-click="instanceCtrl.filter('host_name', name)">{[count]}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -148,7 +148,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="instance in instanceCtrl.instances" >
+                            <tr ng-repeat="instance in instanceCtrl.instanceView" >
                                 <td>{[instance.name]}</td>
                                 <td>{[instance.instance_name]}</td>
                                 <td>{[instance.host_name || '-']}</td>
