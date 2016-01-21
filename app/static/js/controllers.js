@@ -50,42 +50,36 @@ function UserCtrl($scope, $http, $window, $state, apiService) {
     })
 };
 
-function InstanceCtrl($scope, $http, $stateParams, apiService){
+function InstanceCtrl($scope, $http, $stateParams, apiService, DTOptionsBuilder){
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
     instanceCtrl.vmCount = []
-    instanceCtrl.instances = {itemsPerPage: 10, currentPage: 1, data: []}
+    instanceCtrl.instances = []
 
-    instanceCtrl.getVmCount = function() {
-        console.log('Loading vm count')
-        instanceCtrl.projectName = $stateParams.projectName
-        $http({
-            method: 'GET',
-            url: apiService.builAPIUrl('/vm_count/', {project_id: $stateParams.projectId})
-        }).then(function successCallback(response){
-            instanceCtrl.vmCount = response.data;
-        });
-    }
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    .withDOM('<"html5buttons"B>lTfgitp')
+    .withButtons([{extend: 'copy'}, {extend: 'csv'}]);
 
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
+        instanceCtrl.projectName = $stateParams.projectName
         $http({
             method: 'GET',
-            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId,
-                                                             page_size: instanceCtrl.instances.itemsPerPage,
-                                                             page: instanceCtrl.instances.currentPage})
+            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
         }).then(function successCallback(response){
-            instanceCtrl.instances.data = response.data.virtual_machines;
-            instanceCtrl.instances.totalItems = response.data.count;
+            instanceCtrl.instances = response.data.vms.virtual_machines;
+            instanceCtrl.vmCount = response.data.summary;
         });
     }
 }
 
-function ProjectCtrl($scope, $http, apiService){
+function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
     projectCtrl = this
     projectCtrl.title = 'Instances by project';
     projectCtrl.projects
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
 
     projectCtrl.listProjects = function(event, user) {
         user = user || userCtrl.user

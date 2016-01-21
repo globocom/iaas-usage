@@ -8,6 +8,8 @@ import re
 
 class VirtualMachineResource(CloudstackResource):
 
+    FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable']
+
     # TODO: add OS type to vm attributes
     @required_login
     @handle_errors
@@ -19,12 +21,25 @@ class VirtualMachineResource(CloudstackResource):
             app.logger.error("Error while retrieving data from cloudstack: %s" % response['errortext'])
             return {"message": response['errortext']}, 400
 
-        return self._to_json(response)
+        virtual_machines = dict()
+        virtual_machines['summary'] = self._get_vm_summary(response)
+        virtual_machines['vms'] = self._vms_to_json(response)
+        return virtual_machines
+
+    def _get_vm_summary(self, response):
+        vm_count = dict()
+        for vm in response["virtualmachine"]:
+            for ft_name in self.FEATURE_NAMES:
+                vm_count[ft_name] = vm_count.get(ft_name, {})
+                ft_value = vm.get(ft_name)
+                if ft_value is not None:
+                    if (ft_name == "zonename") or (ft_name == "serviceofferingname"):
+                        ft_value = ft_value.lower()
+                    vm_count[ft_name][ft_value] = (vm_count[ft_name].get(ft_value, 0) + 1)
+        return vm_count
 
     def _validate_params(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('page_size', type=int, help='page_size should be an integer')
-        parser.add_argument('page', type=int, help='page should be an integer')
         self.args = parser.parse_args(req=request)
 
     def _filter_by(self):
@@ -44,14 +59,11 @@ class VirtualMachineResource(CloudstackResource):
         if request.args.get('state') is not None:
             params['state'] = request.args['state']
 
-        params.update(filter_by_tag())
-
-        params['pagesize'] = request.args.get('page_size', "10")
-        params['page'] = request.args.get('page', "1")
+        params.update(self.filter_by_tag())
 
         return params
 
-    def _to_json(self, response):
+    def _vms_to_json(self, response):
         json = {}
         if response is not None and response.get('count') is not None:
             json["count"] = response["count"]
@@ -76,42 +88,10 @@ class VirtualMachineResource(CloudstackResource):
             json["virtual_machines"] = []
         return json
 
-
-class VmCountResource(CloudstackResource):
-
-    FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable']
-
-    @required_login
-    @handle_errors
-    def get(self, region):
-        self._validate_params()
-        params = {"listall": "true", "projectid": self.args['project_id']}
-        params.update(filter_by_tag())
-
-        response = self.get_cloudstack(region).listVirtualMachines(params)
-
-        vm_count = {}
-        for vm in response["virtualmachine"]:
-            for ft_name in self.FEATURE_NAMES:
-                vm_count[ft_name] = vm_count.get(ft_name, {})
-                ft_value = vm.get(ft_name)
-                if ft_value is not None:
-                    if (ft_name == "zonename") or (ft_name == "serviceofferingname"):
-                        ft_value = ft_value.lower()
-                    vm_count[ft_name][ft_value] = (vm_count[ft_name].get(ft_value, 0) + 1)
-
-        return vm_count
-
-    def _validate_params(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('project_id', required=True, type=str, help='project_id must be informed')
-        self.args = parser.parse_args(req=request)
-
-
-def filter_by_tag():
-    params = {}
-    tag_parameter_regex = re.compile('tags\[\d\]\..*')
-    for key in request.args.keys():
-        if tag_parameter_regex.match(key):
-            params[key] = request.args[key]
-    return params
+    def filter_by_tag(self):
+        params = {}
+        tag_parameter_regex = re.compile('tags\[\d\]\..*')
+        for key in request.args.keys():
+            if tag_parameter_regex.match(key):
+                params[key] = request.args[key]
+        return params

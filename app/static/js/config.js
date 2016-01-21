@@ -6,6 +6,10 @@
  * Initial there are written state for all view in theme.
  *
  */
+
+var staticPrefix = 'static/'
+var viewPrefix = staticPrefix + 'views/';
+
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     $urlRouterProvider.otherwise('/index/main');
 
@@ -13,8 +17,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         // Set to true if you want to see what and when is dynamically loaded
         debug: false
     });
-    var staticPrefix = 'static/'
-    var viewPrefix = staticPrefix + 'views/';
 
     $stateProvider
         .state('index', {
@@ -33,7 +35,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         })
         .state('index.instances.vm_count', {
             url: '/:projectName/:projectId',
-            templateUrl: viewPrefix + 'instances/vm_count.html'
+            templateUrl: viewPrefix + 'instances/vm_count.html',
+            resolve: {
+                loadPlugin: loadDataTablePlugin
+            }
         })
         .state('index.projects', {
             abstract: true,
@@ -42,8 +47,31 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         })
         .state('index.projects.list',{
             url: '',
-            templateUrl: viewPrefix + 'projects/list.html'
+            templateUrl: viewPrefix + 'projects/list.html',
+            resolve: {
+                loadPlugin: loadDataTablePlugin
+            }
         })
+}
+
+function loadDataTablePlugin($ocLazyLoad) {
+    return $ocLazyLoad.load([
+        {
+            serie: true,
+            files: [staticPrefix + 'js/plugins/dataTables/datatables.min.js',
+                    staticPrefix + 'css/plugins/dataTables/datatables.min.css']
+        },
+        {
+            serie: true,
+            name: 'datatables',
+            files: [staticPrefix + 'js/plugins/dataTables/angular-datatables.min.js']
+        },
+        {
+            serie: true,
+            name: 'datatables.buttons',
+            files: [staticPrefix + 'js/plugins/dataTables/angular-datatables.buttons.min.js']
+        }
+    ]);
 }
 
 function HttpErrorInterceptor($httpProvider) {
