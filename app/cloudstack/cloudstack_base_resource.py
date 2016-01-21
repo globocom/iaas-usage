@@ -14,15 +14,17 @@ class CloudstackResource(Resource):
         return CloudStack(config['api_url'], config['apikey'], config['secretkey'], config['verifysslcert'])
 
     def __get_configs(self, region):
-        parser = SafeConfigParser()
-        #TODO: change to read config from system variables
-        parser.read(os.path.expanduser('~/.cloudmonkey/config'))
 
-        if parser.has_section(region):
-            apikey = parser.get(region, 'apikey')
-            api_url = parser.get(region, 'url')
-            secretkey = parser.get(region, 'secretkey')
-            verifysslcert = parser.getboolean(region, 'verifysslcert')
+        region = region.upper()
+
+        apikey = os.getenv(region + '_APIKEY', '')
+        secretkey = os.getenv(region + '_SECRETKEY', '')
+        api_url = os.getenv(region + '_URL', '')
+        verifysslcert = os.getenv(region + '_VERIFYSSLCERT', '').upper() == 'TRUE'
+
+        if apikey == '' or secretkey == '' or api_url == '':
+            app.logger.exception("Variables values for region " + region + " SIZE APIKEY: " + str(len(apikey)) + ", SIZE SECRETKEY: " + str(len(secretkey)) + ", URL: " + api_url + ", VERIFYSSLCERT: " + str(verifysslcert))
+            raise EnvironmentError("Should define env variables for region: {0} ( {0}_APIKEY, {0}_SECRETKEY, {0}_URL, {0}_VERIFYSSLCERT )".format(region))
 
         return { "apikey": apikey, "api_url": api_url, "secretkey": secretkey, "verifysslcert": verifysslcert }
 
