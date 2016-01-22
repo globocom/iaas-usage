@@ -58,6 +58,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     instanceCtrl.instances = []
     instanceCtrl.instanceView = []
     instanceCtrl.filters = {}
+    instanceCtrl.tags = []
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
@@ -66,13 +67,23 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
         instanceCtrl.projectName = $stateParams.projectName
+        var params = {project_id: $stateParams.projectId}
+        if(instanceCtrl.tags.length > 0){
+            for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
+                params['tags['+ i + '].key'] = instanceCtrl.tags[i].key
+                params['tags['+ i + '].value'] = instanceCtrl.tags[i].value
+            }
+        }
         $http({
             method: 'GET',
-            url: apiService.builAPIUrl('/virtual_machine/', {project_id: $stateParams.projectId})
+            url: apiService.builAPIUrl('/virtual_machine/', params)
         }).then(function successCallback(response){
             instanceCtrl.instances = response.data.vms.virtual_machines;
             instanceCtrl.instanceView = instanceCtrl.instances;
             instanceCtrl.vmCount = response.data.summary;
+            if(instanceCtrl.instances.length == 0){
+                toastr.warning("No virtual machines were found for selected filter.");
+            }
         });
     }
 
@@ -92,6 +103,24 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.isFilteredField = function(field, value){
         return instanceCtrl.filters[field] == value
+    }
+
+    instanceCtrl.filterByTag = function(key, value){
+        instanceCtrl.tags.push({key: key, value: value})
+        instanceCtrl.tagKey = null;
+        instanceCtrl.tagValue = null;
+        instanceCtrl.listVirtualMachines()
+    }
+
+    instanceCtrl.removeTag = function(key, value){
+        for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
+            console.log(instanceCtrl.tags[i].key == key)
+            console.log(instanceCtrl.tags[i].value == value)
+            if(instanceCtrl.tags[i].key == key && instanceCtrl.tags[0].value == value){
+                instanceCtrl.tags.splice(i, 1);
+            }
+        }
+        instanceCtrl.listVirtualMachines()
     }
 }
 

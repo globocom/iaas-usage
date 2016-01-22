@@ -28,7 +28,7 @@ class VirtualMachineResource(CloudstackResource):
 
     def _get_vm_summary(self, response):
         vm_count = dict()
-        for vm in response["virtualmachine"]:
+        for vm in response.get("virtualmachine", []):
             for ft_name in self.FEATURE_NAMES:
                 vm_count[ft_name] = vm_count.get(ft_name, {})
                 ft_value = vm.get(ft_name)
