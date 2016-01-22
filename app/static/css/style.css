@@ -8230,3 +8230,8 @@ body.md-skin {
   border-radius: 4px;
   border-color: #2F4050 !important;
 }
+
+.vm-feature-box{
+  max-height: 200px;
+  overflow:scroll;
+}
