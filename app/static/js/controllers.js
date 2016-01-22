@@ -78,15 +78,16 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.filter = function(field, value){
         console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
-
         if(instanceCtrl.filters[field] == value){
             delete instanceCtrl.filters[field]
             instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
+        }else{
+            delete instanceCtrl.filters[field]
+            var filter = {}
+            filter[field] = value
+            $.extend(instanceCtrl.filters, filter)
+            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
         }
-        var filter = {}
-        filter[field] = value
-        $.extend(instanceCtrl.filters, filter)
-        instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
     }
 
     instanceCtrl.isFilteredField = function(field, value){
