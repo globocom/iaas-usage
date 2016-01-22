@@ -79,21 +79,14 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     instanceCtrl.filter = function(field, value){
         console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
 
-        addedFilter = instanceCtrl.filters[field]
-
-        if(!addedFilter){
-            var filter = {}
-            filter[field] = value
-            $.extend(instanceCtrl.filters, filter)
+        if(instanceCtrl.filters[field] == value){
+            delete instanceCtrl.filters[field]
             instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
-        }else{
-            if(addedFilter == value){
-                delete instanceCtrl.filters[field]
-                instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
-            }else{
-                toastr.warning("It's not possible to filter by more than one value from the same category.");
-            }
         }
+        var filter = {}
+        filter[field] = value
+        $.extend(instanceCtrl.filters, filter)
+        instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
     }
 
     instanceCtrl.isFilteredField = function(field, value){
