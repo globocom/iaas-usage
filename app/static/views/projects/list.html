@@ -12,7 +12,7 @@
                             <tr>
                                 <th>Project name</th>
                                 <th>Number of instances</th>
-                                <th>Account</th>
+                                <th ng-show="userCtrl.user.is_admin">Account</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -28,7 +28,7 @@
                                     </span>
                                 </td>
                                 <td>{[project.vm_count]}</td>
-                                <td>{[project.account]}</td>
+                                <td ng-show="userCtrl.user.is_admin">{[project.account]}</td>
                             </tr>
                         </tbody>
                     </table>
