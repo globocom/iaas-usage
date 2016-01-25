@@ -120,8 +120,6 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.removeTag = function(key, value){
         for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
-            console.log(instanceCtrl.tags[i].key == key)
-            console.log(instanceCtrl.tags[i].value == value)
             if(instanceCtrl.tags[i].key == key && instanceCtrl.tags[0].value == value){
                 instanceCtrl.tags.splice(i, 1);
             }
