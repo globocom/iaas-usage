@@ -37,7 +37,7 @@ class ProjectResource(CloudstackResource):
         if response is not None and response.get('count') is not None:
             return [
                 {"id": project['id'], "name": project["name"],
-                 "vm_count": project["vmtotal"]} for project in response['project']
+                 "vm_count": project["vmtotal"], "account": project["account"]} for project in response['project']
             ]
         else:
             return []
