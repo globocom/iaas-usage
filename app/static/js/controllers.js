@@ -101,6 +101,11 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         }
     }
 
+    instanceCtrl.clearFilters = function(){
+        instanceCtrl.filters = {}
+        instanceCtrl.instances
+    }
+
     instanceCtrl.isFilteredField = function(field, value){
         return instanceCtrl.filters[field] == value
     }
@@ -109,6 +114,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         instanceCtrl.tags.push({key: key, value: value})
         instanceCtrl.tagKey = null;
         instanceCtrl.tagValue = null;
+        instanceCtrl.clearFilters()
         instanceCtrl.listVirtualMachines()
     }
 
