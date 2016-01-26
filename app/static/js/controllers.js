@@ -35,7 +35,7 @@ function UserCtrl($scope, $http, $state, apiService) {
     userCtrl = this;
     userCtrl.user = null;
 
-    userCtrl.loadUser = function() {
+    userCtrl.loadUser = function(callback) {
         console.log('Loading user')
 
         $http({
@@ -44,12 +44,16 @@ function UserCtrl($scope, $http, $state, apiService) {
         }).then(function successCallback(response){
             userCtrl.user = response.data[0]
             $scope.$broadcast('userLoaded', userCtrl.user);
+            if(angular.isDefined(callback)){
+                callback()
+            }
         });
     }
 
     $scope.$on('regionChanged', function(){
-        $state.go('index.main');
-        userCtrl.loadUser()
+        userCtrl.loadUser(function(){
+            $state.go('index.projects');
+        })
     })
 };
 
