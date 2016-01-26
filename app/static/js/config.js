@@ -11,7 +11,7 @@ var staticPrefix = 'static/'
 var viewPrefix = staticPrefix + 'views/';
 
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise('/index/main');
+    $urlRouterProvider.otherwise('/instances/projects');
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -21,32 +21,18 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     $stateProvider
         .state('index', {
             abstract: true,
-            url: '/index',
+            url: '',
             templateUrl: viewPrefix + 'common/content.html'
         })
-        .state('index.main', {
-            url: '/main',
-            templateUrl: viewPrefix + 'main.html',
-        })
         .state('index.instances', {
-            abstract: true,
-            url: '/instances',
-            templateUrl: viewPrefix + 'instances/index.html'
-        })
-        .state('index.instances.vm_count', {
-            url: '/:projectName/:projectId',
+            url: '/instances/:projectName/:projectId',
             templateUrl: viewPrefix + 'instances/vm_count.html',
             resolve: {
                 loadPlugin: loadDataTablePlugin
             }
         })
         .state('index.projects', {
-            abstract: true,
-            url: '/projects',
-            templateUrl: viewPrefix + 'projects/index.html'
-        })
-        .state('index.projects.list',{
-            url: '',
+            url: '/instances/projects',
             templateUrl: viewPrefix + 'projects/list.html',
             resolve: {
                 loadPlugin: loadDataTablePlugin
