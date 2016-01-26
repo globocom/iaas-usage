@@ -12,6 +12,7 @@
 #   - dist/**/*.js
 #
 src_files:
+    - jquery/jquery-2.1.1.min.js
     - angular/angular.js
     - plugins/oclazyload/ocLazyLoad.min.js
     - angular-translate/angular-translate.min.js

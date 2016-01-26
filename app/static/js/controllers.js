@@ -61,7 +61,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
-    instanceCtrl.vmCount = []
+    instanceCtrl.vmCount
     instanceCtrl.instances = []
     instanceCtrl.instanceView = []
     instanceCtrl.filters = {}
@@ -70,6 +70,14 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
     .withButtons([{extend: 'copy'}, {extend: 'csv'}]);
+
+    instanceCtrl.getInstances = function(){
+        return instanceCtrl.instanceView
+    }
+
+    instanceCtrl.getVmCount = function(){
+        return instanceCtrl.vmCount
+    }
 
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
@@ -110,7 +118,6 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.clearFilters = function(){
         instanceCtrl.filters = {}
-        instanceCtrl.instances
     }
 
     instanceCtrl.isFilteredField = function(field, value){
@@ -125,9 +132,9 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         instanceCtrl.listVirtualMachines()
     }
 
-    instanceCtrl.removeTag = function(key, value){
+    instanceCtrl.removeTagFilter = function(key, value){
         for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
-            if(instanceCtrl.tags[i].key == key && instanceCtrl.tags[0].value == value){
+            if(instanceCtrl.tags[i].key == key && instanceCtrl.tags[i].value == value){
                 instanceCtrl.tags.splice(i, 1);
             }
         }

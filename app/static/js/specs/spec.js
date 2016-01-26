@@ -108,7 +108,9 @@ describe('Testing User controller', function() {
 
     it('should trigger event when regionChanged event is received', function() {
         $scope.$broadcast('regionChanged')
-        expect(state.go).toHaveBeenCalledWith('index.main');
+        httpBackend.expectGET('/current_user/');
+        httpBackend.flush();
+        expect(state.go).toHaveBeenCalledWith('index.projects');
     });
 });
 
@@ -149,4 +151,108 @@ describe('Testing Project controller', function() {
         httpBackend.flush();
         expect(ctrl.projects).not.toBeUndefined()
     });
+});
+
+describe('Testing Instance controller', function() {
+
+    var ctrl, httpBackend, $scope
+
+    var instances = {
+        summary:{ zonename:{ 'a': 1, 'b': 1 } },
+        vms:{ count: 2, virtual_machines: [{"id": 1, "zonename" : 'a'},{"id": 1, "zonename" : 'b'}] }
+    }
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['builAPIUrl']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.builAPIUrl.and.returnValue('/instance/');
+            $httpBackend.when('GET', '/instance/').respond(instances);
+
+            ctrl = $controller('InstanceCtrl', {
+                $scope: $scope,
+                $http: $http,
+                apiService: apiServiceMock,
+                DTOptionsBuilder: {
+                    newOptions: function(){
+                        return { withDOM: function(){
+                                    return {withButtons:function(){}
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should have controller scoped objects set up', function() {
+        expect(ctrl.title).toEqual('Instances')
+        expect(ctrl.projectName).toEqual('')
+        expect(ctrl.vmCount).toBeUndefined()
+        expect(ctrl.instances).toEqual([])
+        expect(ctrl.instanceView).toEqual([])
+        expect(ctrl.filters).toEqual({})
+        expect(ctrl.tags).toEqual([])
+    });
+
+    it('should the list of instances be filtered by zone = 2', function() {
+        ctrl.instances = [{"id": 1, "zone_id" : 1},{"id": 1, "zone_id" : 2}]
+        ctrl.filter("zone_id", 2)
+        expect(ctrl.getInstances().length).toEqual(1)
+    });
+
+    it('should filters be cleared', function() {
+        ctrl.filter("zone_id", 2)
+        ctrl.clearFilters()
+        expect(ctrl.filters).toEqual({})
+    });
+
+    it("should mark field as filtered", function(){
+        ctrl.filter("zone_id", 1)
+        expect(ctrl.isFilteredField("zone_id", 1)).toBe(true)
+        expect(ctrl.isFilteredField("zone_id", 2)).toBe(false)
+    })
+
+    it("should filter be removed if set twice", function(){
+        ctrl.filter("zone_id", 1)
+        ctrl.filter("zone_id", 1)
+        expect(ctrl.isFilteredField("zone_id", 1)).toBe(false)
+    })
+
+    it("should fetch the list of instances from the server", function(){
+        ctrl.listVirtualMachines()
+        httpBackend.expectGET('/instance/');
+        httpBackend.flush();
+
+        expect(ctrl.getInstances().length).toEqual(2)
+        expect(ctrl.getVmCount.length).not.toBeUndefined()
+    })
+
+    it("should tag filters be added and others filters be cleared", function(){
+        ctrl.listVirtualMachines()
+        ctrl.filter("zone_id", 2)
+        httpBackend.flush();
+
+        ctrl.filterByTag('key', 'value')
+
+        expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
+        expect(ctrl.filters).toEqual({})
+    })
+
+    it("should tag be removed from filters", function(){
+        ctrl.filterByTag('key', 'value')
+        ctrl.filterByTag('key2', 'value2')
+
+        ctrl.removeTagFilter('key2', 'value2')
+        expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
+    })
 });
