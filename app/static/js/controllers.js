@@ -1,4 +1,4 @@
-function RegionCtrl(regionService, $rootScope){
+function RegionCtrl(regionService, $rootScope, $scope){
     regionCtrl = this
     regionCtrl.regionList = regionService.listRegions()
     regionCtrl.currentRegion = regionService.getCurrentRegion()
@@ -11,7 +11,6 @@ function RegionCtrl(regionService, $rootScope){
         if(region.key != regionService.getCurrentRegion().key){
             regionService.changeCurrentRegion(region)
             $rootScope.$broadcast('regionChanged')
-            regionCtrl.toggleSelector()
         }
     }
 
@@ -26,9 +25,13 @@ function RegionCtrl(regionService, $rootScope){
     regionCtrl.getCurrentRegion = function(){
         return regionService.getCurrentRegion()
     }
+
+    $scope.$on('regionChanged', function(){
+        regionCtrl.toggleSelector()
+    })
 }
 
-function UserCtrl($scope, $http, $window, $state, apiService) {
+function UserCtrl($scope, $http, $state, apiService) {
     userCtrl = this;
     userCtrl.user = null;
 
