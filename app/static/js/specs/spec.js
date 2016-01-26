@@ -111,3 +111,42 @@ describe('Testing User controller', function() {
         expect(state.go).toHaveBeenCalledWith('index.main');
     });
 });
+
+describe('Testing Project controller', function() {
+
+    var projects = [{"id":1, "name": "name","vm_count":1, "account": "account"}]
+    var user = {"username": "user", "account_name": "acc", "domain_id": 1, "is_admin": false}
+    var ctrl, httpBackend, $scope
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['builAPIUrl']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.builAPIUrl.and.returnValue('/project/');
+
+            $httpBackend.when('GET', '/project/').respond(projects);
+
+            ctrl = $controller('ProjectCtrl', {
+                $scope: $scope,
+                $http: $http,
+                apiService: apiServiceMock,
+                DTOptionsBuilder: {newOptions: function(){}}
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should return the list of projects', function() {
+        ctrl.listProjects(null, user)
+        httpBackend.expectGET('/project/');
+        httpBackend.flush();
+        expect(ctrl.projects).not.toBeUndefined()
+    });
+});
