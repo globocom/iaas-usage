@@ -26,6 +26,9 @@ test: # run tests
 	@python -m unittest discover
 
 
+test-js: #run javascript tests
+	@jasmine-ci
+
 run: # run local server at 8080
 	@python run.py
 
