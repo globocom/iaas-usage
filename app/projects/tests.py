@@ -52,7 +52,7 @@ class ProjectResourceTestCase(unittest.TestCase):
 
     def test_list_projects(self):
         mock_resp = {"count": 1, "project": [
-             {"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vmtotal": 1}]
+             {"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vmtotal": 1, "account" : "acc"}]
         }
         list_projects_mock = self.mock_cloudstack_list_project(mock_resp)
 
@@ -60,7 +60,7 @@ class ProjectResourceTestCase(unittest.TestCase):
         response = self.app.get('/api/v1/lab/project/', query_string=request)
 
         self.assertEquals(200, response.status_code)
-        expected_resp = [{"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vm_count": 1}]
+        expected_resp = [{"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vm_count": 1, "account" : "acc"}]
         self.assertEquals(expected_resp, json.loads(response.data))
         expected_resp = {'simple': 'true', 'account': request['account_name'],
                          'domainid': request['domain_id'], 'listall': 'true'}
@@ -68,7 +68,7 @@ class ProjectResourceTestCase(unittest.TestCase):
 
     def test_list_projects_with_admin_user(self):
         mock_resp = {"count": 1, "project": [
-             {"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vmtotal": 1}]
+             {"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vmtotal": 1, "account" : "acc"}]
         }
         list_projects_mock = self.mock_cloudstack_list_project(mock_resp)
 
@@ -76,7 +76,7 @@ class ProjectResourceTestCase(unittest.TestCase):
         response = self.app.get('/api/v1/lab/project/', query_string=request)
 
         self.assertEquals(200, response.status_code)
-        expected_resp = [{"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vm_count": 1}]
+        expected_resp = [{"id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "name": "project", "vm_count": 1, "account":"acc"}]
         self.assertEquals(expected_resp, json.loads(response.data))
         expected_resp = {'simple': 'true', 'domainid': request['domain_id'], 'listall': 'true'}
         list_projects_mock.listProjects.assert_called_with(expected_resp)
