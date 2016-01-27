@@ -1,4 +1,5 @@
 function RegionCtrl(regionService, $rootScope, $scope){
+
     regionCtrl = this
     regionCtrl.regionList = regionService.listRegions()
     regionCtrl.currentRegion = regionService.getCurrentRegion()
@@ -28,6 +29,7 @@ function RegionCtrl(regionService, $rootScope, $scope){
 }
 
 function UserCtrl($scope, $http, $state, apiService) {
+
     userCtrl = this;
     userCtrl.user = null;
 
@@ -54,6 +56,7 @@ function UserCtrl($scope, $http, $state, apiService) {
 };
 
 function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOptionsBuilder){
+
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
     instanceCtrl.projectName = '';
@@ -141,6 +144,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 }
 
 function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
+
     projectCtrl = this
     projectCtrl.title = 'Instances by project';
     projectCtrl.projects
