@@ -15,11 +15,7 @@ function RegionCtrl(regionService, $rootScope, $scope){
     }
 
     regionCtrl.toggleSelector = function(){
-        if(angular.isUndefined(regionCtrl.selectorClass)){
-            regionCtrl.selectorClass = 'sidebar-open'
-        }else{
-            regionCtrl.selectorClass = undefined
-        }
+        regionCtrl.selectorClass = angular.isUndefined(regionCtrl.selectorClass) ? 'sidebar-open' : undefined
     }
 
     regionCtrl.getCurrentRegion = function(){
@@ -40,7 +36,7 @@ function UserCtrl($scope, $http, $state, apiService) {
 
         $http({
             method: 'GET',
-            url: apiService.builAPIUrl('/current_user/')
+            url: apiService.buildAPIUrl('/current_user/')
         }).then(function successCallback(response){
             userCtrl.user = response.data[0]
             $scope.$broadcast('userLoaded', userCtrl.user);
@@ -81,6 +77,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
+
         instanceCtrl.projectName = $stateParams.projectName
         var params = {project_id: $stateParams.projectId}
         if(instanceCtrl.tags.length > 0){
@@ -91,7 +88,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         }
         $http({
             method: 'GET',
-            url: apiService.builAPIUrl('/virtual_machine/', params)
+            url: apiService.buildAPIUrl('/virtual_machine/', params)
         }).then(function successCallback(response){
             instanceCtrl.instances = response.data.vms.virtual_machines;
             instanceCtrl.instanceView = instanceCtrl.instances;
@@ -104,6 +101,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     instanceCtrl.filter = function(field, value){
         console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
+
         if(instanceCtrl.filters[field] == value){
             delete instanceCtrl.filters[field]
             instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
@@ -153,9 +151,10 @@ function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
         user = user || userCtrl.user
         if(angular.isUndefined(this.projects) && user != null){
             console.log('Loading projects')
+
             $http({
                 method: 'GET',
-                url: apiService.builAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
+                url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
             }).then(function successCallback(response){
                 projectCtrl.projects = response.data;
             });

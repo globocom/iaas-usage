@@ -73,7 +73,7 @@ describe('Testing User controller', function() {
     beforeEach(function (done){
         module('iaasusage');
 
-        apiServiceMock = jasmine.createSpyObj('apiService', ['builAPIUrl']);
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
 
         inject(function($rootScope, $controller, $http, $state, $httpBackend) {
             $scope = $rootScope.$new();
@@ -82,7 +82,7 @@ describe('Testing User controller', function() {
             spyOn($scope, '$broadcast').and.callThrough();
             spyOn($state, 'go').and.callFake(function() { });
 
-            apiServiceMock.builAPIUrl.and.returnValue('/current_user/');
+            apiServiceMock.buildAPIUrl.and.returnValue('/current_user/');
 
             $httpBackend.when('GET', '/current_user/').respond([user]);
 
@@ -123,13 +123,13 @@ describe('Testing Project controller', function() {
     beforeEach(function (done){
         module('iaasusage');
 
-        apiServiceMock = jasmine.createSpyObj('apiService', ['builAPIUrl']);
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
 
         inject(function($rootScope, $controller, $http, $httpBackend) {
             $scope = $rootScope.$new();
             httpBackend = $httpBackend
 
-            apiServiceMock.builAPIUrl.and.returnValue('/project/');
+            apiServiceMock.buildAPIUrl.and.returnValue('/project/');
 
             $httpBackend.when('GET', '/project/').respond(projects);
 
@@ -165,13 +165,13 @@ describe('Testing Instance controller', function() {
     beforeEach(function (done){
         module('iaasusage');
 
-        apiServiceMock = jasmine.createSpyObj('apiService', ['builAPIUrl']);
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
 
         inject(function($rootScope, $controller, $http, $httpBackend) {
             $scope = $rootScope.$new();
             httpBackend = $httpBackend
 
-            apiServiceMock.builAPIUrl.and.returnValue('/instance/');
+            apiServiceMock.buildAPIUrl.and.returnValue('/instance/');
             $httpBackend.when('GET', '/instance/').respond(instances);
 
             ctrl = $controller('InstanceCtrl', {

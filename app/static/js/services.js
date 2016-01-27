@@ -18,7 +18,7 @@ function RegionService($rootScope) {
 
 function ApiService(regionService) {
     return {
-        builAPIUrl: function(uri, params) {
+        buildAPIUrl: function(uri, params) {
             query = params ? '?' + $.param(params) : '';
             fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
             return fullUri
