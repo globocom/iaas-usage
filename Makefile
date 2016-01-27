@@ -1,4 +1,4 @@
-.PHONY: clean pip test run
+.PHONY: clean pip test test-js run run-skip-test
 
 default:
 	@awk -F\: '/^[a-z_]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
@@ -29,6 +29,12 @@ test: # run tests
 test-js: #run javascript tests
 	@jasmine-ci
 
-run: # run local server at 8080
+
+run-skip-test: # run local server skipping test
+	@python run.py
+
+
+run: # run local server at 8080 after running tests
+	@jasmine-ci
 	@python run.py
 
