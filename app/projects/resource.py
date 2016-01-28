@@ -36,8 +36,14 @@ class ProjectResource(CloudstackResource):
     def _to_json(self, response):
         if response is not None and response.get('count') is not None:
             return [
-                {"id": project['id'], "name": project["name"],
-                 "vm_count": project["vmtotal"], "account": project["account"]} for project in response['project']
+                {"name": self._get_project_name(project), "id": project['id'], "vm_count": project["vmtotal"],
+                 "account": project["account"]} for project in response['project']
             ]
         else:
             return []
+
+    def _get_project_name(self, project):
+        if '' != project.get("displaytext") and project.get("displaytext") is not None:
+            return project.get("displaytext")
+        else:
+            return project.get("name")
