@@ -79,16 +79,16 @@
                         <div class="ibox-content vm-feature-box">
                             <table class="table table-bordered" >
                                 <thead>
-                                    <tr>
-                                        <th>Compute Offering</th>
-                                        <th>Instances</th>
-                                    </tr>
+                                <tr>
+                                    <th>Compute Offering</th>
+                                    <th>Instances</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('service_offering_name', name)}" ng-repeat="(name, count) in instanceCtrl.getVmCount().serviceofferingname" >
-                                        <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[name]}</td>
-                                        <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[count]}</td>
-                                    </tr>
+                                <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('service_offering_name', name)}" ng-repeat="(name, count) in instanceCtrl.getVmCount().serviceofferingname" >
+                                    <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[name]}</td>
+                                    <td  ng-click="instanceCtrl.filter('service_offering_name', name)">{[count]}</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -145,30 +145,6 @@
             <!-- endrow1 -->
             <!-- startrow2 -->
             <div class="row">
-                <div class="col-lg-4" >
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>Operational System</h5>
-                        </div>
-                        <div class="ibox-content vm-feature-box">
-                            <table class="table table-bordered" >
-                                <thead>
-                                    <tr>
-                                        <th>Operational System</th>
-                                        <th>Instances</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('os_type_name', name)}" ng-repeat="(name, count) in instanceCtrl.getVmCount().ostypename" >
-                                        <td ng-click="instanceCtrl.filter('os_type_name', name)">{[name]}</td>
-                                        <td ng-click="instanceCtrl.filter('os_type_name', name)">{[count]}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
                 <div class="col-lg-4" >
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
