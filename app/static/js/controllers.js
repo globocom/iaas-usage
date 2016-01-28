@@ -107,13 +107,17 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
         if(instanceCtrl.filters[field] == value){
             delete instanceCtrl.filters[field]
-            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
+            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters, function(actual, expected){
+                return actual.toLowerCase() == expected.toLowerCase();
+            });
         }else{
             delete instanceCtrl.filters[field]
             var filter = {}
             filter[field] = value
             $.extend(instanceCtrl.filters, filter)
-            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters)
+            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters, function(actual, expected){
+                return actual.toLowerCase() == expected.toLowerCase();
+            })
         }
     }
 
