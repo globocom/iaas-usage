@@ -9,7 +9,7 @@ class UserResource(CloudstackResource):
     @required_login
     @handle_errors
     def get(self, region):
-        response = self.get_cloudstack(region).listUsers({"username": current_user.username})
+        response = self.get_cloudstack(region).listUsers({"username": current_user.username, "listall": 'true'})
 
         if not response:
             return {"message": "No user returned for the username %s" % current_user.username}, 400
