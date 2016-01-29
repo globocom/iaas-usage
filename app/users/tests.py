@@ -23,7 +23,7 @@ class UserResourceTestCase(unittest.TestCase):
 
         self.assertEquals(400, response.status_code)
         self.assertEquals("Unable to find user", json.loads(response.data)['message'])
-        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 
     def test_list_users_given_empty_user_list(self):
         list_users_mock = self.mock_cloudstack_list_users({})
@@ -32,7 +32,7 @@ class UserResourceTestCase(unittest.TestCase):
 
         self.assertEquals(400, response.status_code)
         self.assertEquals("No user returned for the username test@email.com", json.loads(response.data)['message'])
-        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 
     def test_list_users(self):
         users = {"count": 1, "user": [{
@@ -51,7 +51,7 @@ class UserResourceTestCase(unittest.TestCase):
             "picture": "gravatar.com/picture.jpg"
         }]
         self.assertEquals(expected, json.loads(response.data))
-        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com'})
+        list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 
     def mock_cloudstack_list_users(self, users):
         acs_mock = patch('app.users.resource.UserResource.get_cloudstack').start()
