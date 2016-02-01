@@ -234,7 +234,7 @@ describe('Testing Instance controller', function() {
         httpBackend.flush();
 
         expect(ctrl.getInstances().length).toEqual(2)
-        expect(ctrl.getVmCount.length).not.toBeUndefined()
+        expect(ctrl.vmCount).not.toBeUndefined()
     })
 
     it("should tag filters be added and others filters be cleared", function(){

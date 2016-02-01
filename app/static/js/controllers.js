@@ -74,8 +74,10 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         return instanceCtrl.instanceView
     }
 
-    instanceCtrl.getVmCount = function(){
-        return instanceCtrl.vmCount
+    instanceCtrl.getVmCountByFeature = function(feature){
+        if(angular.isDefined(instanceCtrl.vmCount)){
+            return instanceCtrl.vmCount[feature]
+        }
     }
 
     instanceCtrl.listVirtualMachines = function(){
@@ -95,7 +97,16 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         }).then(function successCallback(response){
             instanceCtrl.instances = response.data.vms.virtual_machines;
             instanceCtrl.instanceView = instanceCtrl.instances;
-            instanceCtrl.vmCount = response.data.summary;
+
+            instanceCtrl.vmCount = {}
+            angular.forEach(response.data.summary, function(values, featureName) {
+                var _this = []
+                angular.forEach(response.data.summary[featureName], function(value, key) {
+                    _this.push({name: key, count: value});
+                });
+                instanceCtrl.vmCount[featureName] = _this
+            });
+
             if(instanceCtrl.instances.length == 0){
                 toastr.warning("No virtual machines were found for selected filter.");
             }
