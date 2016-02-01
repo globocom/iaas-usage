@@ -81,8 +81,8 @@ class VirtualMachineResource(CloudstackResource):
                     "host_id": vm.get("hostid", None),
                     "os_type_name": vm.get("ostypename", None),
                     "os_type_id": vm.get("ostypeid", None),
-                    "service_offering_name": vm["serviceofferingname"],
-                    "service_offering_id": vm["serviceofferingid"],
+                    "service_offering_name": vm.get("serviceofferingname", ""),
+                    "service_offering_id": vm.get("service_offering_id", ""),
                     "ha_enabled": vm["haenable"]
                 }
                 for vm in response['virtualmachine']
