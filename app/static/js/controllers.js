@@ -81,7 +81,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     instanceCtrl.listVirtualMachines = function(){
         console.log('Loading virtual machines')
 
-        instanceCtrl.projectName = $stateParams.projectName
+        instanceCtrl.projectName = decodeURIComponent($stateParams.projectName)
         var params = {project_id: $stateParams.projectId}
         if(instanceCtrl.tags.length > 0){
             for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
@@ -167,6 +167,10 @@ function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
                 projectCtrl.projects = response.data;
             });
         }
+    }
+
+    projectCtrl.getProjectName = function(project){
+        return encodeURIComponent(project.name)
     }
 
     $scope.$on('userLoaded', projectCtrl.listProjects)

@@ -37,7 +37,7 @@
                                 <tr ng-repeat="project in projectCtrl.projects">
                                     <td>
                                         <div ng-show="project.vm_count > 0">
-                                            <a  ui-sref="index.instances({projectName: project.name, projectId: project.id})" >
+                                            <a  ui-sref="index.instances({projectName: projectCtrl.getProjectName(project), projectId: project.id})" >
                                                 {[project.name]}
                                             </a>
                                         </div>
