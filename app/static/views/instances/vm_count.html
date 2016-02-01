@@ -25,9 +25,9 @@
                 <div class="ibox-title">
                     <h5>Filter by tags:</h5>
 
-                    <div class="ibox-tools">
+                    <div class="ibox-tools tag-selector">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true" onclick="return false;">
-                            <i class="fa fa-wrench"></i>
+                            <i class="fa fa-tags"></i>
                         </a>
                         <div class="dropdown-menu dropdown-user">
                             <form class="form-horizontal m-t-md" action="#">
@@ -208,18 +208,20 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Internal Name</th>
+                                        <th>Compute Offering</th>
                                         <th>Host</th>
                                         <th>Zone</th>
+                                        <th>High Availability</th>
                                         <th>State</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="instance in instanceCtrl.getInstances()" >
                                         <td>{[instance.name]}</td>
-                                        <td>{[instance.instance_name]}</td>
+                                        <td>{[instance.service_offering_name]}</td>
                                         <td>{[instance.host_name || '-']}</td>
                                         <td>{[instance.zone_name]}</td>
+                                        <td>{[instance.ha_enabled ? 'Enabled' : 'Disabled']}</td>
                                         <td>
                                             <span ng-class="{Running:'label label-primary', Stopped:'label label-danger'}[instance.state]">
                                                 {[instance.state]}

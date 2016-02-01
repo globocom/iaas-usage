@@ -8235,3 +8235,12 @@ body.md-skin {
   max-height: 200px;
   overflow:scroll;
 }
+
+.ibox-tools.tag-selector{
+  text-align: left;
+}
+
+.ibox .ibox-tools.tag-selector.open > .dropdown-menu {
+    left: 10%;
+    right: initial;
+}
