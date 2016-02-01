@@ -280,17 +280,19 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th>Operational System</th>
                                         <th>Compute Offering</th>
                                         <th>Host</th>
                                         <th>Zone</th>
-                                        <th>High Availability</th>
+                                        <th>HA</th>
                                         <th>State</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="instance in instanceCtrl.getInstances()" >
                                         <td>{[instance.name]}</td>
-                                        <td>{[instance.service_offering_name]}</td>
+                                        <td>{[instance.os_type_name]}</td>
+                                        <td>{[instance.service_offering_name || '-']}</td>
                                         <td>{[instance.host_name || '-']}</td>
                                         <td>{[instance.zone_name]}</td>
                                         <td>{[instance.ha_enabled ? 'Enabled' : 'Disabled']}</td>
