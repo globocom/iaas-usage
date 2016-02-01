@@ -8244,3 +8244,7 @@ body.md-skin {
     left: 10%;
     right: initial;
 }
+
+.fa-question-circle.tip{
+  margin-left:5px;
+}
