@@ -8,14 +8,13 @@ import re
 
 class VirtualMachineResource(CloudstackResource):
 
-    FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable']
+    FEATURE_NAMES = ['state', 'serviceofferingname', 'hostname', 'zonename', 'haenable', 'ostypename']
 
-    # TODO: add OS type to vm attributes
     @required_login
     @handle_errors
     def get(self, region):
         self._validate_params()
-        response = self.get_cloudstack(region).listVirtualMachines(self._filter_by())
+        response = self.get_cloudstack(region).listGloboVirtualMachines(self._filter_by())
 
         if response.get('errortext') is not None:
             app.logger.error("Error while retrieving data from cloudstack: %s" % response['errortext'])
@@ -53,6 +52,9 @@ class VirtualMachineResource(CloudstackResource):
         if request.args.get('host_id') is not None:
             params['hostid'] = request.args['host_id']
 
+        if request.args.get('os_type_id') is not None:
+            params['ostypeid'] = request.args['os_type_id']
+
         if request.args.get('service_offering_id') is not None:
             params['serviceofferingid'] = request.args['service_offering_id']
 
@@ -70,13 +72,15 @@ class VirtualMachineResource(CloudstackResource):
             json["virtual_machines"] = [
                 {
                     "id": vm["id"],
-                    "name": vm["name"],
+                    "name": vm.get("name", vm["instancename"]),
                     "state": vm["state"],
                     "instance_name": vm["instancename"],
                     "zone_name": vm["zonename"],
                     "zone_id": vm["zoneid"],
                     "host_name": vm.get("hostname", None),
                     "host_id": vm.get("hostid", None),
+                    "os_type_name": vm.get("ostypename", None),
+                    "os_type_id": vm.get("ostypeid", None),
                     "service_offering_name": vm["serviceofferingname"],
                     "service_offering_id": vm["serviceofferingid"],
                     "ha_enabled": vm["haenable"]
