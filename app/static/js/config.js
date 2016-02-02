@@ -56,6 +56,12 @@ function loadDataTablePlugin($ocLazyLoad) {
             serie: true,
             name: 'datatables.buttons',
             files: [staticPrefix + 'js/plugins/dataTables/angular-datatables.buttons.min.js']
+        },
+        {
+            serie: true,
+            name: 'datatables.responsive',
+            files: [staticPrefix + 'js/plugins/dataTables/dataTables.responsive.js',
+                    staticPrefix + 'css/plugins/dataTables/dataTables.responsive.css']
         }
     ]);
 }

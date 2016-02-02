@@ -137,7 +137,13 @@ describe('Testing Project controller', function() {
                 $scope: $scope,
                 $http: $http,
                 apiService: apiServiceMock,
-                DTOptionsBuilder: {newOptions: function(){}}
+                DTOptionsBuilder: {
+                    newOptions: function(){
+                        return{
+                            withOption: function(){}
+                        }
+                    }
+                }
             });
         });
 
@@ -180,8 +186,14 @@ describe('Testing Instance controller', function() {
                 apiService: apiServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
-                        return { withDOM: function(){
-                                    return {withButtons:function(){}
+                        return {
+                            withDOM: function(){
+                                return {
+                                    withOption: function(){
+                                        return {
+                                            withButtons:function(){}
+                                        }
+                                    }
                                 }
                             }
                         }

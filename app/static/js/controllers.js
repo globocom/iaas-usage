@@ -68,6 +68,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
+    .withOption('responsive', true)
     .withButtons([{extend: 'copy'}, {extend: 'csv'}]);
 
     instanceCtrl.getInstances = function(){
@@ -164,7 +165,7 @@ function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
     projectCtrl.title = 'Instances by project';
     projectCtrl.projects
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('responsive', true);
 
     projectCtrl.listProjects = function(event, user) {
         user = user || userCtrl.user
