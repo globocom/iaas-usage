@@ -142,11 +142,13 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     }
 
     instanceCtrl.filterByTag = function(key, value){
-        instanceCtrl.tags.push({key: key, value: value})
-        instanceCtrl.tagKey = null;
-        instanceCtrl.tagValue = null;
-        instanceCtrl.clearFilters()
-        instanceCtrl.listVirtualMachines()
+        if(key && value){
+            instanceCtrl.tags.push({key: key, value: value})
+            instanceCtrl.tagKey = null;
+            instanceCtrl.tagValue = null;
+            instanceCtrl.clearFilters()
+            instanceCtrl.listVirtualMachines()
+        }
     }
 
     instanceCtrl.removeTagFilter = function(key, value){
