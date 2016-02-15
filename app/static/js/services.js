@@ -26,7 +26,54 @@ function ApiService(regionService) {
     };
 }
 
+function TagService() {
+    return {
+        buildTagParams: function(tags) {
+            var params = {}
+            if(tags.length > 0){
+                for(var i = 0 ; i < tags.length ; i++){
+                    params['tags['+ i + '].key'] = tags[i].key
+                    params['tags['+ i + '].value'] = tags[i].value
+                }
+            }
+            return params;
+        }
+    };
+}
+
+function UserService($rootScope, $http, apiService, regionService) {
+    return{
+        getCurrentUser: function(callback){
+            $http({
+                method: 'GET',
+                url: apiService.buildAPIUrl('/current_user/')
+            }).then(function successCallback(response){
+                $rootScope.currentUser = response.data[0]
+                callback(response.data[0])
+            });
+        }
+    }
+}
+
+function ResourceLimitService($http, userService, apiService) {
+    return {
+        getResourceLimits: function(projectId, callback){
+            userService.getCurrentUser(function(user){
+                $http({
+                    method: 'GET',
+                    url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, id: projectId, is_admin: user.is_admin})
+                }).then(function successCallback(response){
+                    callback(response.data[0])
+                });
+            })
+        }
+    }
+}
+
 angular
     .module('iaasusage')
     .service('regionService', RegionService)
+    .service('tagService', TagService)
+    .service('userService', UserService)
+    .service('resourceLimitService', ResourceLimitService)
     .service('apiService', ApiService);

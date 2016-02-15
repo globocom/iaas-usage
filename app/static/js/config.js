@@ -28,19 +28,41 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: '/instances/:projectName/:projectId',
             templateUrl: viewPrefix + 'instances/vm_count.html',
             resolve: {
-                loadPlugin: loadDataTablePlugin
+                loadPlugin: loadPlugins
             }
         })
-        .state('index.projects', {
+        .state('index.instances_projects', {
             url: '/instances/projects',
             templateUrl: viewPrefix + 'projects/list.html',
+            data:{
+                context: 'Instances',
+                link: 'index.instances({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+            },
             resolve: {
-                loadPlugin: loadDataTablePlugin
+                loadPlugin: loadPlugins
+            }
+        })
+        .state('index.storage_projects', {
+            url: '/storage/projects',
+            templateUrl: viewPrefix + 'projects/list.html',
+            data:{
+                context: 'Storage',
+                link: 'index.storage({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+            },
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
+        .state('index.storage', {
+            url: '/storage/:projectName/:projectId',
+            templateUrl: viewPrefix + 'storage/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
             }
         })
 }
 
-function loadDataTablePlugin($ocLazyLoad) {
+function loadPlugins($ocLazyLoad) {
     return $ocLazyLoad.load([
         {
             serie: true,
@@ -62,6 +84,17 @@ function loadDataTablePlugin($ocLazyLoad) {
             name: 'datatables.responsive',
             files: [staticPrefix + 'js/plugins/dataTables/dataTables.responsive.js',
                     staticPrefix + 'css/plugins/dataTables/dataTables.responsive.css']
+        },
+        {
+            files: [staticPrefix + 'js/plugins/chartJs/Chart.min.js']
+        },
+        {
+            name: 'angles',
+            files: [staticPrefix + 'js/plugins/chartJs/angles.js']
+        },
+        {
+            name: 'moment',
+            files: [staticPrefix + 'js/plugins/moment/moment.min.js']
         }
     ]);
 }
@@ -84,10 +117,44 @@ function HttpErrorInterceptor($httpProvider) {
     });
 }
 
+function byteFilter() {
+    return function(bytes, precision) {
+        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+        if (typeof precision === 'undefined') precision = 1;
+        var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+            number = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+    }
+}
+
+
+function dateRageFilter(object, start_date, end_date){
+    var result = [];
+
+    // date filters
+    var start_date = (start_date && !isNaN(Date.parse(start_date))) ? Date.parse(start_date) : 0;
+    var end_date = (end_date && !isNaN(Date.parse(end_date))) ? Date.parse(end_date) : new Date().getTime();
+
+    // if the conversations are loaded
+    if (conversations && conversations.length > 0){
+        $.each(conversations, function (index, conversation){
+            var conversationDate = new Date(conversation.date_posted);
+
+            if (conversationDate >= start_date && conversationDate <= end_date){
+                result.push(conversation);
+            }
+        });
+
+        return result;
+    }
+};
+
+
 angular
     .module('iaasusage')
     .config(config)
     .config(HttpErrorInterceptor)
+    .filter('byte', byteFilter)
     .run(function($rootScope, $state) {
         $rootScope.$state = $state;
     });

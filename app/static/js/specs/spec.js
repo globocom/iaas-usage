@@ -67,13 +67,12 @@ describe('Testing Region controller', function() {
 describe('Testing User controller', function() {
 
     var rootScope, $scope, ctrl, httpBackend, state;
-    var apiService;
     var user = {"id": "1", "username": "user"}
 
     beforeEach(function (done){
         module('iaasusage');
 
-        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+        userServiceMock = jasmine.createSpyObj('userService', ['getCurrentUser']);
 
         inject(function($rootScope, $controller, $http, $state, $httpBackend) {
             $scope = $rootScope.$new();
@@ -81,16 +80,15 @@ describe('Testing User controller', function() {
             state = $state
             spyOn($scope, '$broadcast').and.callThrough();
             spyOn($state, 'go').and.callFake(function() { });
-
-            apiServiceMock.buildAPIUrl.and.returnValue('/current_user/');
-
-            $httpBackend.when('GET', '/current_user/').respond([user]);
+            userServiceMock.getCurrentUser.and.callFake(function(callback){
+                callback(user);
+            });
 
             ctrl = $controller('UserCtrl', {
                 $scope: $scope,
                 $http: $http,
                 $state: $state,
-                apiService: apiServiceMock
+                userService: userServiceMock
             });
         });
 
@@ -100,17 +98,16 @@ describe('Testing User controller', function() {
 
     it('should load current logged user from server', function() {
         ctrl.loadUser()
-        httpBackend.expectGET('/current_user/');
-        httpBackend.flush();
+
         expect(ctrl.user).toEqual(user)
         expect($scope.$broadcast).toHaveBeenCalledWith('userLoaded', user);
+        expect(userServiceMock.getCurrentUser).toHaveBeenCalled()
     });
 
     it('should trigger event when regionChanged event is received', function() {
         $scope.$broadcast('regionChanged')
-        httpBackend.expectGET('/current_user/');
-        httpBackend.flush();
-        expect(state.go).toHaveBeenCalledWith('index.projects');
+        expect(userServiceMock.getCurrentUser).toHaveBeenCalled()
+        expect(state.go).toHaveBeenCalledWith('index.instances_projects');
     });
 });
 
@@ -125,9 +122,10 @@ describe('Testing Project controller', function() {
 
         apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
 
-        inject(function($rootScope, $controller, $http, $httpBackend) {
+        inject(function($rootScope, $controller, $http, $httpBackend, $state) {
             $scope = $rootScope.$new();
             httpBackend = $httpBackend
+            $state.current.data = {context: 'Projects', link: 'link'}
 
             apiServiceMock.buildAPIUrl.and.returnValue('/project/');
 
@@ -136,6 +134,7 @@ describe('Testing Project controller', function() {
             ctrl = $controller('ProjectCtrl', {
                 $scope: $scope,
                 $http: $http,
+                $state: $state,
                 apiService: apiServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
@@ -172,6 +171,7 @@ describe('Testing Instance controller', function() {
         module('iaasusage');
 
         apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+        tagServiceMock = jasmine.createSpyObj('tagService', ['buildTagParams']);
 
         inject(function($rootScope, $controller, $http, $httpBackend) {
             $scope = $rootScope.$new();
@@ -184,6 +184,7 @@ describe('Testing Instance controller', function() {
                 $scope: $scope,
                 $http: $http,
                 apiService: apiServiceMock,
+                tagService: tagServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
                         return {

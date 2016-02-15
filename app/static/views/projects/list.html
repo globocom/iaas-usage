@@ -2,11 +2,11 @@
     <div class="row wrapper border-bottom white-bg page-heading" >
         <div class="col-lg-10">
             <h2>
-                {[ projectCtrl.title ]}
+                {[ projectCtrl.context ]} by Project
             </h2>
             <ol class="breadcrumb">
                 <li>
-                    Instances
+                    {[ projectCtrl.context ]}
                 </li>
                 <li>
                     Projects
@@ -29,7 +29,7 @@
                             <thead>
                                 <tr>
                                     <th>Project name</th>
-                                    <th>Number of instances</th>
+                                    <th ng-show="projectCtrl.context == 'Instances'">Number of instances</th>
                                     <th ng-show="userCtrl.user.is_admin">Account</th>
                                 </tr>
                             </thead>
@@ -37,7 +37,7 @@
                                 <tr ng-repeat="project in projectCtrl.projects">
                                     <td>
                                         <div ng-show="project.vm_count > 0">
-                                            <a  ui-sref="index.instances({projectName: projectCtrl.getProjectName(project), projectId: project.id})" >
+                                            <a  ui-sref="{[ projectCtrl.link ]}" >
                                                 {[project.name]}
                                             </a>
                                         </div>
@@ -45,7 +45,7 @@
                                             {[project.name]}
                                         </span>
                                     </td>
-                                    <td>{[project.vm_count]}</td>
+                                    <td ng-show="projectCtrl.context == 'Instances'">{[project.vm_count]}</td>
                                     <td ng-show="userCtrl.user.is_admin">{[project.account]}</td>
                                 </tr>
                             </tbody>

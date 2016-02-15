@@ -16,10 +16,16 @@
                     IAAS
                 </div>
             </li>
-            <li ng-class="{active: ($state.includes('index.instances') || $state.includes('index.projects'))}">
-                <a ui-sref="index.projects">
+            <li ng-class="{active: ($state.includes('index.instances') || $state.includes('index.instances_projects'))}">
+                <a ui-sref="index.instances_projects">
                     <i class="fa fa-desktop"></i>
                     <span class="nav-label">Instances</span>
+                </a>
+            </li>
+            <li ng-class="{active: ($state.includes('index.storage') || $state.includes('index.storage_projects'))}">
+                <a ui-sref="index.storage_projects">
+                    <i class="fa fa-hdd-o"></i>
+                    <span class="nav-label">Storage</span>
                 </a>
             </li>
         </ul>

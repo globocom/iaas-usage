@@ -28,7 +28,7 @@ function RegionCtrl(regionService, $rootScope, $scope){
     })
 }
 
-function UserCtrl($scope, $http, $state, apiService) {
+function UserCtrl($scope, $http, $state, userService) {
 
     userCtrl = this;
     userCtrl.user = null;
@@ -36,26 +36,23 @@ function UserCtrl($scope, $http, $state, apiService) {
     userCtrl.loadUser = function(callback) {
         console.log('Loading user')
 
-        $http({
-            method: 'GET',
-            url: apiService.buildAPIUrl('/current_user/')
-        }).then(function successCallback(response){
-            userCtrl.user = response.data[0]
-            $scope.$broadcast('userLoaded', userCtrl.user);
+        userService.getCurrentUser(function(user){
+            userCtrl.user = user
             if(angular.isDefined(callback)){
                 callback()
             }
-        });
+            $scope.$broadcast('userLoaded', userCtrl.user);
+        })
     }
 
     $scope.$on('regionChanged', function(){
         userCtrl.loadUser(function(){
-            $state.go('index.projects');
+            $state.go('index.instances_projects');
         })
     })
 };
 
-function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOptionsBuilder){
+function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, tagService, DTOptionsBuilder){
 
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
@@ -85,13 +82,8 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
         console.log('Loading virtual machines')
 
         instanceCtrl.projectName = decodeURIComponent($stateParams.projectName)
-        var params = {project_id: $stateParams.projectId}
-        if(instanceCtrl.tags.length > 0){
-            for(var i = 0 ; i < instanceCtrl.tags.length ; i++){
-                params['tags['+ i + '].key'] = instanceCtrl.tags[i].key
-                params['tags['+ i + '].value'] = instanceCtrl.tags[i].value
-            }
-        }
+        var params = $.extend({project_id: $stateParams.projectId}, tagService.buildTagParams(instanceCtrl.tags))
+
         $http({
             method: 'GET',
             url: apiService.buildAPIUrl('/virtual_machine/', params)
@@ -161,11 +153,203 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, DTOption
     }
 }
 
-function ProjectCtrl($scope, $http, apiService, DTOptionsBuilder){
+function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagService, resourceLimitService, DTOptionsBuilder){
+
+    storageCtrl = this
+    storageCtrl.title = 'Storage';
+    storageCtrl.projectName = '';
+    storageCtrl.storage = []
+    storageCtrl.tags = []
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    .withDOM('<"html5buttons"B>lTfgitp')
+    .withOption('responsive', true)
+    .withButtons([{extend: 'copy'}, {extend: 'csv'}]);
+
+    storageCtrl.listStorage = function(){
+        console.log('Loading storage')
+
+        storageCtrl.projectName = decodeURIComponent($stateParams.projectName)
+        var params = $.extend({project_id: $stateParams.projectId}, tagService.buildTagParams(storageCtrl.tags))
+
+        $http({
+            method: 'GET',
+            url: apiService.buildAPIUrl('/storage/', params)
+        }).then(function successCallback(response){
+            storageCtrl.storage = response.data.storage;
+
+            if(storageCtrl.storage.length == 0){
+                toastr.warning("Nothing was found for selected filter.");
+            }
+        });
+    }
+
+    storageCtrl.filterByTag = function(key, value){
+        if(key && value){
+            storageCtrl.tags.push({key: key, value: value})
+            storageCtrl.tagKey = null;
+            storageCtrl.tagValue = null;
+            storageCtrl.listStorage()
+        }
+    }
+
+    storageCtrl.removeTagFilter = function(key, value){
+        for(var i = 0 ; i < storageCtrl.tags.length ; i++){
+            if(storageCtrl.tags[i].key == key && storageCtrl.tags[i].value == value){
+                storageCtrl.tags.splice(i, 1);
+            }
+        }
+        storageCtrl.listStorage()
+    }
+
+    $scope.$watch('storageCtrl.storage', function(newValue, oldValue){
+        if(newValue != oldValue){
+            storageCtrl.buildGraphData()
+        }
+    });
+
+    storageCtrl.buildGraphData = function(){
+        resourceLimitService.getResourceLimits($stateParams.projectId, function(project){
+            // volume limit GB
+            storageCtrl.graph1 = [
+                {
+                    value: project.primary_storage_limit - project.primary_storage_used,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Volumes available (GB)"
+                },
+                {
+                    value: project.primary_storage_used,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Volumes used (GB)"
+                }
+            ];
+
+            // volume limit units
+            storageCtrl.graph2 = [
+                {
+                    value: project.volume_limit - project.volume_used,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Volumes available (unit)"
+                },
+                {
+                    value: project.volume_used,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Volumes used (unit)"
+                }
+            ];
+            // volume detached x attached
+            storageCtrl.graph3 = [
+                {
+                    value: $filter('filter')(storageCtrl.storage, {storage_type: 'Volume', attached: true}).length,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Attached Volumes"
+                },
+                {
+                    value: $filter('filter')(storageCtrl.storage, {storage_type: 'Volume', attached: false}).length,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Detached Volumes"
+                }
+            ];
+
+            // snapshot limit GB
+            storageCtrl.graph4 = [
+                {
+                    value: project.sec_storage_limit - project.sec_storage_used,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Snapshots available (GB)"
+                },
+                {
+                    value: project.sec_storage_used,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Snapshots used (GB)"
+                }
+            ];
+
+            // snapshot limit units
+            storageCtrl.graph5 = [
+                {
+                    value: project.snapshot_limit - project.snapshot_used,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Snapshots available (unit)"
+                },
+                {
+                    value: project.snapshot_used,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Snapshots used (unit)"
+                }
+            ];
+
+            monthOld = $.grep(storageCtrl.storage, function(snapshot) {
+                var isSnapshot = snapshot.storage_type == "Snapshot"
+                return isSnapshot &&
+                    moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(1, 'month')) &&
+                    moment(snapshot.created_at, moment.ISO_8601).isAfter(moment().subtract(3, 'month'));
+            });
+
+            threeMonthOld = $.grep(storageCtrl.storage, function(snapshot) {
+                var isSnapshot = snapshot.storage_type == "Snapshot"
+                return isSnapshot &&
+                    moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(3, 'month')) &&
+                    moment(snapshot.created_at, moment.ISO_8601).isAfter(moment().subtract(1, 'year'));
+            });
+
+            yearOld = $.grep(storageCtrl.storage, function(snapshot) {
+                var isSnapshot = snapshot.storage_type == "Snapshot"
+                return isSnapshot && moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(1, 'year'));
+            });
+
+            //snapshot age
+            storageCtrl.graph6 = [
+                {
+                    value: monthOld.length,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Older than 1 month"
+                },
+                {
+                    value: threeMonthOld.length,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Older than 3 months"
+                },
+                {
+                    value: yearOld.length,
+                    color:"#FF3700",
+                    highlight: "#FC7C58",
+                    label: "Older than one year"
+                }
+            ];
+
+            storageCtrl.doughnutOptions = {
+                segmentShowStroke : true,
+                segmentStrokeColor : "#fff",
+                segmentStrokeWidth : 2,
+                percentageInnerCutout : 45, // This is 0 for Pie charts
+                animationSteps : 100,
+                animationEasing : "easeOutBounce",
+                animateRotate : true,
+                animateScale : false
+            };
+        });
+    }
+}
+
+function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
 
     projectCtrl = this
-    projectCtrl.title = 'Instances by project';
     projectCtrl.projects
+    projectCtrl.context = $state.current.data.context
+    projectCtrl.link = $state.current.data.link
 
     $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('responsive', true);
 
@@ -195,4 +379,5 @@ angular
     .controller('RegionCtrl', RegionCtrl)
     .controller('UserCtrl', UserCtrl)
     .controller('ProjectCtrl', ProjectCtrl)
-    .controller('InstanceCtrl', InstanceCtrl);
+    .controller('InstanceCtrl', InstanceCtrl)
+    .controller('StorageCtrl', StorageCtrl);

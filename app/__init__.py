@@ -12,6 +12,7 @@ login_manager.init_app(app)
 from app.projects.resource import ProjectResource
 from app.users.resource import UserResource
 from app.virtualmachines.resource import VirtualMachineResource
+from app.storage.resource import StorageResource
 
 # Configurations placed in config.py in root directory
 app.config.from_object('config')
@@ -21,6 +22,7 @@ logger = app.logger
 api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
 api.add_resource(UserResource, '/api/v1/<region>/current_user/', endpoint='user')
 api.add_resource(VirtualMachineResource, '/api/v1/<region>/virtual_machine/', endpoint='virtual_machine')
+api.add_resource(StorageResource, '/api/v1/<region>/storage/', endpoint='storage')
 
 from app import views
 from app.auth import views
