@@ -67,7 +67,7 @@ class StorageResource(CloudstackResource):
                     "zone_id": volume['zoneid'],
                     "created_at": volume['created'],
                     "type": volume['type'],
-                    "attached":  volume['virtualmachineid'] is not None
+                    "attached":  volume.get('virtualmachineid') is not None
 
                 }
                 for volume in volumes.get('volume')
