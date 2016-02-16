@@ -168,6 +168,7 @@
                                         <th>State</th>
                                         <th>Size</th>
                                         <th>Zone</th>
+                                        <th>Creation date</th>
                                         <th>Type</th>
                                     </tr>
                                 </thead>
@@ -177,6 +178,7 @@
                                         <td>{[storage.storage_type]}</td>
                                         <td>{[storage.state]}</td>
                                         <td>{[storage.size | byte:2]}</td>
+                                        <td>{[storage.zone_name || '-']}</td>
                                         <td>{[storage.created_at | date: 'dd/MM/yyyy hh:mm']}</td>
                                         <td>{[storage.type]}</td>
                                     </tr>
