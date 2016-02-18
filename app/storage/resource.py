@@ -24,7 +24,7 @@ class StorageResource(CloudstackResource):
         snapshots = self.get_cloudstack(region).listSnapshots(self._filter_by())
         if snapshots.get('errortext') is not None:
             app.logger.error("Error while retrieving data from cloudstack: %s" % snapshots['errortext'])
-            return {"message": volumes['errortext']}, 400
+            return {"message": snapshots['errortext']}, 400
 
         if snapshots:
             storages['storage'].extend(self._parse_snapshots(snapshots))
@@ -83,7 +83,6 @@ class StorageResource(CloudstackResource):
                     "storage_type": 'Snapshot',
                     "state": snapshot['state'],
                     "snapshot_state": 'Attached' if snapshot.get('vmid') is not None else 'Detached',
-                    "zone_name": snapshot.get('zone_name'),
                     "zone_id": snapshot.get('zoneid'),
                     "created_at": snapshot['created'],
                     "type": snapshot['snapshottype'],
