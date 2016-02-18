@@ -269,3 +269,84 @@ describe('Testing Instance controller', function() {
         expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
     })
 });
+
+describe('Testing Storage controller', function() {
+
+    var ctrl, httpBackend, $scope
+    var storage = {storage: [{
+        "name": 'ROOT-3145', "state": 'Ready',"size": '1287589', "zone_name": 'zone', 'zone_id': 1,
+        "created": "2015-09-18T14:08:30-0300", "type": 'ROOT', 'attached': true}
+    ]}
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+        tagServiceMock = jasmine.createSpyObj('tagService', ['buildTagParams']);
+        resourceLimitServiceMock = jasmine.createSpyObj('resourceLimitService', ['']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend, $stateParams, $filter) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.buildAPIUrl.and.returnValue('/storage/');
+            $httpBackend.when('GET', '/storage/').respond(storage);
+
+            ctrl = $controller('StorageCtrl', {
+                $scope: $scope,
+                $http: $http,
+                $stateParams: $stateParams,
+                $filter: $filter,
+                apiService: apiServiceMock,
+                tagService: tagServiceMock,
+                resourceLimitService: resourceLimitServiceMock,
+                DTOptionsBuilder: {
+                    newOptions: function(){
+                        return {
+                            withDOM: function(){
+                                return {
+                                    withOption: function(){
+                                        return {
+                                            withButtons:function(){}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should have controller scoped objects set up', function() {
+        expect(ctrl.title).toEqual('Storage')
+        expect(ctrl.projectName).toEqual('')
+        expect(ctrl.storage).toEqual([])
+        expect(ctrl.tags).toEqual([])
+    });
+
+    it("should fetch the list of storage from the server", function(){
+        ctrl.listStorage()
+        httpBackend.expectGET('/storage/');
+        httpBackend.flush();
+
+        expect(ctrl.storage.length).toEqual(1)
+    })
+
+    it("should tag filters be added", function(){
+        ctrl.filterByTag('key', 'value')
+        expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
+    })
+
+    it("should tag be removed from filters", function(){
+        ctrl.filterByTag('key', 'value')
+        ctrl.filterByTag('key2', 'value2')
+
+        ctrl.removeTagFilter('key2', 'value2')
+        expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
+    })
+});
