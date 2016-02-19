@@ -87,8 +87,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('service_offering_name', item.name)}" ng-repeat="item in instanceCtrl.getVmCountByFeature('serviceofferingname') | orderBy:'-count'" >
-                                        <td  ng-click="instanceCtrl.filter('service_offering_name', item.name)">{[item.name]}</td>
-                                        <td  ng-click="instanceCtrl.filter('service_offering_name', item.name)">{[item.count]}</td>
+                                        <td  ng-click="instanceCtrl.filter('Compute Offering', 'service_offering_name', item.name)">{[item.name]}</td>
+                                        <td  ng-click="instanceCtrl.filter('Compute Offering', 'service_offering_name', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -111,8 +111,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('state', item.name)}"  ng-repeat="item in instanceCtrl.getVmCountByFeature('state') | orderBy:'-count'" >
-                                        <td ng-click="instanceCtrl.filter('state', item.name)">{[item.name]}</td>
-                                        <td ng-click="instanceCtrl.filter('state', item.name)">{[item.count]}</td>
+                                        <td ng-click="instanceCtrl.filter('State', 'state', item.name)">{[item.name]}</td>
+                                        <td ng-click="instanceCtrl.filter('State', 'state', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -136,8 +136,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('zone_name', item.name)}"  ng-repeat="item in instanceCtrl.getVmCountByFeature('zonename') | orderBy:'-count'" >
-                                        <td ng-click="instanceCtrl.filter('zone_name', item.name)">{[item.name]}</td>
-                                        <td ng-click="instanceCtrl.filter('zone_name', item.name)">{[item.count]}</td>
+                                        <td ng-click="instanceCtrl.filter('Zone', 'zone_name', item.name)">{[item.name]}</td>
+                                        <td ng-click="instanceCtrl.filter('Zone', 'zone_name', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -164,8 +164,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('os_type_name', item.name)}"  ng-repeat="item in instanceCtrl.getVmCountByFeature('ostypename') | orderBy:'-count'" >
-                                        <td ng-click="instanceCtrl.filter('os_type_name', item.name)">{[item.name]}</td>
-                                        <td ng-click="instanceCtrl.filter('os_type_name', item.name)">{[item.count]}</td>
+                                        <td ng-click="instanceCtrl.filter('Operational System', 'os_type_name', item.name)">{[item.name]}</td>
+                                        <td ng-click="instanceCtrl.filter('Operational System', 'os_type_name', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -189,8 +189,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('ha_enabled', item.name)}" ng-repeat="item in instanceCtrl.getVmCountByFeature('haenable') | orderBy:'-count'" >
-                                        <td ng-click="instanceCtrl.filter('ha_enabled', item.name)">{[item.name == 'true' ? 'Enabled' : 'Disabled']}</td>
-                                        <td ng-click="instanceCtrl.filter('ha_enabled', item.name)">{[item.count]}</td>
+                                        <td ng-click="instanceCtrl.filter('High Availability', 'ha_enabled', item.name)">{[item.name == 'true' ? 'Enabled' : 'Disabled']}</td>
+                                        <td ng-click="instanceCtrl.filter('High Availability', 'ha_enabled', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -214,8 +214,8 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('host_name', item.name)}" ng-repeat="item in instanceCtrl.getVmCountByFeature('hostname') | orderBy:'-count'" >
-                                        <td ng-click="instanceCtrl.filter('host_name', item.name)">{[item.name]}</td>
-                                        <td ng-click="instanceCtrl.filter('host_name', item.name)">{[item.count]}</td>
+                                        <td ng-click="instanceCtrl.filter('Host', 'host_name', item.name)">{[item.name]}</td>
+                                        <td ng-click="instanceCtrl.filter('Host', 'host_name', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>
                             </table>

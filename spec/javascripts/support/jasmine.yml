@@ -19,6 +19,7 @@ src_files:
     - ui-router/angular-ui-router.min.js
     - bootstrap/ui-bootstrap-tpls-0.12.0.min.js
     - plugins/angular-idle/angular-idle.js
+    - plugins/toastr/toastr.min.js
     - angular/angular-mocks.js
     - app.js
     - services.js

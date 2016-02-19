@@ -106,8 +106,14 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, listFilt
         });
     }
 
-    instanceCtrl.filter = function(field, value){
+    instanceCtrl.filter = function(label,field, value){
         console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
+        if(instanceCtrl.filters[field] != value){
+            toastr.success("Filtering instances by " + label + ".");
+        }else{
+            toastr.success(label + " filter removed.");
+        }
+
         instanceCtrl.instanceView = listFilterService.filter(instanceCtrl.instances, instanceCtrl.filters, field, value)
     }
 
@@ -183,6 +189,8 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
 
     storageCtrl.filter = function(field, value, data){
         console.log('Filter storage list. field: ' + field)
+
+        toastr.success("Filtering storages by " + data[0].label + ".");
 
         $scope.$apply(function(){
             storageCtrl.filters = {}
@@ -339,19 +347,19 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
                     value: storageCtrl.oneMonthSnapshots.length,
                     color:"#54697E",
                     highlight: "#8F9396",
-                    label: "Older than 1 month"
+                    label: "Snapshot older than 1 month"
                 },
                 {
                     value: storageCtrl.threeMonthSnapshots.length,
                     color: "#FFA500",
                     highlight: "#FF8800",
-                    label: "Older than 3 months"
+                    label: "Snapshot older than 3 months"
                 },
                 {
                     value: storageCtrl.oneYearSnapshots.length,
                     color:"#FF3700",
                     highlight: "#FC7C58",
-                    label: "Older than one year"
+                    label: "Snapshot older than one year"
                 }
             ];
 

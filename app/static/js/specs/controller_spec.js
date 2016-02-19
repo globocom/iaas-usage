@@ -220,14 +220,14 @@ describe('Testing Instance controller', function() {
     });
 
     it('should filters be cleared', function() {
-        ctrl.filter("zone_id", 2)
+        ctrl.filter('Zone', "zone_id", 2)
         ctrl.clearFilters()
         expect(ctrl.filters).toEqual({})
     });
 
     it("should filter be removed if set twice", function(){
-        ctrl.filter("zone_id", 1)
-        ctrl.filter("zone_id", 1)
+        ctrl.filter('Zone', "zone_id", 1)
+        ctrl.filter('Zone', "zone_id", 1)
         expect(ctrl.isFilteredField("zone_id", 1)).toBe(false)
     })
 
@@ -242,7 +242,7 @@ describe('Testing Instance controller', function() {
 
     it("should tag filters be added and others filters be cleared", function(){
         ctrl.listVirtualMachines()
-        ctrl.filter("zone_id", 2)
+        ctrl.filter('Zone', "zone_id", 2)
         httpBackend.flush();
 
         ctrl.filterByTag('key', 'value')
