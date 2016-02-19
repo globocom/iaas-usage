@@ -31,6 +31,8 @@ def logout():
 def authenticate_user(oauth2_session):
     user_json = oauth2_session.get(app.config['OAUTH_USER_URL']).json()
     app.logger.debug("Authenticating user: " + str(user_json))
-    user = User(user_json.get('email'), str(user_json.get('name')) + ' ' + str(user_json.get('surnames')), user_json.get('picture'))
+    name = user_json.get('name', '').encode('utf-8')
+    surname = user_json.get('surnames', '').encode('utf-8')
+    user = User(user_json.get('email'), name + ' ' + surname, user_json.get('picture'))
     login_user(user)
     session['user'] = dict(email=user.username, name=user.name, picture=user.picture)
