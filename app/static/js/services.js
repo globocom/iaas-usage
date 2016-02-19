@@ -41,6 +41,29 @@ function TagService() {
     };
 }
 
+function ListFilterService($filter){
+    return {
+        filter: function(list, filters, field, value){
+            var filteredList = []
+            if(filters[field] == value){
+                delete filters[field]
+                filteredList = $filter('filter')(list, filters, function(actual, expected){
+                    return actual.toString().toLowerCase() == expected.toString().toLowerCase();
+                });
+            }else{
+                delete filters[field]
+                var filter = {}
+                filter[field] = value
+                $.extend(filters, filter)
+                filteredList = $filter('filter')(list, filters, function(actual, expected){
+                    return actual.toString().toLowerCase() == expected.toString().toLowerCase();
+                })
+            }
+            return filteredList
+        }
+    }
+}
+
 function UserService($rootScope, $http, apiService, regionService) {
     return{
         getCurrentUser: function(callback){
@@ -74,6 +97,7 @@ angular
     .module('iaasusage')
     .service('regionService', RegionService)
     .service('tagService', TagService)
+    .service('listFilterService', ListFilterService)
     .service('userService', UserService)
     .service('resourceLimitService', ResourceLimitService)
     .service('apiService', ApiService);

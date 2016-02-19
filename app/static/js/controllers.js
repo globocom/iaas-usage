@@ -52,7 +52,7 @@ function UserCtrl($scope, $http, $state, userService) {
     })
 };
 
-function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, tagService, DTOptionsBuilder){
+function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, listFilterService, tagService, DTOptionsBuilder){
 
     instanceCtrl = this
     instanceCtrl.title = 'Instances';
@@ -108,21 +108,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, tagServi
 
     instanceCtrl.filter = function(field, value){
         console.log('Filter virtual machine list. field: ' + field + ' value: ' + value)
-
-        if(instanceCtrl.filters[field] == value){
-            delete instanceCtrl.filters[field]
-            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters, function(actual, expected){
-                return actual.toString().toLowerCase() == expected.toString().toLowerCase();
-            });
-        }else{
-            delete instanceCtrl.filters[field]
-            var filter = {}
-            filter[field] = value
-            $.extend(instanceCtrl.filters, filter)
-            instanceCtrl.instanceView = $filter('filter')(instanceCtrl.instances, instanceCtrl.filters, function(actual, expected){
-                return actual.toString().toLowerCase() == expected.toString().toLowerCase();
-            })
-        }
+        instanceCtrl.instanceView = listFilterService.filter(instanceCtrl.instances, instanceCtrl.filters, field, value)
     }
 
     instanceCtrl.clearFilters = function(){
@@ -153,18 +139,24 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, tagServi
     }
 }
 
-function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagService, resourceLimitService, DTOptionsBuilder){
+function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilterService, tagService, resourceLimitService, DTOptionsBuilder){
 
     storageCtrl = this
     storageCtrl.title = 'Storage';
     storageCtrl.projectName = '';
     storageCtrl.storage = []
+    storageCtrl.storageView = []
+    storageCtrl.filters = []
     storageCtrl.tags = []
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
     .withOption('responsive', true)
     .withButtons([{extend: 'copy'}, {extend: 'csv'}]);
+
+    storageCtrl.getStorage = function(){
+        return storageCtrl.storageView
+    }
 
     storageCtrl.listStorage = function(){
         console.log('Loading storage')
@@ -177,10 +169,40 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagServic
             url: apiService.buildAPIUrl('/storage/', params)
         }).then(function successCallback(response){
             storageCtrl.storage = response.data.storage;
+            storageCtrl.storageView = storageCtrl.storage;
 
             if(storageCtrl.storage.length == 0){
                 toastr.warning("Nothing was found for selected filter.");
             }
+        });
+    }
+
+    storageCtrl.filter = function(field, value, data){
+        console.log('Filter storage list. field: ' + field)
+
+        $scope.$apply(function(){
+            storageCtrl.filters = {}
+            if(field == 'created_at'){
+                if(data[0].label == "Older than 1 month"){
+                    storageCtrl.storageView = storageCtrl.oneMonthSnapshots
+                }else if(data[0].label == "Older than 3 months"){
+                    storageCtrl.storageView = storageCtrl.threeMonthSnapshots
+                }else if(data[0].label == "Older than one year"){
+                    storageCtrl.storageView = storageCtrl.oneYearSnapshots
+                }
+                return;
+            }
+
+            if(angular.isDefined(data)){
+                if(data[0].label == 'Attached Volumes'){
+                    value = true
+                }
+                if(data[0].label == 'Detached Volumes'){
+                    value = false
+                }
+            }
+
+            storageCtrl.storageView = listFilterService.filter(storageCtrl.storage, storageCtrl.filters, field, value)
         });
     }
 
@@ -207,6 +229,19 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagServic
             storageCtrl.buildGraphData()
         }
     });
+
+    storageCtrl.getStorageByDateBetween = function(start, end){
+        return $.grep(storageCtrl.storage, function(snapshot) {
+            var isSnapshot = snapshot.storage_type == "Snapshot"
+            var snapshotDate = moment(snapshot.created_at, moment.ISO_8601);
+
+            if(angular.isDefined(start) && angular.isDefined(end)){
+                return isSnapshot && snapshotDate.isBetween(moment().subtract(end.count, end.unit), moment().subtract(start.count, start.unit));
+            }else{
+                return isSnapshot && snapshotDate.isBefore(moment().subtract(start.count, start.unit))
+            }
+        });
+    }
 
     storageCtrl.buildGraphData = function(){
         resourceLimitService.getResourceLimits($stateParams.projectId, function(project){
@@ -241,6 +276,7 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagServic
                     label: "Volumes used (unit)"
                 }
             ];
+
             // volume detached x attached
             storageCtrl.graph3 = [
                 {
@@ -289,41 +325,26 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagServic
                 }
             ];
 
-            monthOld = $.grep(storageCtrl.storage, function(snapshot) {
-                var isSnapshot = snapshot.storage_type == "Snapshot"
-                return isSnapshot &&
-                    moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(1, 'month')) &&
-                    moment(snapshot.created_at, moment.ISO_8601).isAfter(moment().subtract(3, 'month'));
-            });
-
-            threeMonthOld = $.grep(storageCtrl.storage, function(snapshot) {
-                var isSnapshot = snapshot.storage_type == "Snapshot"
-                return isSnapshot &&
-                    moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(3, 'month')) &&
-                    moment(snapshot.created_at, moment.ISO_8601).isAfter(moment().subtract(1, 'year'));
-            });
-
-            yearOld = $.grep(storageCtrl.storage, function(snapshot) {
-                var isSnapshot = snapshot.storage_type == "Snapshot"
-                return isSnapshot && moment(snapshot.created_at, moment.ISO_8601).isBefore(moment().subtract(1, 'year'));
-            });
+            storageCtrl.oneMonthSnapshots = storageCtrl.getStorageByDateBetween({count:1, unit: 'month'}, {count:3, unit: 'month'})
+            storageCtrl.threeMonthSnapshots = storageCtrl.getStorageByDateBetween({count:3, unit: 'month'}, {count:1, unit: 'year'})
+            storageCtrl.oneYearSnapshots = storageCtrl.getStorageByDateBetween({count: 1, unit: 'year'})
 
             //snapshot age
             storageCtrl.graph6 = [
                 {
-                    value: monthOld.length,
+                    value: storageCtrl.oneMonthSnapshots.length,
                     color:"#54697E",
                     highlight: "#8F9396",
                     label: "Older than 1 month"
                 },
                 {
-                    value: threeMonthOld.length,
+                    value: storageCtrl.threeMonthSnapshots.length,
                     color: "#FFA500",
                     highlight: "#FF8800",
                     label: "Older than 3 months"
                 },
                 {
-                    value: yearOld.length,
+                    value: storageCtrl.oneYearSnapshots.length,
                     color:"#FF3700",
                     highlight: "#FC7C58",
                     label: "Older than one year"
@@ -338,7 +359,8 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, tagServic
                 animationSteps : 100,
                 animationEasing : "easeOutBounce",
                 animateRotate : true,
-                animateScale : false
+                animateScale : false,
+                responsive: true
             };
         });
     }

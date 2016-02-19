@@ -8248,3 +8248,7 @@ body.md-skin {
 .fa-question-circle.tip{
   margin-left:5px;
 }
+
+.ibox-content canvas{
+  cursor:pointer;
+}

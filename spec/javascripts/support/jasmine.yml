@@ -21,6 +21,7 @@ src_files:
     - plugins/angular-idle/angular-idle.js
     - angular/angular-mocks.js
     - app.js
+    - services.js
     - controllers.js
 
 # stylesheets

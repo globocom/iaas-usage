@@ -89,8 +89,8 @@ function loadPlugins($ocLazyLoad) {
             files: [staticPrefix + 'js/plugins/chartJs/Chart.min.js']
         },
         {
-            name: 'angles',
-            files: [staticPrefix + 'js/plugins/chartJs/angles.js']
+            name: 'tc-chartjs',
+            files: [staticPrefix + 'js/plugins/chartJs/tc-angular-chartjs.js']
         },
         {
             name: 'moment',

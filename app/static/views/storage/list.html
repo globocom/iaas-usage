@@ -76,11 +76,11 @@
                 <div class="col-lg-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Volume usage x Quota (GB)</h5>
+                            <h5>Volume used x Available (GB)</h5>
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph1" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph1" height="140" chart-click="storageCtrl.filter('storage_type', 'Volume')"></canvas>
                             </div>
                         </div>
                     </div>
@@ -88,11 +88,11 @@
                 <div class="col-lg-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Volume usage x Quota (unit)</h5>
+                            <h5>Volume used x Available (unit)</h5>
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph2" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph2" height="140" chart-click="storageCtrl.filter('storage_type', 'Volume')"></canvas>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph3" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph3" height="140" chart-click="storageCtrl.filter('attached', null, data)"></canvas>
                             </div>
                         </div>
                     </div>
@@ -115,11 +115,11 @@
                 <div class="col-lg-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Snapshot usage x Quota (GB)</h5>
+                            <h5>Snapshot used x Available (GB)</h5>
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph4" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph4" height="140" chart-click="storageCtrl.filter('storage_type', 'Snapshot')"></canvas>
                             </div>
                         </div>
                     </div>
@@ -127,11 +127,11 @@
                 <div class="col-lg-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Snapshot usage x Quota (unit)</h5>
+                            <h5>Snapshot used x Available (unit)</h5>
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph5" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph5" height="140" chart-click="storageCtrl.filter('storage_type', 'Snapshot')"></canvas>
                             </div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                         </div>
                         <div class="ibox-content">
                             <div>
-                                <canvas doughnutchart options="storageCtrl.doughnutOptions" data="storageCtrl.graph6" height="140" responsive=true></canvas>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph6" height="140" chart-click="storageCtrl.filter('created_at', null, data)"></canvas>
                             </div>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
             </div>
         </div>
 
-        <div ng-show="storageCtrl.storage.length > 0">
+        <div ng-show="storageCtrl.getStorage().length > 0">
             <!-- startrow3 -->
             <div class="row">
                 <div class="col-lg-12" >
@@ -173,7 +173,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="storage in storageCtrl.storage" >
+                                    <tr ng-repeat="storage in storageCtrl.getStorage()" >
                                         <td>{[storage.name]}</td>
                                         <td>{[storage.storage_type]}</td>
                                         <td>{[storage.state]}</td>

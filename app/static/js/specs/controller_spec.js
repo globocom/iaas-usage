@@ -172,6 +172,7 @@ describe('Testing Instance controller', function() {
 
         apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
         tagServiceMock = jasmine.createSpyObj('tagService', ['buildTagParams']);
+        listFilterServiceMock = jasmine.createSpyObj('listFilterService', ['filter']);
 
         inject(function($rootScope, $controller, $http, $httpBackend) {
             $scope = $rootScope.$new();
@@ -185,6 +186,7 @@ describe('Testing Instance controller', function() {
                 $http: $http,
                 apiService: apiServiceMock,
                 tagService: tagServiceMock,
+                listFilterService: listFilterServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
                         return {
@@ -217,23 +219,11 @@ describe('Testing Instance controller', function() {
         expect(ctrl.tags).toEqual([])
     });
 
-    it('should the list of instances be filtered by zone = 2', function() {
-        ctrl.instances = [{"id": 1, "zone_id" : 1},{"id": 1, "zone_id" : 2}]
-        ctrl.filter("zone_id", 2)
-        expect(ctrl.getInstances().length).toEqual(1)
-    });
-
     it('should filters be cleared', function() {
         ctrl.filter("zone_id", 2)
         ctrl.clearFilters()
         expect(ctrl.filters).toEqual({})
     });
-
-    it("should mark field as filtered", function(){
-        ctrl.filter("zone_id", 1)
-        expect(ctrl.isFilteredField("zone_id", 1)).toBe(true)
-        expect(ctrl.isFilteredField("zone_id", 2)).toBe(false)
-    })
 
     it("should filter be removed if set twice", function(){
         ctrl.filter("zone_id", 1)
@@ -284,6 +274,7 @@ describe('Testing Storage controller', function() {
         apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
         tagServiceMock = jasmine.createSpyObj('tagService', ['buildTagParams']);
         resourceLimitServiceMock = jasmine.createSpyObj('resourceLimitService', ['']);
+        listFilterServiceMock = jasmine.createSpyObj('listFilterService', ['filter']);
 
         inject(function($rootScope, $controller, $http, $httpBackend, $stateParams, $filter) {
             $scope = $rootScope.$new();
@@ -300,6 +291,7 @@ describe('Testing Storage controller', function() {
                 apiService: apiServiceMock,
                 tagService: tagServiceMock,
                 resourceLimitService: resourceLimitServiceMock,
+                listFilterService: listFilterServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
                         return {
