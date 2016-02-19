@@ -195,11 +195,11 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
         $scope.$apply(function(){
             storageCtrl.filters = {}
             if(field == 'created_at'){
-                if(data[0].label == "Older than 1 month"){
+                if(data[0].label == "Snapshot older than 1 month"){
                     storageCtrl.storageView = storageCtrl.oneMonthSnapshots
-                }else if(data[0].label == "Older than 3 months"){
+                }else if(data[0].label == "Snapshot older than 3 months"){
                     storageCtrl.storageView = storageCtrl.threeMonthSnapshots
-                }else if(data[0].label == "Older than one year"){
+                }else if(data[0].label == "Snapshot older than one year"){
                     storageCtrl.storageView = storageCtrl.oneYearSnapshots
                 }
                 return;
