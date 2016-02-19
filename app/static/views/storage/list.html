@@ -142,8 +142,16 @@
                             <h5>Snapshot Age</h5>
                         </div>
                         <div class="ibox-content">
-                            <div>
+                            <div ng-show="storageCtrl.getSnapshots().length > 0">
                                 <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph6" height="140" chart-click="storageCtrl.filter('created_at', null, data)"></canvas>
+                            </div>
+                            <div ng-hide="storageCtrl.getSnapshots().length > 0" style="height:133px">
+                                <p style="text-align: center">
+                                    <i class="fa fa-warning fa-4x"></i>
+                                </p>
+                                <p style="text-align: center">
+                                    Your projects doesn't have snapshots
+                                </p>
                             </div>
                         </div>
                     </div>

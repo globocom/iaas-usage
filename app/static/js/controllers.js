@@ -158,6 +158,10 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
         return storageCtrl.storageView
     }
 
+    storageCtrl.getSnapshots = function(){
+        return $filter('filter')( storageCtrl.storageView, {storage_type: 'Snapshot'})
+    }
+
     storageCtrl.listStorage = function(){
         console.log('Loading storage')
 
