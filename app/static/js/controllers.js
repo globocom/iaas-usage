@@ -165,7 +165,7 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
     }
 
     storageCtrl.getSnapshots = function(){
-        return $filter('filter')( storageCtrl.storageView, {storage_type: 'Snapshot'})
+        return $filter('filter')( storageCtrl.storage, {storage_type: 'Snapshot'})
     }
 
     storageCtrl.listStorage = function(){
