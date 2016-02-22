@@ -21,7 +21,7 @@ class StorageResourceTestCase(unittest.TestCase):
 
         self.assertEquals(400, response.status_code)
         self.assertEquals("Unable to find project", json.loads(response.data)['message'])
-        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'listall': 'true'}
+        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'pagesize': '-1', 'listall': 'true'}
         list_storage_mock.listVolumes.assert_called_with(expect_resp)
 
     def test_list_storages_given_snapshot_api_error(self):
@@ -38,7 +38,7 @@ class StorageResourceTestCase(unittest.TestCase):
         self.assertEquals(400, response.status_code)
         self.assertEquals("Unable to find project", json.loads(response.data)['message'])
 
-        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'listall': 'true'}
+        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'pagesize': '-1', 'listall': 'true'}
         list_storage_mock.listVolumes.assert_called_with(expect_resp)
         list_storage_mock.listSnapshots.assert_called_with(expect_resp)
 
@@ -50,7 +50,7 @@ class StorageResourceTestCase(unittest.TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEquals([], json.loads(response.data)['storage'])
 
-        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'listall': 'true'}
+        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'pagesize': '-1', 'listall': 'true'}
         list_storage_mock.listVolumes.assert_called_with(expect_resp)
         list_storage_mock.listSnapshots.assert_called_with(expect_resp)
 
@@ -71,7 +71,7 @@ class StorageResourceTestCase(unittest.TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEquals(2, len(json.loads(response.data)['storage']))
 
-        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'listall': 'true'}
+        expect_resp = {'projectid': '28f40084-2aed-11e5-8fce-76b2dd27c282', 'pagesize': '-1', 'listall': 'true'}
         list_storage_mock.listVolumes.assert_called_with(expect_resp)
         list_storage_mock.listSnapshots.assert_called_with(expect_resp)
 

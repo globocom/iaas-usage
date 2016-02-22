@@ -166,6 +166,12 @@
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>{[ storageCtrl.title ]}</h5>
+                            <div class="ibox-tools">
+                                <a ng-click="storageCtrl.clearFilters()">Clean filters</a>
+                                <a ng-click="storageCtrl.clearFilters()" class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
                         </div>
                         <div class="ibox-content">
                             <table datatable="ng" dt-options="dtOptions" class="table table-striped table-bordered table-hover dataTables-example">

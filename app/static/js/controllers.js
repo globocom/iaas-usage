@@ -118,7 +118,14 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, listFilt
     }
 
     instanceCtrl.clearFilters = function(){
+        toastr.success("Removing filters")
         instanceCtrl.filters = {}
+        if(instanceCtrl.tags.length > 0){
+            instanceCtrl.tags = []
+            instanceCtrl.listVirtualMachines()
+        }else{
+            instanceCtrl.instanceView = listFilterService.filter(instanceCtrl.instances, instanceCtrl.filters, null, null)
+        }
     }
 
     instanceCtrl.isFilteredField = function(field, value){
@@ -130,7 +137,7 @@ function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, listFilt
             instanceCtrl.tags.push({key: key, value: value})
             instanceCtrl.tagKey = null;
             instanceCtrl.tagValue = null;
-            instanceCtrl.clearFilters()
+            instanceCtrl.filters = {}
             instanceCtrl.listVirtualMachines()
         }
     }
@@ -165,7 +172,11 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
     }
 
     storageCtrl.getSnapshots = function(){
-        return $filter('filter')( storageCtrl.storage, {storage_type: 'Snapshot'})
+        return $filter('filter')(storageCtrl.storage, {storage_type: 'Snapshot'})
+    }
+
+    storageCtrl.getVolumes = function(){
+        return $filter('filter')(storageCtrl.storage, {storage_type: 'Volume'})
     }
 
     storageCtrl.listStorage = function(){
@@ -218,6 +229,17 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
         });
     }
 
+    storageCtrl.clearFilters = function(){
+        toastr.success("Removing filters")
+        storageCtrl.filters = []
+        if(storageCtrl.tags.length > 0){
+            storageCtrl.tags = []
+            storageCtrl.listStorage()
+        }else{
+            storageCtrl.storageView = listFilterService.filter(storageCtrl.storage, storageCtrl.filters, null, null)
+        }
+    }
+
     storageCtrl.filterByTag = function(key, value){
         if(key && value){
             storageCtrl.tags.push({key: key, value: value})
@@ -237,36 +259,38 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
     }
 
     $scope.$watch('storageCtrl.storage', function(newValue, oldValue){
-        if(newValue != oldValue){
+        if(newValue != oldValue && storageCtrl.storage.length > 0){
             storageCtrl.buildGraphData()
         }
     });
 
     storageCtrl.getStorageByDateBetween = function(start, end){
-        return $.grep(storageCtrl.storage, function(snapshot) {
-            var isSnapshot = snapshot.storage_type == "Snapshot"
+        return $.grep(storageCtrl.getSnapshots(), function(snapshot) {
             var snapshotDate = moment(snapshot.created_at, moment.ISO_8601);
 
             if(angular.isDefined(start) && angular.isDefined(end)){
-                return isSnapshot && snapshotDate.isBetween(moment().subtract(end.count, end.unit), moment().subtract(start.count, start.unit));
+                return snapshotDate.isBetween(moment().subtract(end.count, end.unit), moment().subtract(start.count, start.unit));
             }else{
-                return isSnapshot && snapshotDate.isBefore(moment().subtract(start.count, start.unit))
+                return snapshotDate.isBefore(moment().subtract(start.count, start.unit))
             }
         });
     }
 
     storageCtrl.buildGraphData = function(){
         resourceLimitService.getResourceLimits($stateParams.projectId, function(project){
+
+            var volumes = storageCtrl.getVolumes()
+            var volumeUsed = storageCtrl._sum(volumes, 'size') / (1024 * 1024 * 1024)
             // volume limit GB
             storageCtrl.graph1 = [
                 {
-                    value: project.primary_storage_limit - project.primary_storage_used,
+                    value: project.primary_storage_limit - volumeUsed,
                     color:"#54697E",
                     highlight: "#8F9396",
                     label: "Volumes available (GB)"
                 },
                 {
-                    value: project.primary_storage_used,
+                    value: volumeUsed,
                     color: "#FFA500",
                     highlight: "#FF8800",
                     label: "Volumes used (GB)"
@@ -276,13 +300,13 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
             // volume limit units
             storageCtrl.graph2 = [
                 {
-                    value: project.volume_limit - project.volume_used,
+                    value: project.volume_limit - volumes.length,
                     color:"#54697E",
                     highlight: "#8F9396",
                     label: "Volumes available (unit)"
                 },
                 {
-                    value: project.volume_used,
+                    value: volumes.length,
                     color: "#FFA500",
                     highlight: "#FF8800",
                     label: "Volumes used (unit)"
@@ -292,29 +316,32 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
             // volume detached x attached
             storageCtrl.graph3 = [
                 {
-                    value: $filter('filter')(storageCtrl.storage, {storage_type: 'Volume', attached: true}).length,
+                    value: $filter('filter')(volumes, {attached: true}).length,
                     color: "#FFA500",
                     highlight: "#FF8800",
                     label: "Attached Volumes"
                 },
                 {
-                    value: $filter('filter')(storageCtrl.storage, {storage_type: 'Volume', attached: false}).length,
+                    value: $filter('filter')(volumes, {attached: false}).length,
                     color:"#54697E",
                     highlight: "#8F9396",
                     label: "Detached Volumes"
                 }
             ];
 
+            var snapshots = storageCtrl.getSnapshots()
+            var snapshotsUsed = storageCtrl._sum(snapshots, 'size') / (1024 * 1024 * 1024)
+
             // snapshot limit GB
             storageCtrl.graph4 = [
                 {
-                    value: project.sec_storage_limit - project.sec_storage_used,
+                    value: project.sec_storage_limit - snapshotsUsed,
                     color:"#54697E",
                     highlight: "#8F9396",
                     label: "Snapshots available (GB)"
                 },
                 {
-                    value: project.sec_storage_used,
+                    value: snapshotsUsed,
                     color: "#FFA500",
                     highlight: "#FF8800",
                     label: "Snapshots used (GB)"
@@ -347,19 +374,19 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
                     value: storageCtrl.oneMonthSnapshots.length,
                     color:"#54697E",
                     highlight: "#8F9396",
-                    label: "Snapshot older than 1 month"
+                    label: "Older than 1 month"
                 },
                 {
                     value: storageCtrl.threeMonthSnapshots.length,
                     color: "#FFA500",
                     highlight: "#FF8800",
-                    label: "Snapshot older than 3 months"
+                    label: "Older than 3 months"
                 },
                 {
                     value: storageCtrl.oneYearSnapshots.length,
                     color:"#FF3700",
                     highlight: "#FC7C58",
-                    label: "Snapshot older than one year"
+                    label: "Older than one year"
                 }
             ];
 
@@ -372,10 +399,16 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
                 animationEasing : "easeOutBounce",
                 animateRotate : true,
                 animateScale : false,
-                responsive: true
+                responsive: true,
             };
         });
     }
+
+    storageCtrl._sum = function(items, prop){
+        return items.reduce( function(a, b){
+            return a + b[prop];
+        }, 0);
+    };
 }
 
 function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){

@@ -48,6 +48,9 @@ function ListFilterService($filter){
             if(filters[field] == value){
                 delete filters[field]
                 filteredList = $filter('filter')(list, filters, function(actual, expected){
+                    if(actual == null){
+                        return false;
+                    }
                     return actual.toString().toLowerCase() == expected.toString().toLowerCase();
                 });
             }else{
@@ -56,6 +59,9 @@ function ListFilterService($filter){
                 filter[field] = value
                 $.extend(filters, filter)
                 filteredList = $filter('filter')(list, filters, function(actual, expected){
+                    if(actual == null){
+                        return false;
+                    }
                     return actual.toString().toLowerCase() == expected.toString().toLowerCase();
                 })
             }

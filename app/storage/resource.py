@@ -43,6 +43,8 @@ class StorageResource(CloudstackResource):
         if request.args.get('zone_id') is not None:
             params['zoneid'] = request.args['zone_id']
 
+        params['pagesize'] = '-1'
+
         params.update(self.filter_by_tag())
 
         return params
@@ -82,8 +84,10 @@ class StorageResource(CloudstackResource):
                     "name": snapshot['name'],
                     "storage_type": 'Snapshot',
                     "state": snapshot['state'],
+                    "size": snapshot.get("volumesize"),
                     "snapshot_state": 'Attached' if snapshot.get('vmid') is not None else 'Detached',
                     "zone_id": snapshot.get('zoneid'),
+                    "zone_name": snapshot.get('zonename'),
                     "created_at": snapshot['created'],
                     "type": snapshot['snapshottype'],
                     "volume_name": snapshot['volumename']
