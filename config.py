@@ -2,7 +2,8 @@
 import os
 
 DEBUG = True
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+if os.environ.get('OAUTHLIB_INSECURE_TRANSPORT') is None:
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 SECRET_KEY = os.getenv('SESSION_SECRET_KEY', '1')
 OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
