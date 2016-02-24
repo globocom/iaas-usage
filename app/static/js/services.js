@@ -4,7 +4,7 @@ function RegionService($rootScope) {
             return [
                 {key: 'ebt', value: 'RJEBT'},
                 {key: 'cta', value: 'RJCTA'},
-                {key: 'lab', value: 'RJLAB'}
+                {key: 'cme', value: 'RJCME'},
             ]
         },
         getCurrentRegion: function(){
