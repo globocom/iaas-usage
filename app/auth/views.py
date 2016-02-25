@@ -11,32 +11,29 @@ def login():
     client_id = app.config['OAUTH_CLIENT_ID']
     client_secret = app.config['OAUTH_CLIENT_SECRET']
     token_url = app.config['OAUTH_TOKEN_URL']
-    oauth_redirect_url = app.config['OAUTH_REDIRECT_URL']
-    if(oauth_redirect_url is not None):
-        redirect_uri = oauth_redirect_url + '/login'
-    else:
-        redirect_uri = url_for('index', _external=True) + 'login'
+    redirect_url = app.config['OAUTH_REDIRECT_URL']
 
-    oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_uri)
+    if redirect_url is None:
+        redirect_url = url_for('index', _external=True)
+
+    oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_url + 'login')
     oauth2_session.fetch_token(token_url, client_secret=client_secret, authorization_response=request.url)
 
     authenticate_user(oauth2_session)
 
-    return redirect('/')
+    return redirect(redirect_url)
 
 
 @app.route('/logout')
 def logout():
     logout_url = app.config['OAUTH_LOGOUT_URL']
-    oauth_redirect_url = app.config['OAUTH_REDIRECT_URL']
+    redirect_url = app.config['OAUTH_REDIRECT_URL']
     logout_user()
 
-    if(oauth_redirect_url is not None):
-        redirect_uri = oauth_redirect_url
-    else:
-        redirect_uri = url_for('index', _external=True)
+    if redirect_url is None:
+        redirect_url = url_for('index', _external=True)
 
-    logout_url = logout_url + '?redirect_uri=' + redirect_uri
+    logout_url = logout_url + '?redirect_uri=' + redirect_url
     return redirect(logout_url)
 
 

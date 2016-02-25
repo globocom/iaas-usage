@@ -20,14 +20,12 @@ def required_login(func):
         if not user_is_authenticated:
             client_id = app.config['OAUTH_CLIENT_ID']
             authorization_url = app.config['OAUTH_AUTH_URL']
-            oauth_redirect_url = app.config['OAUTH_REDIRECT_URL']
+            redirect_url = app.config['OAUTH_REDIRECT_URL']
 
-            if(oauth_redirect_url is not None):
-                redirect_uri = oauth_redirect_url + '/login'
-            else:
-                redirect_uri = url_for('login', _external=True)
+            if redirect_url is None:
+                redirect_url = url_for('index', _external=True)
 
-            oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_uri)
+            oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_url + 'login')
 
             authorization_url, state = oauth2_session.authorization_url(authorization_url)
             return redirect(authorization_url)
