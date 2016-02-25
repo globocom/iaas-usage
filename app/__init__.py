@@ -21,7 +21,7 @@ logger = app.logger
 
 @app.before_request
 def redirect_if_not_https():
-    if app.config['OAUTH_REDIRECT_URL'] is not None and request.base_url != app.config['OAUTH_REDIRECT_URL']:
+    if app.config['OAUTH_REDIRECT_URL'] is not None and request.host_url != app.config['OAUTH_REDIRECT_URL']:
         return redirect(app.config['OAUTH_REDIRECT_URL'])
 
 # Resource URL Mappings
