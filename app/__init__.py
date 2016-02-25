@@ -19,13 +19,6 @@ from app.storage.resource import StorageResource
 app.config.from_object('config')
 logger = app.logger
 
-
-@app.before_request
-def redirect_if_not_https():
-    logger.info(request.host_url)
-    if app.config['OAUTH_REDIRECT_URL'] is not None and request.host_url != app.config['OAUTH_REDIRECT_URL']:
-        return redirect(app.config['OAUTH_REDIRECT_URL'])
-
 # Resource URL Mappings
 api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
 api.add_resource(UserResource, '/api/v1/<region>/current_user/', endpoint='user')
