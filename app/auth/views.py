@@ -11,7 +11,11 @@ def login():
     client_id = app.config['OAUTH_CLIENT_ID']
     client_secret = app.config['OAUTH_CLIENT_SECRET']
     token_url = app.config['OAUTH_TOKEN_URL']
-    redirect_uri = url_for('index', _external=True) + 'login'
+    oauth_redirect_url = app.config['OAUTH_REDIRECT_URL']
+    if(oauth_redirect_url is not None):
+        redirect_uri = oauth_redirect_url + '/login'
+    else:
+        redirect_uri = url_for('index', _external=True) + 'login'
 
     oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_uri)
     oauth2_session.fetch_token(token_url, client_secret=client_secret, authorization_response=request.url)
@@ -24,8 +28,16 @@ def login():
 @app.route('/logout')
 def logout():
     logout_url = app.config['OAUTH_LOGOUT_URL']
+    oauth_redirect_url = app.config['OAUTH_REDIRECT_URL']
     logout_user()
-    return redirect(logout_url + '?redirect_uri=' + url_for('index', _external=True))
+
+    if(oauth_redirect_url is not None):
+        redirect_uri = oauth_redirect_url
+    else:
+        redirect_uri = url_for('index', _external=True)
+
+    logout_url = logout_url + '?redirect_uri=' + redirect_uri
+    return redirect(logout_url)
 
 
 def authenticate_user(oauth2_session):
