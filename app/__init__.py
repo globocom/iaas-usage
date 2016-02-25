@@ -1,7 +1,8 @@
 # Import basic app infrastructure objects
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api
 from flask_login import LoginManager
+from werkzeug.utils import redirect
 
 app = Flask(__name__)
 api = Api(app)
@@ -17,6 +18,11 @@ from app.storage.resource import StorageResource
 # Configurations placed in config.py in root directory
 app.config.from_object('config')
 logger = app.logger
+
+@app.before_request
+def redirect_if_not_https():
+    if app.config['OAUTH_REDIRECT_URL'] is not None and request.base_url != app.config['OAUTH_REDIRECT_URL']:
+        return redirect(app.config['OAUTH_REDIRECT_URL'])
 
 # Resource URL Mappings
 api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
