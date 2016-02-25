@@ -19,9 +19,10 @@ from app.storage.resource import StorageResource
 app.config.from_object('config')
 logger = app.logger
 
+
 @app.before_request
 def redirect_if_not_https():
-    logger.debug(request.host_url)
+    logger.info(request.host_url)
     if app.config['OAUTH_REDIRECT_URL'] is not None and request.host_url != app.config['OAUTH_REDIRECT_URL']:
         return redirect(app.config['OAUTH_REDIRECT_URL'])
 
