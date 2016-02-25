@@ -11,7 +11,7 @@ def login():
     client_id = app.config['OAUTH_CLIENT_ID']
     client_secret = app.config['OAUTH_CLIENT_SECRET']
     token_url = app.config['OAUTH_TOKEN_URL']
-    redirect_uri = url_for('index', _external=True) + 'login'
+    redirect_uri = url_for('index', _external=True, _scheme=app.config['SERVER_SCHEME']) + 'login'
 
     oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_uri)
     oauth2_session.fetch_token(token_url, client_secret=client_secret, authorization_response=request.url)
@@ -25,7 +25,7 @@ def login():
 def logout():
     logout_url = app.config['OAUTH_LOGOUT_URL']
     logout_user()
-    return redirect(logout_url + '?redirect_uri=' + url_for('index', _external=True))
+    return redirect(logout_url + '?redirect_uri=' + url_for('index', _external=True, _scheme=app.config['SERVER_SCHEME']))
 
 
 def authenticate_user(oauth2_session):
