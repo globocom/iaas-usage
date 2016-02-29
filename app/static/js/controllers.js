@@ -418,7 +418,9 @@ function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
     projectCtrl.context = $state.current.data.context
     projectCtrl.link = $state.current.data.link
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('responsive', true);
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+        .withOption('responsive', true)
+        .withOption('aaSorting', [[1, 'desc']]);
 
     projectCtrl.listProjects = function(event, user) {
         user = user || userCtrl.user

@@ -139,7 +139,11 @@ describe('Testing Project controller', function() {
                 DTOptionsBuilder: {
                     newOptions: function(){
                         return{
-                            withOption: function(){}
+                            withOption: function(){
+                             return {
+                                    withOption:function(){}
+                                }
+                            }
                         }
                     }
                 }
