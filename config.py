@@ -24,6 +24,6 @@ LOGSTASH_HOST = os.getenv('LOGSTASH_HOST')
 LOGSTASH_PORT = os.getenv('LOGSTASH_PORT')
 USAGE_API_BATCH_SIZE = os.getenv('USAGE_API_BATCH_SIZE', '100')
 USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
-USAGE_TIME = os.getenv('USAGE_TIME', '10:31')
+USAGE_TIME = os.getenv('USAGE_TIME', '04:00')
 USAGE_CACHE_TIME = int(os.getenv('USAGE_CACHE_TIME', 60*60*24)) # 1 day cache
 USAGE_ENABLED = ast.literal_eval(os.getenv('USAGE_ENABLED', 'False'))
