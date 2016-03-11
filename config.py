@@ -1,4 +1,5 @@
 # Statement for enabling the development environment
+import ast
 import os
 
 DEBUG = True
@@ -13,3 +14,16 @@ OAUTH_TOKEN_URL = os.getenv('OAUTH_TOKEN_URL')
 OAUTH_USER_URL = os.getenv('OAUTH_USER_URL')
 OAUTH_LOGOUT_URL = os.getenv('OAUTH_LOGOUT_URL')
 OAUTH_REDIRECT_URL = os.getenv('OAUTH_REDIRECT_URL')
+
+ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
+ELASTICSEARCH_PORT = os.getenv('ELASTICSEARCH_PORT')
+ELASTICSEARCH_CLIENT = os.getenv('ELASTICSEARCH_CLIENT')
+ELASTICSEARCH_INDEX = os.getenv('ELASTICSEARCH_INDEX')
+ELASTICSEARCH_TYPE = os.getenv('ELASTICSEARCH_TYPE')
+LOGSTASH_HOST = os.getenv('LOGSTASH_HOST')
+LOGSTASH_PORT = os.getenv('LOGSTASH_PORT')
+USAGE_API_BATCH_SIZE = os.getenv('USAGE_API_BATCH_SIZE', '100')
+USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
+USAGE_TIME = os.getenv('USAGE_TIME', '10:31')
+USAGE_CACHE_TIME = int(os.getenv('USAGE_CACHE_TIME', 60*60*24)) # 1 day cache
+USAGE_ENABLED = ast.literal_eval(os.getenv('USAGE_ENABLED', 'False'))
