@@ -52,7 +52,6 @@ $(document).ready(function () {
     setTimeout(function(){
         fix_height();
     });
-
 });
 
 // Minimalize menu when screen is less than 768px

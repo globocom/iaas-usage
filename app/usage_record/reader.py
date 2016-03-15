@@ -1,5 +1,5 @@
 import datetime
-from app import app
+from app import app, cache
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 from app.usage_record.measure import MeasureClient
 from dateutil.parser import parse
@@ -27,6 +27,8 @@ class UsageRecordReader:
             params['pagesize'] = app.config['USAGE_API_BATCH_SIZE']
             record_count = 0
 
+            projects = self.get_projects(self.region)
+
             for usage_type_id, usage_type in self.USAGE_TYPES.iteritems():
                 app.logger.info("Processing usage records by type: " + usage_type)
                 params['page'] = '1'
@@ -39,7 +41,9 @@ class UsageRecordReader:
 
                     for r in records:
                         if r.get('project') is not None:
-                            self.measure.create(self.build_usage_record(r, usage_type))
+                            project = next((x for x in projects if x.get('name') == r.get('project')), dict())
+                            account = project.get('account')
+                            self.measure.create(self.build_usage_record(r, account, usage_type))
 
                     params['page'] = str(int(params['page']) + 1)
                     record_count += len(records)
@@ -47,16 +51,17 @@ class UsageRecordReader:
 
             app.logger.info("Execution ended %s records processed." % record_count)
         except:
-            app.logger.error("Error reading usage data. Date: " + date + " Region: " + self.region)
+            app.logger.exception("Error reading usage data. Date: " + date + " Region: " + self.region)
             self.rollback(date)
 
-    def build_usage_record(self, r, usage_type):
+    def build_usage_record(self, r, account, usage_type):
         usage_record = dict()
         usage_record['rawusage'] = float(r.get('rawusage'))
         usage_record['offeringid'] = r.get('offeringid', '-')
         usage_record['project'] = r['project']
         usage_record['usagetype'] = usage_type
         usage_record['date'] = parse(r['startdate']).date().isoformat()
+        usage_record['account'] = account
         usage_record['region'] = self.region
         return usage_record
 
@@ -66,3 +71,6 @@ class UsageRecordReader:
 
     def delete_records(self, date):
         self.measure.delete(self.region, date)
+
+    def get_projects(self, region):
+        return self.acs.listProjects({'simple': 'true', 'listall': 'true'}).get('project')

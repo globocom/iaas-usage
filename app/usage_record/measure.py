@@ -19,13 +19,15 @@ class MeasureClient:
     def create(self, data):
         self.measure.count(app.config['ELASTICSEARCH_TYPE'], dimensions=data)
 
-    def find(self, region, start, end):
-        s = Search(using=self.es, index=app.config['ELASTICSEARCH_INDEX'], doc_type=app.config['ELASTICSEARCH_TYPE']) \
-            .filter('term', region=region) \
-            .filter('range', date={
-                'gte': parse(start).date().isoformat(),
-                'lte': parse(end).date().isoformat()
-            })[0:0]
+    def find(self, region, account, start, end):
+        s = Search(using=self.es, index=app.config['ELASTICSEARCH_INDEX'], doc_type=app.config['ELASTICSEARCH_TYPE'])
+        s = s.filter('term', region=region)
+        if account is not None:
+            s = s.filter('term', account=account)
+        s = s.filter('range', date={
+            'gte': parse(start).date().isoformat(),
+            'lte': parse(end).date().isoformat()
+        })[0:0]
 
         s.aggs.bucket('by_project', 'terms', field='project.raw', size=0) \
             .bucket('by_type', 'terms', field='usagetype.raw') \

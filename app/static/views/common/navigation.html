@@ -28,6 +28,12 @@
                     <span class="nav-label">Storage</span>
                 </a>
             </li>
+            <li ng-class="{active: $state.includes('index.usage')}">
+                <a ui-sref="index.usage">
+                    <i class="fa fa-database"></i>
+                    <span class="nav-label">Usage</span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

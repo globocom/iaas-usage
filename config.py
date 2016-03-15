@@ -27,3 +27,4 @@ USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
 USAGE_TIME = os.getenv('USAGE_TIME', '04:00')
 USAGE_CACHE_TIME = int(os.getenv('USAGE_CACHE_TIME', 60*60*24)) # 1 day cache
 USAGE_ENABLED = ast.literal_eval(os.getenv('USAGE_ENABLED', 'False'))
+USAGE_MINIMUM_TIME = os.getenv('USAGE_MINIMUN_TIME', 1) #1 hour

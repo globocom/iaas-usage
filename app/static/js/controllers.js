@@ -411,6 +411,51 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
     };
 }
 
+
+function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptionsBuilder){
+
+    usageCtrl = this
+    usageCtrl.title = 'Resource usage';
+    usageCtrl.records = []
+    usageCtrl.recordsView = []
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    .withDOM('<"html5buttons"B>lTfgitp')
+    .withOption('responsive', true)
+    .withButtons([{extend: 'copy'}, {extend: 'csv'}, {extend: 'print'}]);
+
+    usageCtrl.listUsageRecords = function(start, end) {
+        if(angular.isUndefined(start)){
+            start = moment().subtract(1, 'months').format('YYYY-MM-DD')
+        }
+        if(angular.isUndefined(end)){
+            end = moment().subtract(1, 'days').format('YYYY-MM-DD')
+        }
+
+        userService.getCurrentUser(function(user){
+            var params = {start_date: start, end_date: end}
+            if(!user.is_admin){
+                params.account_name = user.account_name
+            }
+
+            $http({
+                method: 'GET',
+                url: apiService.buildAPIUrl('/usage_record/', params)
+            }).then(function successCallback(response){
+                usageCtrl.records = response.data.usage;
+                usageCtrl.recordsView = usageCtrl.usage;
+                if(usageCtrl.records.length == 0){
+                    toastr.warning("No usage data was found on the selected date range.");
+                }
+            });
+        })
+    }
+
+    usageCtrl.getRecords = function(){
+        return usageCtrl.records;
+    }
+}
+
 function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
 
     projectCtrl = this
@@ -449,4 +494,5 @@ angular
     .controller('UserCtrl', UserCtrl)
     .controller('ProjectCtrl', ProjectCtrl)
     .controller('InstanceCtrl', InstanceCtrl)
+    .controller('UsageCtrl', UsageCtrl)
     .controller('StorageCtrl', StorageCtrl);

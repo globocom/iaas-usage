@@ -60,6 +60,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.usage', {
+            url: '/usage/',
+            templateUrl: viewPrefix + 'usage_record/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
 }
 
 function loadPlugins($ocLazyLoad) {
