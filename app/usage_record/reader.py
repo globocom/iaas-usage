@@ -1,5 +1,5 @@
 import datetime
-from app import app, cache
+from app import app
 from app.cloudstack.cloudstack_base_resource import CloudstackResource
 from app.usage_record.measure import MeasureClient
 from dateutil.parser import parse
@@ -27,7 +27,7 @@ class UsageRecordReader:
             params['pagesize'] = app.config['USAGE_API_BATCH_SIZE']
             record_count = 0
 
-            projects = self.get_projects(self.region)
+            projects = self.get_projects()
 
             for usage_type_id, usage_type in self.USAGE_TYPES.iteritems():
                 app.logger.info("Processing usage records by type: " + usage_type)
@@ -72,5 +72,5 @@ class UsageRecordReader:
     def delete_records(self, date):
         self.measure.delete(self.region, date)
 
-    def get_projects(self, region):
+    def get_projects(self):
         return self.acs.listProjects({'simple': 'true', 'listall': 'true'}).get('project')

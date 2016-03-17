@@ -1,6 +1,5 @@
 from flask import request
 from flask_restful import reqparse
-import functools
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import CloudstackResource, handle_errors
 from app.usage_record.measure import MeasureClient
@@ -29,7 +28,7 @@ class UsageRecordResource(CloudstackResource):
 
         records = {"usage": []}
 
-        records_grouped_by_type = {'Running VM': [], 'Allocated VM' : [], 'Volume' : [], 'Volume Snapshot': []}
+        records_grouped_by_type = {'Running VM': [], 'Allocated VM': [], 'Volume': [], 'Volume Snapshot': []}
 
         for project_bucket in aggregations['by_project']['buckets']:
             project_name = project_bucket['key']
