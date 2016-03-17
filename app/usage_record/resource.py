@@ -27,7 +27,7 @@ class UsageRecordResource(CloudstackResource):
         compute_offerings = self.get_compute_offerings(region)
         disk_offerings = self.get_disk_offerings(region)
 
-        usage_records = {"usage": []}
+        records = {"usage": []}
 
         records_grouped_by_type = {'Running VM': [], 'Allocated VM' : [], 'Volume' : [], 'Volume Snapshot': []}
 
@@ -52,13 +52,12 @@ class UsageRecordResource(CloudstackResource):
                             "offering_name": offering_name, 'usage': raw_usage, 'account': account, 'domain': domain,
                             'region': region.upper()
                         }
+                        records['usage'].append(usage_record)
+                        records_grouped_by_type[usage_type].append(usage_record)
 
-                    usage_records['usage'].append(usage_record)
-                    records_grouped_by_type[usage_type].append(usage_record)
+        self.calculate_allocated_vm_time(records_grouped_by_type, records)
 
-        self.calculate_allocated_vm_time(records_grouped_by_type, usage_records)
-
-        return usage_records
+        return records
 
     def calculate_allocated_vm_time(self, grouped_usage, result):
         for allocated_vm in grouped_usage['Allocated VM']:
