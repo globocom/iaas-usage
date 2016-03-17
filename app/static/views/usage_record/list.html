@@ -82,8 +82,8 @@
             format: 'MM/DD/YYYY',
             startDate: moment().subtract(1, 'months'),
             endDate: moment(),
-            minDate: '01/01/2012',
-            maxDate: moment().format('DD/MM/YYYY'),
+            minDate: moment().subtract(6, 'months'),
+            maxDate: moment().subtract(1, 'days'),
             dateLimit: { days: 61 },
             showDropdowns: true
         }, function(start, end, label) {
