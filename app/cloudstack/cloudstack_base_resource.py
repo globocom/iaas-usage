@@ -10,10 +10,21 @@ from app.cloudstack.cloudstack_client import CloudStack
 class CloudstackResource(Resource):
 
     def get_cloudstack(self, region):
-        config = self.__get_configs(region)
+        return CloudstackClientFactory.get_instance(region)
+
+
+class CloudstackClientFactory:
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_instance(region):
+        config = CloudstackClientFactory.__get_configs(region)
         return CloudStack(config['api_url'], config['apikey'], config['secretkey'], config['verifysslcert'])
 
-    def __get_configs(self, region):
+    @staticmethod
+    def __get_configs(region):
 
         cloudmonkey_config = os.path.expanduser('~/.cloudmonkey/config')
         if os.path.isfile(cloudmonkey_config):
