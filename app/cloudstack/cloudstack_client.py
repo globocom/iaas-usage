@@ -27,7 +27,7 @@ class SignedAPICall(object):
             self.params.append(key + '=' + urllib.quote_plus(args[key]))
 
     def _create_signature(self):
-        self.query = '&'.join(self.params)
+        self.query = '&'.join(self.params).replace("+", "%20").replace("%3A",":")
         digest = hmac.new(
             self.secret,
             msg=self.query.lower(),
