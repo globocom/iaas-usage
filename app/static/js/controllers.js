@@ -416,8 +416,7 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
 
     usageCtrl = this
     usageCtrl.title = 'Resource usage';
-    usageCtrl.records = []
-    usageCtrl.recordsView = []
+    usageCtrl.records
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
@@ -443,7 +442,6 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
                 url: apiService.buildAPIUrl('/usage_record/', params)
             }).then(function successCallback(response){
                 usageCtrl.records = response.data.usage;
-                usageCtrl.recordsView = usageCtrl.usage;
                 if(usageCtrl.records.length == 0){
                     toastr.warning("No usage data was found on the selected date range.");
                 }

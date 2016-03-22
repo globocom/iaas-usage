@@ -346,3 +346,70 @@ describe('Testing Storage controller', function() {
         expect(ctrl.tags).toEqual([{key: 'key', value: 'value'}])
     })
 });
+
+
+describe('Testing Usage controller', function() {
+
+    var ctrl, httpBackend, $scope
+    var records = {"usage": [{ account: "db", domain: "ROOT", type: "Volume", usage: 15432 }]}
+    var user = {is_admin: true, account_name: 'account'}
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+        userServiceMock = jasmine.createSpyObj('userService', ['getCurrentUser']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend, $stateParams, $filter, apiService) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.buildAPIUrl.and.returnValue('/usage_record/');
+            userServiceMock.getCurrentUser.and.callFake(function(callback){
+                callback(user);
+            });
+
+            $httpBackend.when('GET', '/usage_record/').respond(records);
+
+            ctrl = $controller('UsageCtrl', {
+                $scope: $scope,
+                $http: $http,
+                $stateParams: $stateParams,
+                $filter: $filter,
+                userService: userServiceMock,
+                apiService: apiServiceMock,
+                DTOptionsBuilder: {
+                    newOptions: function(){
+                        return {
+                            withDOM: function(){
+                                return {
+                                    withOption: function(){
+                                        return {
+                                            withButtons:function(){}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should have controller scoped objects set up', function() {
+        expect(ctrl.title).toEqual('Resource usage')
+        expect(ctrl.records).toBeUndefined()
+    });
+
+    it('should list usage records', function() {
+        ctrl.listUsageRecords()
+        httpBackend.expectGET('/usage_record/');
+        httpBackend.flush();
+
+        expect(ctrl.getRecords().length).toEqual(1)
+    });
+});
