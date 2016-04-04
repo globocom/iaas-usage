@@ -33,9 +33,11 @@ api.add_resource(StorageResource, '/api/v1/<region>/storage/', endpoint='storage
 api.add_resource(UsageRecordResource, '/api/v1/<region>/usage_record/', endpoint='usage_record')
 
 if app.config['USAGE_ENABLED']:
+    from app.usage_record.views import index_usage
+
     for region in app.config['USAGE_REGIONS']:
         if region:
-            schedule.every().day.at(app.config['USAGE_TIME']).do(UsageRecordReader(region).send_usage)
+            schedule.every().day.at(app.config['USAGE_TIME']).do(UsageRecordReader(region).index_usage)
 
     def run_schedule():
         while True:

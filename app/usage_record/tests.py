@@ -16,7 +16,7 @@ class UsageRecordReaderTestCase(unittest.TestCase):
         measure_mock = self.mock_measure()
         reader = UsageRecordReader('region')
 
-        reader.send_usage()
+        reader.index_usage()
 
         self.assertEquals(1, measure_mock.delete.call_count)
         self.assertEquals(0, measure_mock.create.call_count)
@@ -36,7 +36,7 @@ class UsageRecordReaderTestCase(unittest.TestCase):
         measure_mock = self.mock_measure(False)
         reader = UsageRecordReader('region')
 
-        reader.send_usage()
+        reader.index_usage()
 
         self.assertEquals(2, measure_mock.delete.call_count)
         self.assertEquals(1, measure_mock.create.call_count)
@@ -56,7 +56,7 @@ class UsageRecordReaderTestCase(unittest.TestCase):
         measure_mock = self.mock_measure()
         reader = UsageRecordReader('region')
 
-        reader.send_usage()
+        reader.index_usage()
 
         self.assertEquals(1, measure_mock.delete.call_count)
         self.assertEquals(4, measure_mock.create.call_count)

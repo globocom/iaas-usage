@@ -14,9 +14,11 @@ class UsageRecordReader:
         self.acs = CloudstackResource().get_cloudstack(region)
         self.measure = MeasureClient()
 
-    def send_usage(self):
+    def index_usage(self, date=None):
         app.logger.info("Processing usage records for the region: " + self.region)
-        date = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+
+        if date is None:
+            date = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 
         try:
             self.delete_records(date)

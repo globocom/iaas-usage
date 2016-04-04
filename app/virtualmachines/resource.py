@@ -13,7 +13,6 @@ class VirtualMachineResource(CloudstackResource):
     @required_login
     @handle_errors
     def get(self, region):
-        self._validate_params()
         response = self.get_cloudstack(region).listGloboVirtualMachines(self._filter_by())
 
         if response.get('errortext') is not None:
@@ -36,10 +35,6 @@ class VirtualMachineResource(CloudstackResource):
                         ft_value = ft_value.lower()
                     vm_count[ft_name][ft_value] = (vm_count[ft_name].get(ft_value, 0) + 1)
         return vm_count
-
-    def _validate_params(self):
-        parser = reqparse.RequestParser()
-        self.args = parser.parse_args(req=request)
 
     def _filter_by(self):
         params = {"listall": "true", "simple": "true"}
@@ -71,19 +66,19 @@ class VirtualMachineResource(CloudstackResource):
             json["count"] = response["count"]
             json["virtual_machines"] = [
                 {
-                    "id": vm["id"],
-                    "name": vm.get("name", vm["instancename"]),
-                    "state": vm["state"],
-                    "instance_name": vm["instancename"],
-                    "zone_name": vm["zonename"],
-                    "zone_id": vm["zoneid"],
+                    "id": vm.get("id"),
+                    "name": vm.get("name", vm.get("instancename")),
+                    "state": vm.get("state"),
+                    "instance_name": vm.get("instancename"),
+                    "zone_name": vm.get("zonename"),
+                    "zone_id": vm.get("zoneid"),
                     "host_name": vm.get("hostname", None),
                     "host_id": vm.get("hostid", None),
                     "os_type_name": vm.get("ostypename", None),
                     "os_type_id": vm.get("ostypeid", None),
                     "service_offering_name": vm.get("serviceofferingname", ""),
                     "service_offering_id": vm.get("service_offering_id", ""),
-                    "ha_enabled": vm["haenable"]
+                    "ha_enabled": vm.get("haenable")
                 }
                 for vm in response['virtualmachine']
             ]
