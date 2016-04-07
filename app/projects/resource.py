@@ -47,6 +47,7 @@ class ProjectResource(CloudstackResource):
                      "volume_limit": int(project['volumelimit']), "volume_used": project['volumetotal'],
                      "sec_storage_limit": int(project['secondarystoragelimit']), "sec_storage_used":  project['secondarystoragetotal'],
                      "snapshot_limit": int(project['snapshotlimit']), "snapshot_used": project['snapshottotal'],
+                     "template_limit": int(project['templatelimit']), "template_used": project['templatetotal'],
                      "account": project["account"]} for project in response['project']
                 ]
             else:

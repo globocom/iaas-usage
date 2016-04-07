@@ -157,6 +157,33 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row" >
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Templates used x Available (GB)</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph7" height="140" chart-click="storageCtrl.filter('storage_type', 'Template', data)"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Templates used x Available (unit)</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div>
+                                <canvas tc-chartjs chart-type="doughnut" chart-options="storageCtrl.doughnutOptions" chart-data="storageCtrl.graph8" height="140" chart-click="storageCtrl.filter('storage_type', 'Template', data)"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div ng-show="storageCtrl.getStorage().length > 0">

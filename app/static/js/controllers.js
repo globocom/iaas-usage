@@ -179,6 +179,10 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
         return $filter('filter')(storageCtrl.storage, {storage_type: 'Volume'})
     }
 
+    storageCtrl.getTemplates = function(){
+        return $filter('filter')(storageCtrl.storage, {storage_type: 'Template'})
+    }
+
     storageCtrl.listStorage = function(){
         console.log('Loading storage')
 
@@ -387,6 +391,41 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
                     color:"#FF3700",
                     highlight: "#FC7C58",
                     label: "Older than one year"
+                }
+            ];
+
+            var templates = storageCtrl.getTemplates()
+            var templatesUsed = storageCtrl._sum(templates, 'size') / (1024 * 1024 * 1024)
+
+            // Templates limit GB
+            storageCtrl.graph7 = [
+                {
+                    value: project.sec_storage_limit - templatesUsed,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Templates available (GB)"
+                },
+                {
+                    value: templatesUsed,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Templates used (GB)"
+                }
+            ];
+
+            // Templates limit units
+            storageCtrl.graph8 = [
+                {
+                    value: project.template_limit - project.template_used,
+                    color:"#54697E",
+                    highlight: "#8F9396",
+                    label: "Templates available (unit)"
+                },
+                {
+                    value: project.template_used,
+                    color: "#FFA500",
+                    highlight: "#FF8800",
+                    label: "Templates used (unit)"
                 }
             ];
 

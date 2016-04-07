@@ -29,6 +29,14 @@ class StorageResource(CloudstackResource):
         if snapshots:
             storages['storage'].extend(self._parse_snapshots(snapshots))
 
+        templates = self.get_cloudstack(region).listTemplates(self._filter_by())
+        if templates.get('errortext') is not None:
+            app.logger.error("Error while retrieving data from cloudstack: %s" % templates['errortext'])
+            return {"message": templates['errortext']}, 400
+
+        if templates:
+            storages['storage'].extend(self._parse_templates(templates))
+
         return storages
 
     def _validate_params(self):
@@ -44,7 +52,7 @@ class StorageResource(CloudstackResource):
             params['zoneid'] = request.args['zone_id']
 
         params['pagesize'] = '-1'
-
+        params['templatefilter'] = 'self'
         params.update(self.filter_by_tag())
 
         return params
@@ -93,6 +101,24 @@ class StorageResource(CloudstackResource):
                     "volume_name": snapshot['volumename']
                 }
                 for snapshot in snapshots.get('snapshot')
+            ]
+        else:
+            return []
+
+    def _parse_templates(self, templates):
+        if templates is not None and templates.get('count') is not None:
+            return [
+                {
+                    "name": template['name'],
+                    "storage_type": 'Template',
+                    "state": template['status'],
+                    "size": template.get("size"),
+                    "zone_id": template.get('zoneid'),
+                    "zone_name": template.get('zonename'),
+                    "created_at": template['created'],
+                    "type": template['templatetype'],
+                }
+                for template in templates.get('template')
             ]
         else:
             return []
