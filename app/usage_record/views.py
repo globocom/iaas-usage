@@ -5,11 +5,11 @@ from auth.utils import required_login
 
 
 @app.route('/index_usage')
-@required_login
 def index_usage():
     try:
-        date_str = request.args.get('date', '')
-        datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        date_str = request.args.get('date', None)
+        if(date_str):
+            datetime.datetime.strptime(date_str, '%Y-%m-%d')
         region = request.args.get('region')
         if region is None:
             return "Parameter 'region' should be informed"
