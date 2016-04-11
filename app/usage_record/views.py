@@ -1,7 +1,6 @@
 import datetime
 from flask import request
 from app import UsageRecordReader, app
-from auth.utils import required_login
 
 
 @app.route('/index_usage')
