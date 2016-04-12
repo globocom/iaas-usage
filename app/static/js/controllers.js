@@ -493,6 +493,50 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     }
 }
 
+function CapacityCtrl($scope, $http, $state, $filter, apiService){
+
+    capacityCtrl = this
+    capacityCtrl.title = 'Cloud capacity'
+    capacityCtrl.capacityReport
+    capacityCtrl.zones
+
+    capacityCtrl.getCapacityReport = function(){
+        $http({
+            method: 'GET',
+            url: apiService.buildAPIUrl('/cloud_capacity/')
+        }).then(function successCallback(response){
+            capacityCtrl.capacityReport = response.data;
+            capacityCtrl.zones = Object.keys(capacityCtrl.capacityReport)
+        });
+    }
+
+    capacityCtrl.getCapacity = function(type, value){
+        if(type == 'CPU'){
+            return '' + $filter('number')(value/ 1024, 2) + ' GHz'
+        }else{
+            var one_tera = (1024 * 1024 * 1024 * 1024)
+            var one_giga = (1024 * 1024 * 1024)
+            if(value >= one_tera){
+                return '' + $filter('number')(value/ one_tera, 2) + ' TB'
+            }else{
+                return '' + $filter('number')(value/ one_giga, 2)  + ' GB'
+            }
+        }
+    }
+
+    capacityCtrl.isAlertLevel = function(resource){
+        return resource.percent_used > 75
+    }
+
+    capacityCtrl.orderByZone = function(zone){
+        return ['BE', 'FE', 'CA', 'BO'].indexOf(zone.slice(-2))
+    }
+
+    capacityCtrl.orderByResourceType = function(resource){
+        return ['CPU', 'Memory', 'Primary Storage', 'Allocated Primary Storage', 'Secondary Storage'].indexOf(resource.type)
+    }
+}
+
 function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
 
     projectCtrl = this
@@ -532,4 +576,5 @@ angular
     .controller('ProjectCtrl', ProjectCtrl)
     .controller('InstanceCtrl', InstanceCtrl)
     .controller('UsageCtrl', UsageCtrl)
+    .controller('CapacityCtrl', CapacityCtrl)
     .controller('StorageCtrl', StorageCtrl);

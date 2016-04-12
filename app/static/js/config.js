@@ -67,6 +67,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.capacity', {
+            url: '/capacity/',
+            templateUrl: viewPrefix + 'capacity/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
 }
 
 function loadPlugins($ocLazyLoad) {

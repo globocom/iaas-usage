@@ -1,9 +1,10 @@
 import unittest
 from mock import patch, Mock
-from app import UsageRecordReader, cache
+from app import cache
 from app.usage_record.usage_record_builder import UsageRecordBuilder
 from app.usage_record.usage_records_samples import full_record_sample, record_sample_with_low_usage, \
     records_with_overlapping_running_and_allocated, record_with_running_time_equals_allocated_time
+from app.usage_record.reader import UsageRecordReader
 
 
 class UsageRecordReaderTestCase(unittest.TestCase):
