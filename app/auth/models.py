@@ -14,10 +14,10 @@ class User:
         return self.is_active
 
     def is_authenticated(self):
-        return self.is_authenticated
+        return self.authenticated
 
     def is_anonymous(self):
-        return self.is_anonymous
+        return self.anonymous
 
     def get_id(self):
         return self.id
