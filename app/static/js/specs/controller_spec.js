@@ -413,3 +413,55 @@ describe('Testing Usage controller', function() {
         expect(ctrl.getRecords().length).toEqual(1)
     });
 });
+
+describe('Testing Capacity controller', function() {
+
+    var ctrl, httpBackend, $scope
+    var capacity = {
+        "zone_name": [
+            {"capacity_total": 100, "capacity_used": 10, "percent_used": "10.0", "type": 'Memory', "zone_id": "1", "zone_name": "zone_name"},
+            {"capacity_total": 100, "capacity_used": 10, "percent_used": "10.0", "type": 'CPU', "zone_id": "1", "zone_name": "zone_name"},
+        ]
+    }
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend, $stateParams, $filter, apiService) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.buildAPIUrl.and.returnValue('/cloud_capacity/');
+            $httpBackend.when('GET', '/cloud_capacity/').respond(capacity);
+
+            ctrl = $controller('CapacityCtrl', {
+                $scope: $scope,
+                $http: $http,
+                $stateParams: $stateParams,
+                $filter: $filter,
+                apiService: apiServiceMock,
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should have controller scoped objects set up', function() {
+        expect(ctrl.title).toEqual('Cloud capacity')
+        expect(ctrl.capacityReport).toBeUndefined()
+        expect(ctrl.zones).toBeUndefined()
+    });
+
+    it('should get capacity report', function() {
+        ctrl.getCapacityReport()
+        httpBackend.expectGET('/cloud_capacity/');
+        httpBackend.flush();
+
+        expect(ctrl.zones.length).toEqual(1)
+        expect(ctrl.zones[0]).toEqual('zone_name')
+        expect(ctrl.capacityReport['zone_name'].length).toEqual(2)
+    });
+});

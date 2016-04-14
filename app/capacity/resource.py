@@ -4,12 +4,7 @@ from app.cloudstack.cloudstack_base_resource import handle_errors, CloudstackRes
 
 class CloudCapacityResource(CloudstackResource):
 
-    capacity_type = {
-        0: 'Memory',
-        1: 'CPU',
-        3: 'Primary Storage',
-        6: 'Secondary Storage',
-    }
+    capacity_type = { 0: 'Memory', 1: 'CPU', 3: 'Primary Storage', 6: 'Secondary Storage'}
 
     @required_login
     @handle_errors
