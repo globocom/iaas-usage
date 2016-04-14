@@ -7,8 +7,7 @@ class CloudCapacityResource(CloudstackResource):
     capacity_type = {
         0: 'Memory',
         1: 'CPU',
-        2: 'Primary Storage',
-        3: 'Allocated Primary Storage',
+        3: 'Primary Storage',
         6: 'Secondary Storage',
     }
 
