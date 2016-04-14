@@ -450,7 +450,6 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
     };
 }
 
-
 function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptionsBuilder){
 
     usageCtrl = this
@@ -537,6 +536,30 @@ function CapacityCtrl($scope, $http, $state, $filter, apiService){
     }
 }
 
+function QuotaCtrl($scope, $http, $stateParams, $filter, apiService, userService){
+
+    quotaCtrl = this
+    quotaCtrl.title = 'Resource Quota'
+    quotaCtrl.projectName = decodeURIComponent($stateParams.projectName);
+
+    quotaCtrl.getProjectQuota = function(){
+        var projectId = $stateParams.projectId
+        userService.getCurrentUser(function(user){
+            $http({
+                method: 'GET',
+                url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, id: projectId, is_admin: user.is_admin})
+            }).then(function successCallback(response){
+                quotaCtrl.project = response.data[0];
+                $scope.project = quotaCtrl.project
+            });
+        });
+    }
+
+    quotaCtrl.getPercentValue = function(used, limit){
+        return $filter('number')((used / limit * 100), 2);
+    }
+}
+
 function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
 
     projectCtrl = this
@@ -577,4 +600,5 @@ angular
     .controller('InstanceCtrl', InstanceCtrl)
     .controller('UsageCtrl', UsageCtrl)
     .controller('CapacityCtrl', CapacityCtrl)
+    .controller('QuotaCtrl', QuotaCtrl)
     .controller('StorageCtrl', StorageCtrl);

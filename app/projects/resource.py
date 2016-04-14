@@ -42,13 +42,19 @@ class ProjectResource(CloudstackResource):
         if response is not None and response.get('count') is not None:
             if self.args.get('id') is not None:
                 return [
-                    {"name": self._get_project_name(project), "id": project['id'], "vm_count": project["vmtotal"],
-                     "primary_storage_limit": int(project['primarystoragelimit']), "primary_storage_used":  project['primarystoragetotal'],
-                     "volume_limit": int(project['volumelimit']), "volume_used": project['volumetotal'],
-                     "sec_storage_limit": int(project['secondarystoragelimit']), "sec_storage_used":  project['secondarystoragetotal'],
-                     "snapshot_limit": int(project['snapshotlimit']), "snapshot_used": project['snapshottotal'],
-                     "template_limit": int(project['templatelimit']), "template_used": project['templatetotal'],
-                     "account": project["account"]} for project in response['project']
+                    {
+                    "name": self._get_project_name(project), "id": project['id'], "vm_count": project["vmtotal"],
+                    "primary_storage_limit": int(project['primarystoragelimit']), "primary_storage_used":  project['primarystoragetotal'],
+                    "volume_limit": int(project['volumelimit']), "volume_used": project['volumetotal'],
+                    "sec_storage_limit": int(project['secondarystoragelimit']), "sec_storage_used":  project['secondarystoragetotal'],
+                    "snapshot_limit": int(project['snapshotlimit']), "snapshot_used": project['snapshottotal'],
+                    "template_limit": int(project['templatelimit']), "template_used": project['templatetotal'],
+                    "vm_limit": int(project['vmlimit']), "vm_used": project['vmtotal'],
+                    "cpu_limit": int(project['cpulimit']), "cpu_used": project['cputotal'],
+                    "memory_limit": int(project['memorylimit']), "memory_used": project['memorytotal'],
+                    "account": project["account"]
+                     }
+                    for project in response['project']
                 ]
             else:
                 return [

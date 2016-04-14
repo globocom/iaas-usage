@@ -1,0 +1,126 @@
+<div ng-controller="QuotaCtrl as quotaCtrl">
+    <div class="row wrapper border-bottom white-bg page-heading" >
+        <div class="col-lg-10">
+            <h2>
+                {[ quotaCtrl.projectName ]} {[ quotaCtrl.title ]}
+            </h2>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content" ng-init="quotaCtrl.getProjectQuota()">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div>
+                            <div>
+                                <span>CPU Cores(<strong>{[ quotaCtrl.getPercentValue(project.cpu_used, project.cpu_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.cpu_used]} / {[project.cpu_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.cpu_used, project.cpu_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Memory (<strong>{[ quotaCtrl.getPercentValue(project.memory_used, project.memory_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.memory_used]} / {[project.memory_limit]} (MiB)
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.memory_used, project.memory_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Virtual Machine (<strong>{[ quotaCtrl.getPercentValue(project.vm_used, project.vm_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.vm_used]} / {[project.vm_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.vm_used, project.vm_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Volume (<strong>{[ quotaCtrl.getPercentValue(project.volume_used, project.volume_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.volume_used]} / {[project.volume_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.volume_used, project.volume_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Template (<strong>{[ quotaCtrl.getPercentValue(project.template_used, project.template_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.template_used]} / {[project.template_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.template_used, project.template_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Snapshot (<strong>{[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.snapshot_used]} / {[project.snapshot_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Snapshot (<strong>{[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.snapshot_used]} / {[project.snapshot_limit]}
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Primary Storage (<strong>{[ quotaCtrl.getPercentValue(project.primary_storage_used, project.primary_storage_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.primary_storage_used]} / {[project.primary_storage_limit]} (GiB)
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.primary_storage_used, project.primary_storage_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <span>Secondary Storage (<strong>{[ quotaCtrl.getPercentValue(project.sec_storage_used, project.sec_storage_limit) ]} %</strong>)</span>
+                                <small class="pull-right">
+                                    {[project.sec_storage_used]} / {[project.sec_storage_limit]} (GiB)
+                                </small>
+                            </div>
+                            <div class="progress progress-small">
+                                <div style="width: {[ quotaCtrl.getPercentValue(project.sec_storage_used, project.sec_storage_limit) ]}%;" class="progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

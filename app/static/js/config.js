@@ -74,6 +74,25 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.quota_projects', {
+            url: '/quota/projects',
+            templateUrl: viewPrefix + 'projects/list.html',
+            data:{
+                context: 'Resource Quota',
+                link: 'index.quota({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+            },
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
+        .state('index.quota', {
+            url: '/quota/:projectName/:projectId',
+            templateUrl: viewPrefix + 'quota/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
+
 }
 
 function loadPlugins($ocLazyLoad) {
