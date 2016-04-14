@@ -85,18 +85,6 @@
 
                         <div>
                             <div>
-                                <span>Snapshot (<strong>{[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]} %</strong>)</span>
-                                <small class="pull-right">
-                                    {[project.snapshot_used]} / {[project.snapshot_limit]}
-                                </small>
-                            </div>
-                            <div class="progress progress-small">
-                                <div style="width: {[ quotaCtrl.getPercentValue(project.snapshot_used, project.snapshot_limit) ]}%;" class="progress-bar"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div>
                                 <span>Primary Storage (<strong>{[ quotaCtrl.getPercentValue(project.primary_storage_used, project.primary_storage_limit) ]} %</strong>)</span>
                                 <small class="pull-right">
                                     {[project.primary_storage_used]} / {[project.primary_storage_limit]} (GiB)
