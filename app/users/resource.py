@@ -21,15 +21,11 @@ class UserResource(CloudstackResource):
         return self._to_json(response)
 
     def _to_json(self, response):
-        if response is not None and response.get('count') is not None:
-            return [
-                {
-                    "id": user["id"], "username": user["username"],
-                    "first_name": user["firstname"], "last_name": user["lastname"],
-                    "account_name": user["account"], "domain_id": user["domainid"],
-                    "is_admin": (user["accounttype"] == 1), "picture": str(current_user.picture)
-                }
-                for user in response['user']
-            ]
-        else:
-            return []
+        if response is not None and response.get('user') is not None:
+            user = response.get('user')[0]
+            return {
+                "id": user["id"], "username": user["username"],
+                "first_name": user["firstname"], "last_name": user["lastname"],
+                "account_name": user["account"], "domain_id": user["domainid"],
+                "is_admin": (user["accounttype"] == 1), "picture": str(current_user.picture)
+            }

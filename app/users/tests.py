@@ -16,7 +16,7 @@ class UserResourceTestCase(unittest.TestCase):
     def tearDown(self):
         patch.stopall()
 
-    def test_list_users_given_cloudstack_api_error(self):
+    def test_get_current_user_given_cloudstack_api_error(self):
         list_users_mock = self.mock_cloudstack_list_users({"errortext": "Unable to find user"})
 
         response = self.app.get('/api/v1/lab/current_user/')
@@ -25,7 +25,7 @@ class UserResourceTestCase(unittest.TestCase):
         self.assertEquals("Unable to find user", json.loads(response.data)['message'])
         list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 
-    def test_list_users_given_empty_user_list(self):
+    def test_get_current_user_given_user_not_found(self):
         list_users_mock = self.mock_cloudstack_list_users({})
 
         response = self.app.get('/api/v1/lab/current_user/')
@@ -34,7 +34,7 @@ class UserResourceTestCase(unittest.TestCase):
         self.assertEquals("No user returned for the username test@email.com", json.loads(response.data)['message'])
         list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 
-    def test_list_users(self):
+    def test_get_current_user(self):
         users = {"count": 1, "user": [{
                  "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user","accounttype": 1,
                  "domainid": "1", "account": "acc", "firstname": "First", "lastname": "Last"
@@ -45,11 +45,11 @@ class UserResourceTestCase(unittest.TestCase):
         response = self.app.get('/api/v1/lab/current_user/')
 
         self.assertEquals(200, response.status_code)
-        expected = [{
+        expected = {
             "id": "28f40084-2aed-11e5-8fce-76b2dd27c282", "username": "user", "is_admin": True,
             "account_name": "acc", "domain_id": "1","first_name": "First", "last_name": "Last",
             "picture": "gravatar.com/picture.jpg"
-        }]
+        }
         self.assertEquals(expected, json.loads(response.data))
         list_users_mock.listUsers.assert_called_with({'username': 'test@email.com', 'listall': 'true'})
 

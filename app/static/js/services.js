@@ -89,8 +89,8 @@ function UserService($rootScope, $http, apiService, regionService) {
                 method: 'GET',
                 url: apiService.buildAPIUrl('/current_user/')
             }).then(function successCallback(response){
-                $rootScope.currentUser = response.data[0]
-                callback(response.data[0])
+                $rootScope.currentUser = response.data
+                callback(response.data)
             });
         }
     }
