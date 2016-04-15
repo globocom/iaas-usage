@@ -9,15 +9,15 @@ describe('Testing Region controller', function() {
 
     beforeEach(function (done){
         module('iaasusage');
-        regionServiceMock = jasmine.createSpyObj('regionService', ['listRegions', 'getCurrentRegion', 'changeCurrentRegion']);
+        regionServiceMock = jasmine.createSpyObj('regionService', ['listRegions', 'getCurrentRegion', 'reloadWithRegion']);
 
         inject(function($rootScope, $controller) {
             $scope = $rootScope.$new();
             rootScope = $rootScope
-            spyOn(rootScope, '$broadcast').and.callThrough();
 
             regionServiceMock.listRegions.and.returnValue(regions);
             regionServiceMock.getCurrentRegion.and.returnValue(region1);
+            regionServiceMock.reloadWithRegion.and.returnValue(null);
 
             ctrl = $controller('RegionCtrl', {
                 $scope: $scope,
@@ -46,8 +46,7 @@ describe('Testing Region controller', function() {
     it('should change the current region', function() {
         ctrl.changeRegion(region2)
         expect(regionServiceMock.getCurrentRegion).toHaveBeenCalled();
-        expect(regionServiceMock.changeCurrentRegion).toHaveBeenCalled();
-        expect(rootScope.$broadcast).toHaveBeenCalledWith('regionChanged');
+        expect(regionServiceMock.reloadWithRegion).toHaveBeenCalled();
     });
 
     it('should change selector when toggleSelector is called', function() {
@@ -56,11 +55,6 @@ describe('Testing Region controller', function() {
         expect(ctrl.selectorClass).toEqual('sidebar-open')
         ctrl.toggleSelector()
         expect(ctrl.selectorClass).toBeUndefined()
-    });
-
-    it('should call toggleSelector when event "regionChanged" is triggered', function() {
-        rootScope.$broadcast('regionChanged')
-        expect(ctrl.selectorClass).toEqual('sidebar-open')
     });
 });
 
@@ -74,20 +68,15 @@ describe('Testing User controller', function() {
 
         userServiceMock = jasmine.createSpyObj('userService', ['getCurrentUser']);
 
-        inject(function($rootScope, $controller, $http, $state, $httpBackend) {
+        inject(function($rootScope, $controller) {
             $scope = $rootScope.$new();
-            httpBackend = $httpBackend
-            state = $state
-            spyOn($scope, '$broadcast').and.callThrough();
-            spyOn($state, 'go').and.callFake(function() { });
+
             userServiceMock.getCurrentUser.and.callFake(function(callback){
                 callback(user);
             });
 
             ctrl = $controller('UserCtrl', {
                 $scope: $scope,
-                $http: $http,
-                $state: $state,
                 userService: userServiceMock
             });
         });
@@ -100,14 +89,7 @@ describe('Testing User controller', function() {
         ctrl.loadUser()
 
         expect(ctrl.user).toEqual(user)
-        expect($scope.$broadcast).toHaveBeenCalledWith('userLoaded', user);
         expect(userServiceMock.getCurrentUser).toHaveBeenCalled()
-    });
-
-    it('should trigger event when regionChanged event is received', function() {
-        $scope.$broadcast('regionChanged')
-        expect(userServiceMock.getCurrentUser).toHaveBeenCalled()
-        expect(state.go).toHaveBeenCalledWith('index.instances_projects');
     });
 });
 
@@ -121,12 +103,16 @@ describe('Testing Project controller', function() {
         module('iaasusage');
 
         apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+        userServiceMock = jasmine.createSpyObj('userService', ['getCurrentUser']);
 
         inject(function($rootScope, $controller, $http, $httpBackend, $state) {
             $scope = $rootScope.$new();
             httpBackend = $httpBackend
             $state.current.data = {context: 'Projects', link: 'link'}
 
+            userServiceMock.getCurrentUser.and.callFake(function(callback){
+                callback(user);
+            });
             apiServiceMock.buildAPIUrl.and.returnValue('/project/');
 
             $httpBackend.when('GET', '/project/').respond(projects);
@@ -136,6 +122,7 @@ describe('Testing Project controller', function() {
                 $http: $http,
                 $state: $state,
                 apiService: apiServiceMock,
+                userService: userServiceMock,
                 DTOptionsBuilder: {
                     newOptions: function(){
                         return{
@@ -159,6 +146,7 @@ describe('Testing Project controller', function() {
         httpBackend.expectGET('/project/');
         httpBackend.flush();
         expect(ctrl.projects).not.toBeUndefined()
+        expect(userServiceMock.getCurrentUser).toHaveBeenCalled()
     });
 });
 

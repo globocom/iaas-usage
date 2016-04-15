@@ -77,11 +77,6 @@ describe('Testing RegionService', function() {
         var regions = service.listRegions()
         expect(regions.length).toEqual(3)
     });
-
-    it('should set the current region', function() {
-        service.changeCurrentRegion({key: 'lab', value: 'RJLAB'})
-        expect(service.getCurrentRegion()).toEqual({key: 'lab', value: 'RJLAB'})
-    });
 });
 
 describe('Testing ApiService', function() {

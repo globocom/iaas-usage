@@ -17,31 +17,31 @@
                 </div>
             </li>
             <li ng-class="{active: ($state.includes('index.instances') || $state.includes('index.instances_projects'))}">
-                <a ui-sref="index.instances_projects">
+                <a ui-sref="index.instances_projects({'region': region.key})">
                     <i class="fa fa-desktop"></i>
                     <span class="nav-label">Instances</span>
                 </a>
             </li>
             <li ng-class="{active: ($state.includes('index.storage') || $state.includes('index.storage_projects'))}">
-                <a ui-sref="index.storage_projects">
+                <a ui-sref="index.storage_projects({'region': region.key})">
                     <i class="fa fa-database"></i>
                     <span class="nav-label">Storage</span>
                 </a>
             </li>
             <li ng-class="{active: $state.includes('index.usage')}">
-                <a ui-sref="index.usage">
+                <a ui-sref="index.usage({'region': region.key})">
                     <i class="fa fa-calculator"></i>
                     <span class="nav-label">Usage</span>
                 </a>
             </li>
             <li ng-class="{active: ($state.includes('index.quota') || $state.includes('index.quota_projects'))}">
-                <a ui-sref="index.quota_projects">
+                <a ui-sref="index.quota_projects({'region': region.key})">
                     <i class="fa fa-tachometer"></i>
                     <span class="nav-label">Resource Quota</span>
                 </a>
             </li>
             <li ng-class="{active: $state.includes('index.capacity')}">
-                <a ui-sref="index.capacity">
+                <a ui-sref="index.capacity({'region': region.key})">
                     <i class="fa fa-cloud"></i>
                     <span class="nav-label">Capacity</span>
                 </a>

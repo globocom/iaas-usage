@@ -11,7 +11,7 @@ var staticPrefix = 'static/'
 var viewPrefix = staticPrefix + 'views/';
 
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise('/instances/projects');
+    $urlRouterProvider.otherwise('/ebt/instances/projects');
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -32,67 +32,66 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             }
         })
         .state('index.instances_projects', {
-            url: '/instances/projects',
+            url: '/:region/instances/projects',
             templateUrl: viewPrefix + 'projects/list.html',
             data:{
                 context: 'Instances',
-                link: 'index.instances({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+                link: 'index.instances({projectName: projectCtrl.getProjectName(project), projectId: project.id, region: region.key})'
             },
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.storage_projects', {
-            url: '/storage/projects',
+            url: '/:region/storage/projects',
             templateUrl: viewPrefix + 'projects/list.html',
             data:{
                 context: 'Storage',
-                link: 'index.storage({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+                link: 'index.storage({projectName: projectCtrl.getProjectName(project), projectId: project.id, region: region.key})'
             },
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.storage', {
-            url: '/storage/:projectName/:projectId',
+            url: '/:region/storage/:projectName/:projectId',
             templateUrl: viewPrefix + 'storage/list.html',
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.usage', {
-            url: '/usage/',
+            url: '/:region/usage/',
             templateUrl: viewPrefix + 'usage_record/list.html',
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.capacity', {
-            url: '/capacity/',
+            url: '/:region/capacity/',
             templateUrl: viewPrefix + 'capacity/list.html',
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.quota_projects', {
-            url: '/quota/projects',
+            url: '/:region/quota/projects',
             templateUrl: viewPrefix + 'projects/list.html',
             data:{
                 context: 'Resource Quota',
-                link: 'index.quota({projectName: projectCtrl.getProjectName(project), projectId: project.id})'
+                link: 'index.quota({projectName: projectCtrl.getProjectName(project), projectId: project.id, region: region.key})'
             },
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
         .state('index.quota', {
-            url: '/quota/:projectName/:projectId',
+            url: '/:region/quota/:projectName/:projectId',
             templateUrl: viewPrefix + 'quota/list.html',
             resolve: {
                 loadPlugin: loadPlugins
             }
         })
-
 }
 
 function loadPlugins($ocLazyLoad) {

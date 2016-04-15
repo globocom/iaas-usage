@@ -1,17 +1,29 @@
-function RegionService($rootScope) {
+function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) {
+    var regions =  [
+        {key: 'ebt', value: 'RJEBT'},
+        {key: 'cta', value: 'RJCTA'},
+        {key: 'cme', value: 'RJCME'},
+    ]
+
     return {
         listRegions: function() {
-            return [
-                {key: 'ebt', value: 'RJEBT'},
-                {key: 'cta', value: 'RJCTA'},
-                {key: 'cme', value: 'RJCME'},
-            ]
+            return regions
         },
         getCurrentRegion: function(){
-           return ($rootScope.currentRegion || {key: 'ebt', value: 'RJEBT'})
+            if($stateParams.region){
+                $rootScope.region = $filter('filter')(regions, {key: $stateParams.region})[0]
+            }
+            if(!$rootScope.region){
+                $rootScope.region = regions[0]
+            }
+           return $rootScope.region
         },
-        changeCurrentRegion: function(region){
-            $rootScope.currentRegion = region
+        reloadWithRegion: function(region){
+            var stateName = $state.current.name
+            if(stateName == 'index.storage' || stateName == 'index.instances' || stateName == 'index.quota'){
+                stateName = stateName + '_projects'
+            }
+            $state.go(stateName, {region: region});
         }
     };
 }

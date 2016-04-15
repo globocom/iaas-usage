@@ -1,4 +1,4 @@
-function RegionCtrl(regionService, $rootScope, $scope){
+function RegionCtrl(regionService, $rootScope, $scope, userService){
 
     regionCtrl = this
     regionCtrl.regionList = regionService.listRegions()
@@ -10,25 +10,21 @@ function RegionCtrl(regionService, $rootScope, $scope){
 
     regionCtrl.changeRegion = function(region){
         if(region.key != regionService.getCurrentRegion().key){
-            regionService.changeCurrentRegion(region)
-            $rootScope.$broadcast('regionChanged')
+            regionService.reloadWithRegion(region.key)
+            regionCtrl.toggleSelector()
         }
     }
 
     regionCtrl.toggleSelector = function(){
-        regionCtrl.selectorClass = angular.isUndefined(regionCtrl.selectorClass) ? 'sidebar-open' : undefined
+        regionCtrl.selectorClass = !regionCtrl.selectorClass ? 'sidebar-open' : undefined
     }
 
     regionCtrl.getCurrentRegion = function(){
         return regionService.getCurrentRegion()
     }
-
-    $scope.$on('regionChanged', function(){
-        regionCtrl.toggleSelector()
-    })
 }
 
-function UserCtrl($scope, $http, $state, userService) {
+function UserCtrl($scope, userService) {
 
     userCtrl = this;
     userCtrl.user = null;
@@ -41,15 +37,14 @@ function UserCtrl($scope, $http, $state, userService) {
             if(angular.isDefined(callback)){
                 callback()
             }
-            $scope.$broadcast('userLoaded', userCtrl.user);
         })
     }
 
-    $scope.$on('regionChanged', function(){
-        userCtrl.loadUser(function(){
-            $state.go('index.instances_projects');
-        })
-    })
+    $scope.$watch('region', function(newValue, oldValue) {
+        if(newValue != oldValue){
+            userCtrl.loadUser()
+        }
+    });
 };
 
 function InstanceCtrl($scope, $http, $stateParams, $filter, apiService, listFilterService, tagService, DTOptionsBuilder){
@@ -462,6 +457,8 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     .withButtons([{extend: 'copy'}, {extend: 'csv'}, {extend: 'print'}]);
 
     usageCtrl.listUsageRecords = function(start, end) {
+        console.log('Loading usage records')
+
         if(angular.isUndefined(start)){
             start = moment().subtract(1, 'months').format('YYYY-MM-DD')
         }
@@ -500,6 +497,8 @@ function CapacityCtrl($scope, $http, $state, $filter, apiService){
     capacityCtrl.zones
 
     capacityCtrl.getCapacityReport = function(){
+        console.log('Loading capacity report')
+
         $http({
             method: 'GET',
             url: apiService.buildAPIUrl('/cloud_capacity/')
@@ -536,22 +535,18 @@ function CapacityCtrl($scope, $http, $state, $filter, apiService){
     }
 }
 
-function QuotaCtrl($scope, $http, $stateParams, $filter, apiService, userService){
+function QuotaCtrl($scope, $http, $stateParams, $filter, resourceLimitService){
 
     quotaCtrl = this
     quotaCtrl.title = 'Resource Quota'
     quotaCtrl.projectName = decodeURIComponent($stateParams.projectName);
 
     quotaCtrl.getProjectQuota = function(){
-        var projectId = $stateParams.projectId
-        userService.getCurrentUser(function(user){
-            $http({
-                method: 'GET',
-                url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, id: projectId, is_admin: user.is_admin})
-            }).then(function successCallback(response){
-                quotaCtrl.project = response.data[0];
-                $scope.project = quotaCtrl.project
-            });
+        console.log('Loading resource limits')
+
+        resourceLimitService.getResourceLimits($stateParams.projectId, function(project){
+            quotaCtrl.project = project;
+            $scope.project = project
         });
     }
 
@@ -560,7 +555,7 @@ function QuotaCtrl($scope, $http, $stateParams, $filter, apiService, userService
     }
 }
 
-function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
+function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBuilder){
 
     projectCtrl = this
     projectCtrl.projects
@@ -572,24 +567,21 @@ function ProjectCtrl($scope, $http, $state, apiService, DTOptionsBuilder){
         .withOption('aaSorting', [[1, 'desc']]);
 
     projectCtrl.listProjects = function(event, user) {
-        user = user || userCtrl.user
-        if(angular.isUndefined(this.projects) && user != null){
-            console.log('Loading projects')
+        console.log('Loading projects')
 
+        userService.getCurrentUser(function(user){
             $http({
                 method: 'GET',
                 url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
             }).then(function successCallback(response){
                 projectCtrl.projects = response.data;
             });
-        }
+        })
     }
 
     projectCtrl.getProjectName = function(project){
         return encodeURIComponent(project.name)
     }
-
-    $scope.$on('userLoaded', projectCtrl.listProjects)
 }
 
 angular
