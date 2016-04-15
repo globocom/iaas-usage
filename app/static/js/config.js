@@ -25,7 +25,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: viewPrefix + 'common/content.html'
         })
         .state('index.instances', {
-            url: '/instances/:projectName/:projectId',
+            url: '/:region/instances/:projectName/:projectId',
             templateUrl: viewPrefix + 'instances/vm_count.html',
             resolve: {
                 loadPlugin: loadPlugins
