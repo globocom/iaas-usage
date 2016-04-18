@@ -31,7 +31,7 @@
             <li ng-class="{active: $state.includes('index.usage')}">
                 <a ui-sref="index.usage({'region': region.key})">
                     <i class="fa fa-calculator"></i>
-                    <span class="nav-label">Usage</span>
+                    <span class="nav-label">Resource Usage</span>
                 </a>
             </li>
             <li ng-class="{active: ($state.includes('index.quota') || $state.includes('index.quota_projects'))}">
@@ -43,7 +43,7 @@
             <li ng-class="{active: $state.includes('index.capacity')}">
                 <a ui-sref="index.capacity({'region': region.key})">
                     <i class="fa fa-cloud"></i>
-                    <span class="nav-label">Capacity</span>
+                    <span class="nav-label">Cloud Capacity</span>
                 </a>
             </li>
         </ul>

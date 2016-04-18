@@ -448,7 +448,7 @@ function StorageCtrl($scope, $http, $stateParams, $filter, apiService, listFilte
 function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptionsBuilder){
 
     usageCtrl = this
-    usageCtrl.title = 'Resource usage';
+    usageCtrl.title = 'Resource Usage';
     usageCtrl.records
 
     $scope.dtOptions = DTOptionsBuilder.newOptions()
@@ -492,7 +492,7 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
 function CapacityCtrl($scope, $http, $state, $filter, apiService){
 
     capacityCtrl = this
-    capacityCtrl.title = 'Cloud capacity'
+    capacityCtrl.title = 'Cloud Capacity by Zone'
     capacityCtrl.capacityReport
     capacityCtrl.zones
 
