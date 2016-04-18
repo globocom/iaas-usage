@@ -15,7 +15,7 @@ class UsageRecordReader:
         self.measure = MeasureClient()
 
     def index_usage(self, date=None):
-        app.logger.info("Processing usage records for the region: " + self.region)
+        self.log("Starting usage processing")
 
         if date is None:
             date = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
@@ -32,14 +32,14 @@ class UsageRecordReader:
             projects = self.get_projects()
 
             for usage_type_id, usage_type in self.USAGE_TYPES.iteritems():
-                app.logger.info("Processing usage records by type: " + usage_type)
+                self.log("Processing usage records by type: " + usage_type)
                 params['page'] = '1'
                 params['type'] = str(usage_type_id)
 
                 records = self.acs.listUsageRecords(params).get('usagerecord')
 
                 while records is not None and len(records) > 0:
-                    app.logger.info("Processing  %s usage records " % len(records))
+                    self.log("Processing  %s usage records " % len(records))
 
                     for r in records:
                         if r.get('project') is not None:
@@ -51,9 +51,9 @@ class UsageRecordReader:
                     record_count += len(records)
                     records = self.acs.listUsageRecords(params).get('usagerecord')
 
-            app.logger.info("Execution ended %s records processed." % record_count)
+            self.log("Execution ended %s records processed." % record_count)
         except:
-            app.logger.exception("Error reading usage data. Date: " + date + " Region: " + self.region)
+            self.log("Error reading usage data. Date: " + date)
             self.rollback(date)
 
     def build_usage_record(self, r, account, usage_type):
@@ -67,8 +67,11 @@ class UsageRecordReader:
         usage_record['region'] = self.region
         return usage_record
 
+    def log(self, message, level='info'):
+        getattr(app.logger, level)(('[%s] ' % self.region.upper()) + message)
+
     def rollback(self, date):
-        app.logger.info("Rolling back operation Date: " + date + " Region: " + self.region)
+        self.log("Rolling back operation Date: " + date)
         self.delete_records(date)
 
     def delete_records(self, date):
