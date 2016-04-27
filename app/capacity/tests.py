@@ -15,7 +15,7 @@ class CloudCapacityResourceTestCase(unittest.TestCase):
         patch.stopall()
 
     def test_list_capacity_given_empty_response(self):
-        list_capacity_mock = self.mock_cloudstack_list_storages({"capacity": []})
+        list_capacity_mock = self.mock_cloudstack_list_capacity({"capacity": []})
         response = self.app.get('/api/v1/lab/cloud_capacity/')
 
         self.assertEquals(200, response.status_code)
@@ -23,7 +23,7 @@ class CloudCapacityResourceTestCase(unittest.TestCase):
         list_capacity_mock.listCapacity.assert_called_with({'pagesize':'-1'})
 
     def test_list_capacity(self):
-        list_capacity_mock = self.mock_cloudstack_list_storages({"capacity": [
+        list_capacity_mock = self.mock_cloudstack_list_capacity({"capacity": [
              {"capacitytotal": 100, "capacityused": 10, "percentused": "10.0", "type": 0, "zoneid": "1", "zonename": "zone_a"}
         ]})
         response = self.app.get('/api/v1/lab/cloud_capacity/')
@@ -38,7 +38,7 @@ class CloudCapacityResourceTestCase(unittest.TestCase):
         self.assertEquals('zone_a', capacity.get('zone_name'))
         list_capacity_mock.listCapacity.assert_called_with({'pagesize':'-1'})
 
-    def mock_cloudstack_list_storages(self, capacity):
+    def mock_cloudstack_list_capacity(self, capacity):
         acs_mock = patch('app.capacity.resource.CloudCapacityResource.get_cloudstack').start()
         list_capacity = Mock()
         list_capacity.listCapacity.return_value = capacity

@@ -23,7 +23,8 @@ from app.projects.resource import ProjectResource
 from app.users.resource import UserResource
 from app.virtualmachines.resource import VirtualMachineResource
 from app.storage.resource import StorageResource
-from capacity.resource import CloudCapacityResource
+from app.capacity.resource import CloudCapacityResource
+from app.service_offering.resource import ServiceOfferingResource
 
 # Resource URL Mappings
 api.add_resource(ProjectResource, '/api/v1/<region>/project/', endpoint='project')
@@ -32,6 +33,7 @@ api.add_resource(VirtualMachineResource, '/api/v1/<region>/virtual_machine/', en
 api.add_resource(StorageResource, '/api/v1/<region>/storage/', endpoint='storage')
 api.add_resource(UsageRecordResource, '/api/v1/<region>/usage_record/', endpoint='usage_record')
 api.add_resource(CloudCapacityResource, '/api/v1/<region>/cloud_capacity/', endpoint='cloud_capacity')
+api.add_resource(ServiceOfferingResource, '/api/v1/<region>/service_offering/', endpoint='service_offering')
 
 from app import views
 from app.auth import views

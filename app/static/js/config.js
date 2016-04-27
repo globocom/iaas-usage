@@ -127,6 +127,10 @@ function loadPlugins($ocLazyLoad) {
         {
             name: 'moment',
             files: [staticPrefix + 'js/plugins/moment/moment.min.js']
+        },
+        {
+            name: 'arrive',
+            files: [staticPrefix + 'js/plugins/arrive/arrive.js']
         }
     ]);
 }

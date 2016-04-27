@@ -111,6 +111,42 @@ function ResourceLimitService($http, userService, apiService) {
     }
 }
 
+function ServiceOfferingService($rootScope, $http, $filter, apiService){
+    return {
+        getServiceOffering: function(name, callback){
+            if(angular.isUndefined($rootScope.offerings)){
+                $http({
+                    cache: true,
+                    method: 'GET',
+                    url: apiService.buildAPIUrl('/service_offering/')
+                }).then(function successCallback(response){
+                    $rootScope.offerings = response.data
+                    callback($filter('filter')($rootScope.offerings, {name: name})[0])
+                });
+            }else{
+                callback($filter('filter')($rootScope.offerings, {name: name})[0])
+            }
+        }
+    }
+}
+
+function ServiceOfferingTooltip(serviceOfferingService){
+    return {
+        restrict: 'E',
+        replace: 'false',
+        template: "<a data-toggle='offering-tip' data-placement='top' data-original-title='{{title}}'>{{name}}</a>",
+        link: function(scope, elem, attrs) {
+            serviceOfferingService.getServiceOffering(attrs.name, function(offering){
+                scope.name = attrs.name
+                if(offering){
+                    scope.title = "CPU Cores: " + offering.cpu_number + " <br/> CPU Speed: "+ offering.cpu_speed +" MHz <br/>RAM: "+ offering.memory +" MB"
+                    $('[data-toggle="offering-tip"]').tooltip({html: true});
+                }
+            })
+        }
+    };
+}
+
 angular
     .module('iaasusage')
     .service('regionService', RegionService)
@@ -118,4 +154,6 @@ angular
     .service('listFilterService', ListFilterService)
     .service('userService', UserService)
     .service('resourceLimitService', ResourceLimitService)
-    .service('apiService', ApiService);
+    .service('apiService', ApiService)
+    .service('serviceOfferingService', ServiceOfferingService)
+    .directive('serviceOfferingTooltip', ServiceOfferingTooltip);

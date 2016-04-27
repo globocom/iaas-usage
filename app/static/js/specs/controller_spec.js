@@ -389,7 +389,7 @@ describe('Testing Usage controller', function() {
     });
 
     it('should have controller scoped objects set up', function() {
-        expect(ctrl.title).toEqual('Resource usage')
+        expect(ctrl.title).toEqual('Resource Usage')
         expect(ctrl.records).toBeUndefined()
     });
 
@@ -438,7 +438,7 @@ describe('Testing Capacity controller', function() {
     });
 
     it('should have controller scoped objects set up', function() {
-        expect(ctrl.title).toEqual('Cloud capacity')
+        expect(ctrl.title).toEqual('Cloud Capacity by Zone')
         expect(ctrl.capacityReport).toBeUndefined()
         expect(ctrl.zones).toBeUndefined()
     });

@@ -451,10 +451,29 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     usageCtrl.title = 'Resource Usage';
     usageCtrl.records
 
+    var buttonCommon = {
+        exportOptions: {
+            format: {
+                body: function ( data, column, row ) {
+                    if(column == 7){
+                        //remove offering tooltips for print/export
+                        return $($('<div>').append(data).find('a')[0]).text()
+                    }else{
+                        return data;
+                    }
+                }
+            }
+        }
+    }
+
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
     .withOption('responsive', true)
-    .withButtons([{extend: 'copy'}, {extend: 'csv'}, {extend: 'print'}]);
+    .withButtons([
+        $.extend(true, {}, buttonCommon, { extend: 'copyHtml5' }),
+        $.extend(true, {}, buttonCommon, { extend: 'excelHtml5' }),
+        $.extend(true, {}, buttonCommon, { extend: 'print' })
+    ]);
 
     usageCtrl.listUsageRecords = function(start, end) {
         console.log('Loading usage records')

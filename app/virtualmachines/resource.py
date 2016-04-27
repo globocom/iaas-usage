@@ -31,8 +31,6 @@ class VirtualMachineResource(CloudstackResource):
                 vm_count[ft_name] = vm_count.get(ft_name, {})
                 ft_value = vm.get(ft_name)
                 if ft_value is not None:
-                    if (ft_name == "zonename") or (ft_name == "serviceofferingname"):
-                        ft_value = ft_value.lower()
                     vm_count[ft_name][ft_value] = (vm_count[ft_name].get(ft_value, 0) + 1)
         return vm_count
 

@@ -87,7 +87,11 @@
                                 </thead>
                                 <tbody>
                                     <tr class="vm-feature" ng-class="{'feature-filter': instanceCtrl.isFilteredField('service_offering_name', item.name)}" ng-repeat="item in instanceCtrl.getVmCountByFeature('serviceofferingname') | orderBy:'-count'" >
-                                        <td  ng-click="instanceCtrl.filter('Compute Offering', 'service_offering_name', item.name)">{[item.name]}</td>
+                                        <td  ng-click="instanceCtrl.filter('Compute Offering', 'service_offering_name', item.name)">
+                                            <service-offering-tooltip name="{[item.name]}">
+                                                {[item.name]}
+                                            </service-offering-tooltip>
+                                        </td>
                                         <td  ng-click="instanceCtrl.filter('Compute Offering', 'service_offering_name', item.name)">{[item.count]}</td>
                                     </tr>
                                 </tbody>

@@ -59,7 +59,11 @@
                                         <td>{[record.start_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.end_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.type]}</td>
-                                        <td>{[record.offering_name]}</td>
+                                        <td class="service-offering">
+                                            <service-offering-tooltip name="{[record.offering_name]}">
+                                                {[record.offering_name]}
+                                            </service-offering-tooltip>
+                                        </td>
                                         <td>{[record.usage | number:0]}</td>
                                     </tr>
                                 </tbody>
@@ -89,6 +93,10 @@
         }, function(start, end, label) {
             $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
             usageCtrl.listUsageRecords(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'))
+        });
+
+        $(document).arrive(".service-offering", function(){
+            $('[data-toggle="offering-tip"]').tooltip({html: true});
         });
     });
 </script>
