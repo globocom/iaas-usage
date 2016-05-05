@@ -15,10 +15,10 @@ class UsageRecordReader:
         self.measure = MeasureClient()
 
     def index_usage(self, date=None):
-        self.log("Starting usage processing")
-
         if date is None:
             date = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+
+        self.log("Starting usage processing. Date: " + date)
 
         try:
             self.delete_records(date)
