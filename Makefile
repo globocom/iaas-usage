@@ -1,4 +1,4 @@
-.PHONY: clean pip test test-js run run-skip-test
+.PHONY: clean pip test test-selenium test-js run run-skip-test
 
 default:
 	@awk -F\: '/^[a-z_]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
@@ -23,7 +23,10 @@ compile: # compile to check syntax
 
 
 test: # run tests
-	@python -m unittest discover
+	@python -m unittest discover -p tests\.py
+
+test-selenium: # run functional tests written for selenium engine
+	@python -m unittest discover -s app/functional_tests
 
 
 test-js: #run javascript tests
