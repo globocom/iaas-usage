@@ -23,7 +23,10 @@ compile: # compile to check syntax
 
 
 test: # run tests
-	@python -m unittest discover
+	@python -m unittest discover -p tests\.py
+
+test-selenium: # run functional tests written for selenium engine
+	@python -m unittest discover -s app/functional_tests
 
 
 test-js: #run javascript tests

@@ -22,3 +22,5 @@ measures==1.1.0
 Flask-Cache==0.13.1
 raven==4.2.3
 blinker==1.4
+selenium==2.48.0
+PyVirtualDisplay==0.2
