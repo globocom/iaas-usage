@@ -1,21 +1,33 @@
+import os
 import unittest, time
+from sys import platform as _platform
+from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
+from selenium.webdriver import FirefoxProfile
 
 
 class FunctionalTestCaseBase(unittest.TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
-        self.driver.implicitly_wait(30)
-        self.base_url = "https://iaas-usage.dev.globoi.com"
+        if _platform != "darwin":
+            self.display = Display(visible=0, size=(1280, 800))
+            self.display.start()
+
+        p = FirefoxProfile()
+        p.set_preference("webdriver.log.file", "/tmp/firefox_console")
+
+        self.driver = webdriver.Firefox(p)
+        self.base_url = os.getenv('SELENIUM_BASE_URL')
         self.verificationErrors = []
         self.accept_next_alert = True
-        self.driver.maximize_window()
+        self.driver.set_window_size(1280, 800)
         self.project_name = "DBaaS"
 
     def tearDown(self):
+        self.driver.save_screenshot('selenium_fails/%s_screen.png' % os.path.basename(self.__class__.__name__))
         self.driver.quit()
+        self.display.stop()
         self.assertEqual([], self.verificationErrors)
 
     def is_element_present(self, how, what):
@@ -42,9 +54,9 @@ class FunctionalTestCaseBase(unittest.TestCase):
     def login(self):
         self.driver.get(self.base_url + "/logout")
         self.driver.find_element_by_id("email").clear()
-        self.driver.find_element_by_id("email").send_keys("victor.eduardo@corp.globo.com")
+        self.driver.find_element_by_id("email").send_keys(os.getenv('SELENIUM_USER'))
         self.driver.find_element_by_id("password").clear()
-        self.driver.find_element_by_id("password").send_keys("g)o!0(E2,'2=&{R")
+        self.driver.find_element_by_id("password").send_keys(os.getenv('SELENIUM_PASSWORD'))
         self.driver.find_element_by_xpath("//*[@id=\"login-form\"]/button").click()
 
     def wait_for(self, func):
