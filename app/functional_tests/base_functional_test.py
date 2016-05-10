@@ -4,25 +4,30 @@ from sys import platform as _platform
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
+from selenium.webdriver import FirefoxProfile
 
 
 class FunctionalTestCaseBase(unittest.TestCase):
 
     def setUp(self):
         if _platform != "darwin":
-            display = Display(visible=0, size=(1280, 800))
-            display.start()
+            self.display = Display(visible=0, size=(1280, 800))
+            self.display.start()
 
-        self.driver = webdriver.Firefox()
-        self.driver.implicitly_wait(30)
+        p = FirefoxProfile()
+        p.set_preference("webdriver.log.file", "/tmp/firefox_console")
+
+        self.driver = webdriver.Firefox(p)
         self.base_url = os.getenv('SELENIUM_BASE_URL')
         self.verificationErrors = []
         self.accept_next_alert = True
-        self.driver.maximize_window()
+        self.driver.set_window_size(1280, 800)
         self.project_name = "DBaaS"
 
     def tearDown(self):
+        self.driver.save_screenshot('selenium_fails/%s_screen.png' % os.path.basename(self.__class__.__name__))
         self.driver.quit()
+        self.display.stop()
         self.assertEqual([], self.verificationErrors)
 
     def is_element_present(self, how, what):
