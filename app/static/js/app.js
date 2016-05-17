@@ -1,7 +1,3 @@
-/**
- * INSPINIA - Responsive Admin Theme
- *
- */
 (function () {
     var app = angular.module('iaasusage', [
         'ui.router',                    // Routing
@@ -11,6 +7,16 @@
     app.config(['$interpolateProvider', function($interpolateProvider) {
         $interpolateProvider.startSymbol('{[');
         $interpolateProvider.endSymbol(']}');
-    }]);
+    }]).run(function($rootScope, $window, $location){
+        if($location.host() == 'iaas-usage.globoi.com'){
+            $window.ga('create', 'UA-77868670-1', 'auto');
+        }else{
+            $window.ga('create', 'UA-77868670-2', 'auto');
+        }
+
+        $rootScope.$on('$stateChangeSuccess', function (event) {
+            $window.ga('send', 'pageview', $location.path());
+        });
+    });
 })();
 
