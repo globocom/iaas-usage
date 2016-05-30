@@ -4,6 +4,17 @@
             <h2>
                 {[ quotaCtrl.projectName ]} {[ quotaCtrl.title ]}
             </h2>
+            <ol class="breadcrumb">
+                <li>
+                    {[ quotaCtrl.title ]}
+                </li>
+                <li>
+                    <a ui-sref="index.quota_projects({'region': region.key})">Projects</a>
+                </li>
+                <li>
+                    <a>{[ quotaCtrl.projectName ]}</a>
+                </li>
+            </ol>
         </div>
     </div>
     <div class="wrapper wrapper-content" ng-init="quotaCtrl.getProjectQuota()">
