@@ -64,9 +64,9 @@ class PageElements():
 
     PAGE_CONTENT_PATH = '//*[@id="page-wrapper"]/div[2]/div/div[2]/div[2]'
     OFFERING_FILTER_PATH = '//*[@id="page-wrapper"]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[1]/a'
-    COPY_CLIPBOARD_BUTTON_PATH = "//div[@id='DataTables_Table_1_wrapper']/div/div/a/span"
+    COPY_CLIPBOARD_BUTTON_PATH = "//div[@id='DataTables_Table_2_wrapper']/div/div/a/span"
     CLEAR_FILTER_BUTTON_PATH = '//*[@id="page-wrapper"]/div[2]/div/div[2]/div[2]/div[3]/div/div/div[1]/div/a[1]'
-    TABLE_INFO_ID = "DataTables_Table_1_info"
+    TABLE_INFO_ID = "DataTables_Table_2_info"
     MAIN_HEADING_CLASS = "h2.ng-binding"
     SUCCESS_NOTIFICATION_CLASS = "div.toast.toast-success"
     SEARCH_FIELD_CLASS = "input.form-control.input-sm"

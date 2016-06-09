@@ -24,11 +24,13 @@ class FunctionalTestCaseBase(unittest.TestCase):
         self.driver.set_window_size(1280, 800)
         self.project_name = "DBaaS"
 
+
     def tearDown(self):
         self.driver.save_screenshot('selenium_fails/%s_screen.png' % os.path.basename(self.__class__.__name__))
         self.driver.quit()
-        self.display.stop()
         self.assertEqual([], self.verificationErrors)
+        if _platform != "darwin":
+            self.display.stop()
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
@@ -58,6 +60,8 @@ class FunctionalTestCaseBase(unittest.TestCase):
         self.driver.find_element_by_id("password").clear()
         self.driver.find_element_by_id("password").send_keys(os.getenv('SELENIUM_PASSWORD'))
         self.driver.find_element_by_xpath("//*[@id=\"login-form\"]/button").click()
+        self.driver.find_element_by_xpath("//div[@id='page-wrapper']/div/div/div/nav/ul/li/a/small").click()
+        self.driver.find_element_by_xpath("//div[@id='tab-1']/ul/li[3]/div/div/a/span").click()
 
     def wait_for(self, func):
         for i in range(60):
