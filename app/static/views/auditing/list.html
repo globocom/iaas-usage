@@ -1,0 +1,80 @@
+<div ng-controller="AuditingCtrl as auditingCtrl">
+    <div class="row wrapper border-bottom white-bg page-heading" >
+        <div class="col-lg-10">
+            <h2>
+               {[ auditingCtrl.title ]}
+            </h2>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight" ng-init="auditingCtrl.listEvents()">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Resource Usage</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form role="form" class="form-inline">
+                            <div id="reportrange" class="form-control">
+                                <i class="fa fa-calendar"></i>
+                                <span></span> <b class="caret"></b>
+                                <input type="hidden" id="start_date" class="form-control" ng-model="auditingCtrl.start">
+                                <input type="hidden" id="end_date" class="form-control" ng-model="auditingCtrl.end">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" >
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>{[ auditingCtrl.title ]}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                            <table class="table table-striped table-bordered table-hover dataTables-example ng-isolate-scope no-footer dtr-inline dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Account</th>
+                                        <th>User</th>
+                                        <th>Action</th>
+                                        <th>Resource</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="auditingCtrl.getEvents().length == 0"><td colspan="5" style="text-align:center;">Loading data.</td></tr>
+                                    <tr dir-paginate="event in auditingCtrl.getEvents()|itemsPerPage:auditingCtrl.itemsPerPage" total-items="auditingCtrl.count">
+                                        <td>{[ event.date_time ]}</td>
+                                        <td>{[ event.account ]}</td>
+                                        <td>{[ event.username ]}</td>
+                                        <td>{[ event.action ]}</td>
+                                        <td>{[ event.resource_id ]}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="dataTables_paginate paging_simple_numbers">
+                                <dir-pagination-controls
+                                   max-size="8"
+                                   direction-links="true"
+                                   boundary-links="true"
+                                   on-page-change="auditingCtrl.listEvents(newPageNumber)" >
+                                </dir-pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

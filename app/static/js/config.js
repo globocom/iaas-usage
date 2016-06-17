@@ -92,6 +92,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.auditing', {
+            url: '/:region/auditing/',
+            templateUrl: viewPrefix + 'auditing/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
 }
 
 function loadPlugins($ocLazyLoad) {
@@ -131,6 +138,10 @@ function loadPlugins($ocLazyLoad) {
         {
             name: 'arrive',
             files: [staticPrefix + 'js/plugins/arrive/arrive.js']
+        },
+        {
+            name: 'dirPagination',
+            files: [staticPrefix + 'js/plugins/dirPagination/dirPagination.js']
         }
     ]);
 }

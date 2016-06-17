@@ -3,6 +3,10 @@ import ast
 import os
 
 DEBUG = True
+
+SQLALCHEMY_DATABASE_URI = 'mysql://root:@localhost/iaas_usage'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 if os.environ.get('OAUTHLIB_INSECURE_TRANSPORT') is None:
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -29,3 +33,51 @@ USAGE_TIME = os.getenv('USAGE_TIME', '04:00')
 USAGE_CACHE_TIME = int(os.getenv('USAGE_CACHE_TIME', 60*60*24)) # 1 day cache
 USAGE_ENABLED = ast.literal_eval(os.getenv('USAGE_ENABLED', 'False'))
 USAGE_MINIMUM_TIME = os.getenv('USAGE_MINIMUN_TIME', 1) #1 hour
+
+EVENT_QUEUE_HOST = os.getenv('EVENT_QUEUE_HOST', 'localhost')
+EVENT_QUEUE_EXCHANGE = os.getenv('EVENT_QUEUE_EXCHANGE', 'cloudstack-events')
+EVENT_QUEUE_NAME = os.getenv('EVENT_QUEUE_NAME', 'iaas-usage-events')
+EVENT_ROUTING_KEY_TEMPLATE = os.getenv('EVENT_ROUTING_KEY_TEMPLATE', 'management-server.ActionEvent.(%s).*.*')
+EVENT_LIST = [
+    'CREATE_TAGS',
+    'DELETE_TAGS',
+    'FIREWALL-CLOSE',
+    'LB-ASSIGN-TO-RULE',
+    'LB-CREATE',
+    'LB-DELETE',
+    'LB-HEALTHCHECKPOLICY-CREATE',
+    'LB-HEALTHCHECKPOLICY-UPDATE',
+    'LB-REMOVE-FROM-RULE',
+    'LB-STICKINESSPOLICY-CREATE',
+    'MAINT-CANCEL',
+    'MAINT-PREPARE',
+    'NETWORK-DELETE',
+    'NETWORK-CREATE',
+    'NIC-SECONDARY-IP-ASSIGN',
+    'NIC-SECONDARY-IP-CONFIGURE',
+    'NIC-SECONDARY-IP-UNASSIGN',
+    'PROJECT-ACCOUNT-ADD',
+    'PROJECT-CREATE',
+    'PROJECT-DELETE',
+    'REGISTER-USER-KEY',
+    'SERVICE-OFFERING-CREATE',
+    'SERVICE-OFFERING-DELETE',
+    'SNAPSHOT-CREATE',
+    'TEMPLATE-COPY',
+    'TEMPLATE-CREATE',
+    'TEMPLATE-DELETE',
+    'TEMPLATE-EXTRACT',
+    'USER-LOGIN',
+    'VM-CREATE',
+    'VM-DESTROY',
+    'VM-MIGRATE',
+    'VM-REBOOT',
+    'VM-RESTORE',
+    'VM-START',
+    'VM-STOP',
+    'VM-UPGRADE',
+    'VOLUME-ATTACH',
+    'VOLUME-CREATE',
+    'VOLUME-DELETE',
+    'VOLUME-DETACH'
+]

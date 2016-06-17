@@ -603,6 +603,35 @@ function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBu
     }
 }
 
+function AuditingCtrl($scope, $http, $state, apiService, DTOptionsBuilder, DTColumnBuilder){
+
+    auditingCtrl = this
+    auditingCtrl.title = 'Auditing Events';
+    auditingCtrl.events
+    auditingCtrl.pageNumber = 1
+    auditingCtrl.itemsPerPage = 10
+    auditingCtrl.count
+
+    auditingCtrl.listEvents = function(pageNumber) {
+        console.log('Loading auditing events')
+
+        $http({
+            method: 'GET',
+            url: apiService.buildAPIUrl('/auditing_event/', {page_size: auditingCtrl.itemsPerPage, page: pageNumber||1})
+        }).then(function successCallback(response){
+            auditingCtrl.events = response.data.events;
+            auditingCtrl.count = response.data.count;
+            if(auditingCtrl.count == 0){
+                toastr.warning("No events was found on the selected date range.");
+            }
+        });
+    }
+
+    auditingCtrl.getEvents = function(){
+        return auditingCtrl.events;
+    }
+}
+
 angular
     .module('iaasusage')
     .controller('RegionCtrl', RegionCtrl)
@@ -612,4 +641,5 @@ angular
     .controller('UsageCtrl', UsageCtrl)
     .controller('CapacityCtrl', CapacityCtrl)
     .controller('QuotaCtrl', QuotaCtrl)
-    .controller('StorageCtrl', StorageCtrl);
+    .controller('StorageCtrl', StorageCtrl)
+    .controller('AuditingCtrl', AuditingCtrl);

@@ -1,6 +1,9 @@
+pika==0.10.0
 Flask==0.10.1
 Flask-RESTful==0.3.1
 Flask-Login==0.2.11
+Flask-Script==2.0.5
+Flask-SQLAlchemy==2.1
 aniso8601==1.1.0
 funcsigs==0.4
 gunicorn==0.14.6
@@ -24,3 +27,4 @@ raven==4.2.3
 blinker==1.4
 selenium==2.48.0
 PyVirtualDisplay==0.2
+SQLAlchemy==1.0.13
