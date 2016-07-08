@@ -1,4 +1,5 @@
 # Import basic app infrastructure objects
+import os
 from flask_restful import Api
 from flask_login import LoginManager
 from flask import Flask
@@ -12,14 +13,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
-# Configurations placed in config.py in root directory
-app.config.from_object('config')
+app.config.from_object(os.getenv('ENV', 'app.config.DevConfig'))
 logger = app.logger
+db = SQLAlchemy(app)
 
 if app.config['SENTRY_DSN']:
     sentry = Sentry(app)
-
-db = SQLAlchemy(app)
 
 # Import app resources
 from usage_record.resource import UsageRecordResource

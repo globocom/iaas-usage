@@ -2,7 +2,7 @@ import pika
 from app import app
 
 
-class RabbitMQClient:
+class RabbitMQClient(object):
 
     QUEUE_NAME = app.config['EVENT_QUEUE_NAME']
     ROUTING_KEY = app.config['EVENT_ROUTING_KEY_TEMPLATE']

@@ -13,22 +13,22 @@ class AuditingEventResource(Resource):
     @required_login
     @handle_errors
     def get(self, region):
-        args = self.parse_args()
-        parameters = dict(args, **{'region' : region})
-        result = Event.find_all_by(parameters, args.page, args.page_size)
-        return { 'count': result.total, 'events': EventSchema(many=True).dump(result.items).data }
+        args = self._parse_args()
+        result = Event.find_all_by(dict(args, **{'region' : region}), args.page, args.page_size)
+        return {'count': result.total, 'events': EventSchema(many=True).dump(result.items).data}
 
-    def parse_args(self):
+    def _parse_args(self):
         parser = reqparse.RequestParser()
         parser.add_argument('page', required=False, type=int)
         parser.add_argument('page_size', required=False, type=int)
-        parser.add_argument('start_date', required=False, type=self.valid_date)
-        parser.add_argument('end_date', required=False, type=self.valid_date)
+        parser.add_argument('start_date', required=False, type=self._is_valid_date)
+        parser.add_argument('end_date', required=False, type=self._is_valid_date)
         return parser.parse_args(req=request)
 
-    def valid_date(self, s):
+    @staticmethod
+    def _is_valid_date(date_str):
         try:
-            return datetime.strptime(s, '%d/%m/%Y %H:%M:%S')
+            return datetime.strptime(date_str, '%d/%m/%Y %H:%M:%S')
         except ValueError:
-            msg = "Not a valid date: '{0}'.".format(s)
+            msg = "Not a valid date: '{0}'.".format(date_str)
             raise argparse.ArgumentTypeError(msg)

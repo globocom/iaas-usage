@@ -16,7 +16,7 @@ def create_db():
 def destroy_db():
     """Drops the MySQL database schema"""
     import app.auditing.models
-    app.logger.info("Creating database")
+    app.logger.info("Destroying database")
     app.db.drop_all()
 
 

@@ -1,0 +1,338 @@
+import unittest
+from datetime import datetime
+from app import db
+from mock import patch, Mock
+from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent, \
+    ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent
+
+
+class BaseTest(unittest.TestCase):
+
+    def setUp(self):
+        db.create_all()
+
+    def tearDown(self):
+        db.drop_all()
+        patch.stopall()
+
+
+class EventFactoryTestCase(BaseTest):
+
+    def test_create_generic_event(self):
+        event = EventFactory.create_event('USER.LOGIN')
+        self.assertEquals(Event, event.__class__)
+
+    def test_create_vm_event(self):
+        event = EventFactory.create_event('VM.CREATE')
+        self.assertEquals(VirtualMachineEvent, event.__class__)
+
+    def test_create_network_event(self):
+        event = EventFactory.create_event('NETWORK.CREATE')
+        self.assertEquals(NetworkEvent, event.__class__)
+
+    def test_create_volume_event(self):
+        event = EventFactory.create_event('VOLUME.CREATE')
+        self.assertEquals(VolumeEvent, event.__class__)
+
+    def test_create_lb_event(self):
+        event = EventFactory.create_event('LB.CREATE')
+        self.assertEquals(LoadBalancerEvent, event.__class__)
+
+    def test_create_project_event(self):
+        event = EventFactory.create_event('PROJECT.CREATE')
+        self.assertEquals(ProjectEvent, event.__class__)
+
+    def test_create_service_offering_event(self):
+        event = EventFactory.create_event('SERVICE.OFFERING.CREATE')
+        self.assertEquals(ServiceOfferingEvent, event.__class__)
+
+    def test_create_router_event(self):
+        event = EventFactory.create_event('ROUTER.REBOOT')
+        self.assertEquals(RouterEvent, event.__class__)
+
+    def test_create_snapshot_event(self):
+        event = EventFactory.create_event('VMSNAPSHOT.CREATE')
+        self.assertEquals(VirtualMachineSnapshotEvent, event.__class__)
+
+
+class EventTestCase(BaseTest):
+
+    def test_create_event(self):
+        event = self._create_event()
+        self.assertIsNotNone(event.action)
+        self.assertIsNotNone(event.resource_id)
+        self.assertIsNotNone(event.description)
+        self.assertIsNotNone(event.username)
+        self.assertIsNotNone(event.account)
+        self.assertIsNotNone(event.date)
+        self.assertIsNotNone(event.region)
+        self.assertIsNotNone(event.original_event)
+        self.assertIsNone(event.resource_name)
+
+    def test_get_details(self):
+        event = self._create_event()
+        self.assertEquals('USER.LOGIN', event.details['action'])
+
+    def test_get_date_time_formatted(self):
+        event = self._create_event()
+        self.assertIsNotNone(event.date_time)
+
+    def test_get_action(self):
+        event = self._create_event()
+        self.assertEquals('LOGIN', event.action)
+
+    def test_get_resource_type(self):
+        event = self._create_event()
+        self.assertEquals('USER', event.resource_type)
+
+    def test_get_resource_name_from_api(self):
+        event = self._create_event()
+        self.assertIsNone(event._get_resource_name_from_api())
+
+    def _create_event(self):
+        event = Event(
+            'USER.LOGIN', resource_id='1', description='User has logged', username='username',
+            account='account', date=datetime.now(), region='local', original_event='{"action":"USER.LOGIN"}'
+        )
+        return event
+
+
+class VirtualMachineEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_vms([{'name': 'myvm'}])
+        self.assertEquals('myvm', VirtualMachineEvent('VM.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_vms([])
+        self.assertIsNone(VirtualMachineEvent('VM.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('VM', VirtualMachineEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_vms(self, vms):
+        list_vms_mock = Mock(
+            listVirtualMachines=Mock(return_value={'virtualmachine': vms}),
+            listRouters=Mock(return_value={'routers': vms})
+        )
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_vms_mock
+
+
+class NetworkEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_networks([{'name': 'mynetwork'}])
+        event = NetworkEvent('NETWORK.CREATE', resource_id='1', original_event='{"Project": "1"}')
+        self.assertEquals('mynetwork', event.resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_networks([])
+        self.assertIsNone(NetworkEvent('NETWORK.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('NETWORK', NetworkEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_networks(self, networks):
+        list_networks_mock = Mock(listNetworks=Mock(return_value={'network': networks}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_networks_mock
+
+
+class VolumeEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_volumes([{'name': 'myvolume'}])
+        self.assertEquals('myvolume', VolumeEvent('VOLUME.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_volumes([])
+        self.assertIsNone(VolumeEvent('VOLUME.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('VOLUME', VolumeEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_volumes(self, volumes):
+        list_volumes_mock = Mock(listVolumes=Mock(return_value={'volume': volumes}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_volumes_mock
+
+
+class LoadBalancerEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_load_balancers([{'name': 'myloadbalancer'}])
+        self.assertEquals('myloadbalancer', LoadBalancerEvent('LB.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_load_balancers([])
+        self.assertIsNone(LoadBalancerEvent('LB.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('LB', LoadBalancerEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_load_balancers(self, load_balancers):
+        list_loadbalancers_mock = Mock(listLoadBalancerRules=Mock(return_value={'loadbalancerrule': load_balancers}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_loadbalancers_mock
+
+
+class ProjectEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_projects([{'name': 'myproject'}])
+        self.assertEquals('myproject', ProjectEvent('PROJECT.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_projects([])
+        self.assertIsNone(ProjectEvent('PROJECT.CREATE', resource_id='1').resource_name)
+
+
+    def test_get_resource_type(self):
+        self.assertEqual('PROJECT', ProjectEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_projects(self, projects):
+        list_projects_mock = Mock(listProjects=Mock(return_value={'project': projects}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_projects_mock
+
+
+class ServiceOfferingEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_service_offerings([{'name': 'myoffering'}])
+        self.assertEquals('myoffering', ServiceOfferingEvent('SERVICE.OFFERING.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_service_offerings([])
+        self.assertIsNone(ServiceOfferingEvent('SERVICE.OFFERING.CREATE', resource_id='1').resource_name)
+
+    def test_get_action(self):
+        self.mock_cloudstack_list_service_offerings([{'name': 'myoffering'}])
+        event = ServiceOfferingEvent('SERVICE.OFFERING.CREATE', resource_id='1')
+        self.assertEquals('CREATE', event.action)
+
+    def test_get_resource_type(self):
+        self.assertEqual('SERVICE.OFFERING', ServiceOfferingEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_service_offerings(self, offerings):
+        list_offerings = Mock(listServiceOfferings=Mock(return_value={'serviceoffering': offerings}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_offerings
+
+
+class RouterEventTestCase(BaseTest):
+
+    def test_get_resource_id(self):
+        self.mock_cloudstack_list_routers([])
+        event = RouterEvent('ROUTER.REBOOT', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('2', event.resource_id)
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_routers([{'name': 'router'}])
+        self.assertEquals('router', RouterEvent('ROUTER.REBOOT', original_event='{"VirtualMachine": "2"}').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_routers([])
+        self.assertIsNone(RouterEvent('ROUTER.REBOOT', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('ROUTER', RouterEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_routers(self, routers):
+        list_routers_mock = Mock(listRouters=Mock(return_value={'router': routers}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_routers_mock
+
+
+class VirtualMachineSnapshotEventTestCase(BaseTest):
+
+    def test_get_resource_id(self):
+        self.mock_cloudstack_list_vms([])
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('2', event.resource_id)
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_vms([{'name': 'vm-name'}])
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('vm-name', event.resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_vms([])
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertIsNone(event.resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('VMSNAPSHOT', VirtualMachineSnapshotEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_vms(self, vms):
+        list_vms_mock = Mock(listVirtualMachines=Mock(return_value={'virtualmachine': vms}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_vms_mock
+
+
+class SSVMEventTestCase(BaseTest):
+
+    def test_get_resource_id(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = SSVMEvent('SSVM.START', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('2', event.resource_id)
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_systemvms([{'name': 'vm-name'}])
+        event = SSVMEvent('SSVM.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('vm-name', event.resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = SSVMEvent('SSVM.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertIsNone(event.resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('SSVM', SSVMEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_systemvms(self, system_vms):
+        list_sys_vm_mock = Mock(listSystemVms=Mock(return_value={'systemvm': system_vms}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_sys_vm_mock
+
+
+class ConsoleProxyEventTestCase(BaseTest):
+
+    def test_get_resource_id(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = ConsoleProxyEvent('PROXY.START', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('2', event.resource_id)
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_systemvms([{'name': 'vm-name'}])
+        event = ConsoleProxyEvent('PROXY.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('vm-name', event.resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = ConsoleProxyEvent('PROXY.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertIsNone(event.resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('PROXY', ConsoleProxyEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_systemvms(self, system_vms):
+        list_sys_vm_mock = Mock(listSystemVms=Mock(return_value={'systemvm': system_vms}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_sys_vm_mock
+
+
+class StickinessPolicyEventTestCase(BaseTest):
+
+    def test_get_resource_id(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = ConsoleProxyEvent('PROXY.START', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('2', event.resource_id)
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_systemvms([{'name': 'vm-name'}])
+        event = ConsoleProxyEvent('PROXY.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertEquals('vm-name', event.resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_systemvms([])
+        event = ConsoleProxyEvent('PROXY.START', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        self.assertIsNone(event.resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('PROXY', ConsoleProxyEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_systemvms(self, system_vms):
+        list_sys_vm_mock = Mock(listSystemVms=Mock(return_value={'systemvm': system_vms}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_sys_vm_mock
