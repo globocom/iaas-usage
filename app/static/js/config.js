@@ -99,6 +99,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.auditing_show', {
+            url: '/:region/auditing/:id',
+            templateUrl: viewPrefix + 'auditing/show.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
 }
 
 function loadPlugins($ocLazyLoad) {

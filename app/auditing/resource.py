@@ -1,7 +1,7 @@
 import argparse
 from datetime import datetime
 from flask import request
-from flask_restful import Resource
+from flask_restful import Resource, abort
 from flask_restful import reqparse
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import handle_errors
@@ -9,6 +9,17 @@ from app.auditing.models import Event, EventSchema
 
 
 class AuditingEventResource(Resource):
+
+    @required_login
+    @handle_errors
+    def get(self, region, id):
+        result = Event.query.get(id)
+        if not result:
+            abort(404)
+        return EventSchema().dump(result).data
+
+
+class AuditingEventListResource(Resource):
 
     @required_login
     @handle_errors

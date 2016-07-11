@@ -603,7 +603,7 @@ function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBu
     }
 }
 
-function AuditingCtrl($scope, $http, $state, apiService, DTOptionsBuilder, DTColumnBuilder){
+function AuditingCtrl($scope, $http, $state, $stateParams, apiService, DTOptionsBuilder, DTColumnBuilder){
 
     auditingCtrl = this
     auditingCtrl.title = 'Auditing Events';
@@ -629,6 +629,15 @@ function AuditingCtrl($scope, $http, $state, apiService, DTOptionsBuilder, DTCol
 
     auditingCtrl.getEvents = function(){
         return auditingCtrl.events;
+    }
+
+    auditingCtrl.getEvent = function(){
+        $http({
+            method: 'GET',
+            url: apiService.buildAPIUrl('/auditing_event/' + $stateParams.id)
+        }).then(function successCallback(response){
+            $scope.event = response.data;
+        });
     }
 }
 

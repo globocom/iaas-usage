@@ -28,6 +28,7 @@ from app.virtualmachines.resource import VirtualMachineResource
 from app.storage.resource import StorageResource
 from app.capacity.resource import CloudCapacityResource
 from app.service_offering.resource import ServiceOfferingResource
+from auditing.resource import AuditingEventListResource
 from auditing.resource import AuditingEventResource
 
 # Resource URL Mappings
@@ -38,7 +39,8 @@ api.add_resource(StorageResource, '/api/v1/<region>/storage/', endpoint='storage
 api.add_resource(UsageRecordResource, '/api/v1/<region>/usage_record/', endpoint='usage_record')
 api.add_resource(CloudCapacityResource, '/api/v1/<region>/cloud_capacity/', endpoint='cloud_capacity')
 api.add_resource(ServiceOfferingResource, '/api/v1/<region>/service_offering/', endpoint='service_offering')
-api.add_resource(AuditingEventResource, '/api/v1/<region>/auditing_event/', endpoint='auditing_event')
+api.add_resource(AuditingEventListResource, '/api/v1/<region>/auditing_event/', endpoint='auditing_events')
+api.add_resource(AuditingEventResource, '/api/v1/<region>/auditing_event/<id>', endpoint='auditing_event')
 
 from app import views
 from app.auth import views

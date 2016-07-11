@@ -4,6 +4,11 @@
             <h2>
                {[ auditingCtrl.title ]}
             </h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a ui-sref="index.auditing({'region': region.key})">{[ auditingCtrl.title ]}</a>
+                </li>
+            </ol>
         </div>
     </div>
 
@@ -11,9 +16,6 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Resource Usage</h5>
-                    </div>
                     <div class="ibox-content">
                         <form role="form" class="form-inline">
                             <div id="reportrange" class="form-control">
@@ -40,20 +42,26 @@
                                 <thead>
                                     <tr>
                                         <th>Date</th>
-                                        <th>Account</th>
-                                        <th>User</th>
+                                        <th>Type</th>
+                                        <th>Name</th>
                                         <th>Action</th>
-                                        <th>Resource</th>
+                                        <th>User</th>
+                                        <th>Account</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-show="auditingCtrl.getEvents().length == 0"><td colspan="5" style="text-align:center;">Loading data.</td></tr>
                                     <tr dir-paginate="event in auditingCtrl.getEvents()|itemsPerPage:auditingCtrl.itemsPerPage" total-items="auditingCtrl.count">
-                                        <td>{[ event.date_time ]}</td>
+                                        <td>
+                                            <a ui-sref="index.auditing_show({'region': region.key, 'id': event.id})">
+                                                {[ event.date_time ]}
+                                            </a>
+                                        </td>
+                                        <td>{[ event.resource_type ]}</td>
+                                        <td>{[ event.action ]}</td>
+                                        <td>{[ event.resource_name ]} - {[ event.resource_id ]}</td>
                                         <td>{[ event.account ]}</td>
                                         <td>{[ event.username ]}</td>
-                                        <td>{[ event.action ]}</td>
-                                        <td>{[ event.resource_id ]}</td>
                                     </tr>
                                 </tbody>
                             </table>

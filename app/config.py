@@ -4,7 +4,6 @@ import os
 
 class Config(object):
 
-    DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = ast.literal_eval(os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', 'False'))
 
@@ -95,6 +94,11 @@ class Config(object):
         'VOLUME-DELETE',
         'VOLUME-DETACH'
     ]
+
+
+class ProdConfig(Config):
+
+    DEBUG = False
 
 
 class DevConfig(Config):
