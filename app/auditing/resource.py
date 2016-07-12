@@ -25,7 +25,7 @@ class AuditingEventListResource(Resource):
     @handle_errors
     def get(self, region):
         args = self._parse_args()
-        result = Event.find_all_by(dict(args, **{'region' : region}), args.page, args.page_size)
+        result = Event.find_all_by(dict(args, **{'region': region}), args.page, args.page_size)
         return {'count': result.total, 'events': EventSchema(many=True).dump(result.items).data}
 
     def _parse_args(self):
@@ -34,12 +34,16 @@ class AuditingEventListResource(Resource):
         parser.add_argument('page_size', required=False, type=int)
         parser.add_argument('start_date', required=False, type=self._is_valid_date)
         parser.add_argument('end_date', required=False, type=self._is_valid_date)
+        parser.add_argument('account', required=False)
+        parser.add_argument('action', required=False)
+        parser.add_argument('type', required=False)
+        parser.add_argument('resource_id', required=False)
         return parser.parse_args(req=request)
 
     @staticmethod
     def _is_valid_date(date_str):
         try:
-            return datetime.strptime(date_str, '%d/%m/%Y %H:%M:%S')
+            return datetime.strptime(date_str, '%d/%m/%Y')
         except ValueError:
             msg = "Not a valid date: '{0}'.".format(date_str)
             raise argparse.ArgumentTypeError(msg)

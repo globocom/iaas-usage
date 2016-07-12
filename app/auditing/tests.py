@@ -1,8 +1,9 @@
 import unittest
-from datetime import datetime
-from app import db
+from datetime import datetime, timedelta
+from flask import json
+from app import db, app
 from mock import patch, Mock
-from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent, \
+from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent,\
     ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent
 
 
@@ -10,10 +11,18 @@ class BaseTest(unittest.TestCase):
 
     def setUp(self):
         db.create_all()
+        mock = patch('flask_login.AnonymousUserMixin.is_authenticated').start()
+        mock.return_value = True
 
     def tearDown(self):
         db.drop_all()
         patch.stopall()
+
+    def _create_event(self, region='reg', account='adm', resource_id='1', event_key='USER.LOGIN', date=datetime.now()):
+        return Event(
+            event_key, resource_id=resource_id, description='User has logged', username='username',account=account,
+            date=date, region=region, original_event='{"action":"USER.LOGIN"}'
+        )
 
 
 class EventFactoryTestCase(BaseTest):
@@ -89,12 +98,46 @@ class EventTestCase(BaseTest):
         event = self._create_event()
         self.assertIsNone(event._get_resource_name_from_api())
 
-    def _create_event(self):
-        event = Event(
-            'USER.LOGIN', resource_id='1', description='User has logged', username='username',
-            account='account', date=datetime.now(), region='local', original_event='{"action":"USER.LOGIN"}'
-        )
-        return event
+    def test_find_by_region(self):
+        db.session.add(self._create_event(region='reg1'))
+        db.session.add(self._create_event(region='reg2'))
+        self.assertEquals(1, len(Event.find_all_by({'region': 'reg1'}).items))
+
+    def test_find_by_account(self):
+        db.session.add(self._create_event(account='account_a'))
+        db.session.add(self._create_event(account='account_b'))
+        self.assertEquals(1, len(Event.find_all_by({'account': 'account_b'}).items))
+
+    def test_find_by_resource_id(self):
+        db.session.add(self._create_event(resource_id='1'))
+        db.session.add(self._create_event(resource_id='2'))
+        self.assertEquals(1, len(Event.find_all_by({'resource_id': '2'}).items))
+
+    def test_find_by_action(self):
+        db.session.add(self._create_event(event_key='LB.CREATE'))
+        db.session.add(self._create_event(event_key='LB.DELETE'))
+        self.assertEquals(1, len(Event.find_all_by({'action': 'DELETE'}).items))
+
+    def test_find_by_type(self):
+        db.session.add(self._create_event(event_key='LB.CREATE'))
+        db.session.add(self._create_event(event_key='VM.CREATE'))
+        self.assertEquals(1, len(Event.find_all_by({'type': 'VM'}).items))
+
+    def test_find_by_date_interval(self):
+        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+        db.session.add(self._create_event(date=datetime.now()))
+
+        start_date = datetime.now() - timedelta(days=1)
+        end_date = datetime.now() + timedelta(days=1)
+        self.assertEquals(1, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+    def test_find_by_date_interval_given_no_events_on_time_range(self):
+        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+        db.session.add(self._create_event(date=datetime.now() - timedelta(days=10)))
+
+        start_date = datetime.now() - timedelta(days=1)
+        end_date = datetime.now() + timedelta(days=1)
+        self.assertEquals(0, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
 
 
 class VirtualMachineEventTestCase(BaseTest):
@@ -336,3 +379,40 @@ class StickinessPolicyEventTestCase(BaseTest):
     def mock_cloudstack_list_systemvms(self, system_vms):
         list_sys_vm_mock = Mock(listSystemVms=Mock(return_value={'systemvm': system_vms}))
         patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_sys_vm_mock
+
+
+class AuditingEventResourceTestCase(BaseTest):
+
+    def setUp(self):
+        super(AuditingEventResourceTestCase, self).setUp()
+        self.app = app.test_client()
+        db.session.add(self._create_event())
+
+    def test_get_event(self):
+        response = self.app.get('/api/v1/region/auditing_event/1')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(1, json.loads(response.data)['id'])
+
+    def test_get_event_given_event_not_found(self):
+        response = self.app.get('/api/v1/region/auditing_event/999')
+        self.assertEquals(404, response.status_code)
+
+
+class AuditingEventListResourceTestCase(BaseTest):
+
+    def setUp(self):
+        super(AuditingEventListResourceTestCase, self).setUp()
+        self.app = app.test_client()
+        db.session.add(self._create_event())
+        db.session.add(self._create_event())
+
+    def test_list_events(self):
+        response = self.app.get('/api/v1/reg/auditing_event/')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(2, len(json.loads(response.data)['events']))
+        self.assertEquals(2, json.loads(response.data)['count'])
+
+    def test_list_events_given_invalid_date_format(self):
+        response = self.app.get('/api/v1/reg/auditing_event/?start_date=2016/13/13')
+        self.assertEquals(400, response.status_code)
+        self.assertEquals("Not a valid date: '2016/13/13'.", json.loads(response.data)['message'])

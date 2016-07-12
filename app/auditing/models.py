@@ -40,15 +40,29 @@ class AbstractEvent(db.Model):
             return dict()
 
     @staticmethod
-    def find_all_by(params, page, page_size):
-        page = 1 if page is None else page
-        page_size = min(page_size, 100)
+    def find_all_by(params, page=1, page_size=10):
+        query = AbstractEvent.query
 
-        query = AbstractEvent.query.filter(Event.region == params.get('region'))
-        if params['start_date'] and params['end_date']:
-            query = query.filter(Event.date >= params.get('start_date')) # TODO: change to 'between'?
+        if params.get('start_date') and params.get('end_date'):
+            query = query.filter(Event.date >= params.get('start_date'))
             query = query.filter(Event.date <= params.get('end_date'))
-        return query.order_by(Event.date.desc()).paginate(page, page_size)
+
+        if params.get('region'):
+            query = query.filter(Event.region == params.get('region'))
+
+        if params.get('account'):
+            query = query.filter(Event.account == params.get('account'))
+
+        if params.get('type'):
+            query = query.filter(Event.resource_type == params.get('type'))
+
+        if params.get('action'):
+            query = query.filter(Event.action == params.get('action'))
+
+        if params.get('resource_id'):
+            query = query.filter(Event.resource_id == params.get('resource_id'))
+
+        return query.order_by(Event.date.desc()).paginate(1 if page is None else page, min(page_size, 100))
 
     @staticmethod
     def get_resource_type(event_key):
@@ -234,11 +248,9 @@ class EventFactory(object):
     @staticmethod
     def _get_all_subclasses(cls):
         all_subclasses = []
-
         for subclass in cls.__subclasses__():
             all_subclasses.append(subclass)
             all_subclasses.extend(EventFactory._get_all_subclasses(subclass))
-
         return all_subclasses
 
 
