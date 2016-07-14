@@ -3,6 +3,9 @@ from datetime import datetime
 from flask import request
 from flask_restful import Resource, abort
 from flask_restful import reqparse
+from sqlalchemy import func
+from sqlalchemy.orm import Session, session
+from app import db
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import handle_errors
 from app.auditing.models import Event, EventSchema
@@ -43,7 +46,22 @@ class AuditingEventListResource(Resource):
     @staticmethod
     def _is_valid_date(date_str):
         try:
-            return datetime.strptime(date_str, '%d/%m/%Y')
+            return datetime.strptime(date_str, '%Y-%m-%d')
         except ValueError:
-            msg = "Not a valid date: '{0}'.".format(date_str)
-            raise argparse.ArgumentTypeError(msg)
+            raise argparse.ArgumentTypeError("Not a valid date: '{0}'.".format(date_str))
+
+
+class ListResourceTypeResource(Resource):
+
+    @required_login
+    @handle_errors
+    def get(self):
+        return [i[0] for i in db.session.query(Event.resource_type).distinct().all()]
+
+
+class ListActionResource(Resource):
+
+    @required_login
+    @handle_errors
+    def get(self):
+        return [i[0] for i in db.session.query(Event.action).distinct().all()]

@@ -412,7 +412,17 @@ class AuditingEventListResourceTestCase(BaseTest):
         self.assertEquals(2, len(json.loads(response.data)['events']))
         self.assertEquals(2, json.loads(response.data)['count'])
 
+    def test_list_events_filtering_by_date(self):
+        start_date = datetime.now() - timedelta(days=1)
+        end_date = datetime.now() + timedelta(days=1)
+        query = {'start_date': start_date.strftime('%Y-%m-%d'), 'end_date': end_date.strftime('%Y-%m-%d')}
+
+        response = self.app.get('/api/v1/reg/auditing_event/', query_string=query)
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(2, len(json.loads(response.data)['events']))
+        self.assertEquals(2, json.loads(response.data)['count'])
+
     def test_list_events_given_invalid_date_format(self):
-        response = self.app.get('/api/v1/reg/auditing_event/?start_date=2016/13/13')
+        response = self.app.get('/api/v1/reg/auditing_event/?start_date=2016/01/13')
         self.assertEquals(400, response.status_code)
-        self.assertEquals("Not a valid date: '2016/13/13'.", json.loads(response.data)['message'])
+        self.assertEquals("Not a valid date: '2016/01/13'.", json.loads(response.data)['message'])

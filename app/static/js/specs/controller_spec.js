@@ -453,3 +453,50 @@ describe('Testing Capacity controller', function() {
         expect(ctrl.capacityReport['zone_name'].length).toEqual(2)
     });
 });
+
+describe('Testing Auditing controller', function() {
+
+    var ctrl, httpBackend, $scope
+
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend, $stateParams, $filter, apiService) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.buildAPIUrl.and.returnValue('/auditing_event/');
+            $httpBackend.when('GET', '/auditing_event/').respond({count: 2, events: [{}, {}]});
+
+            ctrl = $controller('AuditingCtrl', {
+                $scope: $scope,
+                $http: $http,
+                $stateParams: $stateParams,
+                apiService: apiServiceMock,
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should have controller scoped objects set up', function() {
+        expect(ctrl.title).toEqual('Auditing Events')
+        expect(ctrl.pageNumber).toEqual(1)
+        expect(ctrl.itemsPerPage).toEqual(10)
+        expect(ctrl.count).toBeUndefined()
+        expect(ctrl.events).toBeUndefined()
+    });
+
+    it('should return the list of events', function() {
+        ctrl.listEvents()
+        httpBackend.expectGET('/auditing_event/');
+        httpBackend.flush();
+
+        expect(ctrl.events.length).toEqual(2)
+        expect(ctrl.count).toEqual(2)
+    });
+});

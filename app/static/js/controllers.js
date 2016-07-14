@@ -603,7 +603,7 @@ function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBu
     }
 }
 
-function AuditingCtrl($scope, $http, $state, $stateParams, apiService, DTOptionsBuilder, DTColumnBuilder){
+function AuditingCtrl($scope, $http, $state, $stateParams, apiService){
 
     auditingCtrl = this
     auditingCtrl.title = 'Auditing Events';
@@ -613,11 +613,31 @@ function AuditingCtrl($scope, $http, $state, $stateParams, apiService, DTOptions
     auditingCtrl.count
 
     auditingCtrl.listEvents = function(pageNumber) {
+        auditingCtrl.page = pageNumber || 1
         console.log('Loading auditing events')
+
+        if(angular.isUndefined(auditingCtrl.start)){
+            auditingCtrl.start = moment().subtract(1, 'months').format('YYYY-MM-DD')
+        }
+
+        if(angular.isUndefined(auditingCtrl.end)){
+            auditingCtrl.end = moment().subtract(1, 'days').format('YYYY-MM-DD')
+        }
+
+        var params =  {
+            page_size: auditingCtrl.itemsPerPage,
+            page: auditingCtrl.page,
+            start_date: auditingCtrl.start,
+            end_date: auditingCtrl.end,
+            action: auditingCtrl.action,
+            type: auditingCtrl.type,
+            account: auditingCtrl.account,
+            resource_id: auditingCtrl.resource_id,
+        }
 
         $http({
             method: 'GET',
-            url: apiService.buildAPIUrl('/auditing_event/', {page_size: auditingCtrl.itemsPerPage, page: pageNumber||1})
+            url: apiService.buildAPIUrl('/auditing_event/', params)
         }).then(function successCallback(response){
             auditingCtrl.events = response.data.events;
             auditingCtrl.count = response.data.count;
@@ -638,6 +658,33 @@ function AuditingCtrl($scope, $http, $state, $stateParams, apiService, DTOptions
         }).then(function successCallback(response){
             $scope.event = response.data;
         });
+    }
+
+    auditingCtrl.listResourceTypes = function(){
+        $http({
+            method: 'GET',
+            url: '/api/v1/auditing_event/resource_type'
+        }).then(function successCallback(response){
+            auditingCtrl.types = response.data;
+        });
+    }
+
+    auditingCtrl.listActions = function(){
+        $http({
+            method: 'GET',
+            url: '/api/v1/auditing_event/action'
+        }).then(function successCallback(response){
+            auditingCtrl.actions = response.data;
+        });
+    }
+
+    auditingCtrl.getCurrentPageOffset = function(){
+        return ((auditingCtrl.itemsPerPage * auditingCtrl.page) - auditingCtrl.itemsPerPage) + 1
+    }
+
+    auditingCtrl.getLastElementIndex = function(){
+        pageMaxIndex = auditingCtrl.page * auditingCtrl.itemsPerPage
+        return pageMaxIndex > auditingCtrl.count ? auditingCtrl.count : pageMaxIndex
     }
 }
 

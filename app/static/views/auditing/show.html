@@ -1,5 +1,5 @@
 <div ng-controller="AuditingCtrl as auditingCtrl" ng-init="auditingCtrl.getEvent()">
-    <div class="row wrapper border-bottom white-bg page-heading" >
+    <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
             <h2>
                Event #{[ event.id ]}
@@ -7,7 +7,6 @@
              <ol class="breadcrumb">
                 <li>
                     <a ui-sref="index.auditing({'region': region.key})">{[ auditingCtrl.title ]}</a>
-
                 </li>
                 <li>
                     <a>{[ event.id ]}</a>
@@ -17,14 +16,37 @@
     </div>
 
     <div class="wrapper wrapper-content">
-
-    <div class="ibox">
-        <div class="ibox-content">
-            <div class="row">
+        <h3>
+            Event data
+        </h3>
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="row">
                     <div class="col-lg-12">
-                        <dl class="dl-horizontal" ng-repeat="(key, value) in event.details">
-                            <dt>{[ key ]}:</dt> <dd>{[ value ]}</dd>
+                        <dl class="dl-horizontal">
+                            <dt>Date:</dt> <dd>{[ event.date_time ]}</dd>
+                            <dt>Resource ID:</dt> <dd>{[ event.resource_id ]}</dd>
+                            <dt>Resource name:</dt> <dd>{[ event.resource_name ]}</dd>
+                            <dt>Resource Type:</dt> <dd>{[ event.resource_type ]}</dd>
+                            <dt>Action:</dt> <dd>{[ event.action ]}</dd>
+                            <dt>User:</dt> <dd>{[ event.username ]}</dd>
+                            <dt>Account:</dt> <dd>{[ event.account ]}</dd>
                         </dl>
+                    </div>
+                </div>
+            </div>
+
+            <h3>
+                Raw data
+            </h3>
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <dl class="dl-horizontal" ng-repeat="(key, value) in event.details">
+                                <dt>{[ key ]}:</dt> <dd>{[ value ]}</dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -28,7 +28,7 @@ from app.virtualmachines.resource import VirtualMachineResource
 from app.storage.resource import StorageResource
 from app.capacity.resource import CloudCapacityResource
 from app.service_offering.resource import ServiceOfferingResource
-from app.auditing.resource import AuditingEventListResource
+from app.auditing.resource import AuditingEventListResource, ListResourceTypeResource, ListActionResource
 from app.auditing.resource import AuditingEventResource
 from app.health.resource import HealthResource
 
@@ -42,6 +42,8 @@ api.add_resource(CloudCapacityResource, '/api/v1/<region>/cloud_capacity/', endp
 api.add_resource(ServiceOfferingResource, '/api/v1/<region>/service_offering/', endpoint='service_offering')
 api.add_resource(AuditingEventListResource, '/api/v1/<region>/auditing_event/', endpoint='auditing_events')
 api.add_resource(AuditingEventResource, '/api/v1/<region>/auditing_event/<id>', endpoint='auditing_event')
+api.add_resource(ListResourceTypeResource, '/api/v1/auditing_event/resource_type', endpoint='resource_type')
+api.add_resource(ListActionResource, '/api/v1/auditing_event/action', endpoint='action')
 api.add_resource(HealthResource, '/health', endpoint='health')
 
 from app import views

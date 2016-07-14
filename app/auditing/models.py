@@ -1,3 +1,4 @@
+from datetime import timedelta
 from flask import json
 from app import db
 from marshmallow import Schema, fields
@@ -45,7 +46,7 @@ class AbstractEvent(db.Model):
 
         if params.get('start_date') and params.get('end_date'):
             query = query.filter(Event.date >= params.get('start_date'))
-            query = query.filter(Event.date <= params.get('end_date'))
+            query = query.filter(Event.date <= params.get('end_date') + timedelta(days=1))
 
         if params.get('region'):
             query = query.filter(Event.region == params.get('region'))
