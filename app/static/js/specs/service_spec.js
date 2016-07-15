@@ -70,12 +70,12 @@ describe('Testing RegionService', function() {
 
     it('should return the default region', function() {
         var region = service.getCurrentRegion()
-        expect(region).toEqual({key: 'ebt', value: 'RJEBT'})
+        expect(region).toEqual({key: 'cme', value: 'RJCME'})
     });
 
     it('should list all regions', function() {
         var regions = service.listRegions()
-        expect(regions.length).toEqual(3)
+        expect(regions.length).toEqual(2)
     });
 });
 

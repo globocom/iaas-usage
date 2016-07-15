@@ -11,7 +11,7 @@ var staticPrefix = 'static/'
 var viewPrefix = staticPrefix + 'views/';
 
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise('/ebt/instances/projects');
+    $urlRouterProvider.otherwise('/cme/instances/projects');
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
