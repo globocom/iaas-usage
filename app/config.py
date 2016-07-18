@@ -37,6 +37,8 @@ class Config(object):
     REGION_LIST = os.getenv('REGION_LIST', '').split(',')
 
     EVENT_QUEUE_HOST = os.getenv('EVENT_QUEUE_HOST', 'localhost')
+    EVENT_QUEUE_USER = os.getenv('EVENT_QUEUE_HOST')
+    EVENT_QUEUE_PASSWORD = os.getenv('EVENT_QUEUE_PASSWORD')
     EVENT_QUEUE_EXCHANGE = os.getenv('EVENT_QUEUE_EXCHANGE', 'cloudstack-events')
     EVENT_QUEUE_NAME = os.getenv('EVENT_QUEUE_NAME', 'iaas-usage-events')
     EVENT_ROUTING_KEY_TEMPLATE = os.getenv('EVENT_ROUTING_KEY_TEMPLATE', 'management-server.ActionEvent.%s.*.*')
@@ -108,6 +110,8 @@ class DevConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql://root:@localhost/iaas_usage'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    EVENT_QUEUE_USER = 'guest'
+    EVENT_QUEUE_PASSWORD = 'guest'
 
 
 class TestConfig(Config):
