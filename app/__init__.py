@@ -51,3 +51,4 @@ from app.auth import views
 
 if app.config['USAGE_ENABLED']:
     from app.usage_record.views import index_usage
+    from app.auditing.views import consume_audit_queue
