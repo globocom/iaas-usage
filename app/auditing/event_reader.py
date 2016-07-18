@@ -14,15 +14,22 @@ class CloudstackEventReader(object):
         self.rabbit_client = RabbitMQClient()
 
     def read_events(self):
+        self.log("Event processing started")
         self.rabbit_client.start_consuming(self._save_event)
+        self.log("Event processing ended")
 
     def _save_event(self, event_json_string):
-        event_data = json.loads(event_json_string)
+        try:
+            event_data = json.loads(event_json_string)
+            if event_data['status'] == 'Completed':
+                self.log("Saving event %s" % event_json_string, 'debug')
 
-        if event_data['status'] == 'Completed':
-            event = self._create_event(event_data, event_json_string)
-            db.session.add(event)
-            db.session.commit()
+                event = self._create_event(event_data, event_json_string)
+                db.session.add(event)
+                db.session.commit()
+        except Exception, e:
+            self.log("Error when trying to save event: %s" % event_json_string,  'error')
+            raise e
 
     def _create_event(self, event_data, event_json_string):
         params = dict(
@@ -53,3 +60,6 @@ class CloudstackEventReader(object):
 
         decorator = cache.cached(timeout=app.config['USAGE_CACHE_TIME'], key_prefix='account_' + account_uuid)
         return decorator(get_account_name)()
+
+    def log(self, message, level='info'):
+        getattr(app.logger, level)(('[%s] ' % self.region.upper()) + message)

@@ -20,6 +20,8 @@ class RabbitMQClient(object):
         queue_state = self.channel.queue_declare(queue=self.QUEUE_NAME)
         self._bind_queue()
 
+        app.logger.info("Reading queue. Message count: %s" % queue_state.method.message_count)
+
         while queue_state.method.message_count > 0:
             self._read_message(insert_function)
             queue_state = self.channel.queue_declare(queue=self.QUEUE_NAME, passive=True)
