@@ -22,6 +22,7 @@ class RabbitMQClient(object):
 
         while queue_state.method.message_count > 0:
             self._read_message(insert_function)
+            queue_state = self.channel.queue_declare(queue=self.QUEUE_NAME, passive=True)
         self.channel.close()
 
     def _bind_queue(self):
@@ -32,10 +33,8 @@ class RabbitMQClient(object):
     def _read_message(self, insert_function):
         method, properties, body = self.channel.basic_get(self.QUEUE_NAME)
         try:
-            if method:
-                if body and method.NAME == 'Basic.GetOk':
-                    insert_function(body)
-                self.channel.basic_ack(delivery_tag=method.delivery_tag)
-        except Exception, e:
-            print e.message
-            app.logger.exception("error")  # TODO: tratar erros
+            if body and method.NAME == 'Basic.GetOk':
+                insert_function(body)
+            self.channel.basic_ack(delivery_tag=method.delivery_tag)
+        except:
+            app.logger.exception("Error while reading event")
