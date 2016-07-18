@@ -5,6 +5,7 @@ from app import db, app
 from mock import patch, Mock
 from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent,\
     ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent
+from app.auditing.event_reader import CloudstackEventReader
 
 
 class BaseTest(unittest.TestCase):
@@ -426,3 +427,38 @@ class AuditingEventListResourceTestCase(BaseTest):
         response = self.app.get('/api/v1/reg/auditing_event/?start_date=2016/01/13')
         self.assertEquals(400, response.status_code)
         self.assertEquals("Not a valid date: '2016/01/13'.", json.loads(response.data)['message'])
+
+
+class CloudstackEventReaderTestCase(BaseTest):
+
+    def setUp(self):
+        super(CloudstackEventReaderTestCase, self).setUp()
+        self.mock_cloudstack()
+        self.mock_rabbitmq_client()
+
+    def test_save_event(self):
+        CloudstackEventReader('reg')._save_event(self._get_event_json_string())
+        events = Event.query.all()
+        self.assertEquals(1, len(events))
+
+    def test_save_event_given_exception_thrown(self):
+        try:
+            CloudstackEventReader('reg')._save_event(None)
+            self.fail()
+        except:
+            pass
+
+    def test_save_event_given_not_completed_event(self):
+        CloudstackEventReader('reg')._save_event(self._get_event_json_string(status='Scheduled'))
+        events = Event.query.all()
+        self.assertEquals(0, len(events))
+
+    def _get_event_json_string(self, status='Completed'):
+        return ('{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
+
+    def mock_cloudstack(self):
+        acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user':[]}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = acs_mock
+
+    def mock_rabbitmq_client(self):
+        patch('app.auditing.event_reader.RabbitMQClient').start()
