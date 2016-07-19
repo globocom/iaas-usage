@@ -17,7 +17,7 @@ class RabbitMQClient(object):
         self.channel = pika.BlockingConnection(connection_parameters).channel()
 
     def start_consuming(self, insert_function):
-        queue_state = self.channel.queue_declare(queue=self.QUEUE_NAME)
+        queue_state = self.channel.queue_declare(queue=self.QUEUE_NAME, arguments={'x-queue-mode': 'lazy'})
         self._bind_queue()
 
         app.logger.info("Reading queue. Message count: %s" % queue_state.method.message_count)
