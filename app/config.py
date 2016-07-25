@@ -1,8 +1,11 @@
 import ast
 import os
+from flask import json
 
 
 class Config(object):
+
+    REGIONS = json.loads(os.getenv('REGIONS', '{}'))
 
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = ast.literal_eval(os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', 'False'))
@@ -28,17 +31,14 @@ class Config(object):
     ELASTICSEARCH_TYPE = os.getenv('ELASTICSEARCH_TYPE')
     LOGSTASH_HOST = os.getenv('LOGSTASH_HOST')
     LOGSTASH_PORT = os.getenv('LOGSTASH_PORT')
+
     USAGE_API_BATCH_SIZE = os.getenv('USAGE_API_BATCH_SIZE', '100')
     USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
     USAGE_TIME = os.getenv('USAGE_TIME', '04:00')
     USAGE_CACHE_TIME = int(os.getenv('USAGE_CACHE_TIME', 60*60*24)) # 1 day cache
     USAGE_ENABLED = ast.literal_eval(os.getenv('USAGE_ENABLED', 'False'))
-    USAGE_MINIMUM_TIME = os.getenv('USAGE_MINIMUN_TIME', 1) #1 hour
-    REGION_LIST = os.getenv('REGION_LIST', '').split(',')
+    USAGE_MINIMUM_TIME = os.getenv('USAGE_MINIMUN_TIME', 1) # 1 hour
 
-    EVENT_QUEUE_HOST = os.getenv('EVENT_QUEUE_HOST', 'localhost')
-    EVENT_QUEUE_USER = os.getenv('EVENT_QUEUE_HOST')
-    EVENT_QUEUE_PASSWORD = os.getenv('EVENT_QUEUE_PASSWORD')
     EVENT_QUEUE_EXCHANGE = os.getenv('EVENT_QUEUE_EXCHANGE', 'cloudstack-events')
     EVENT_QUEUE_NAME = os.getenv('EVENT_QUEUE_NAME', 'iaas-usage-events')
     EVENT_ROUTING_KEY_TEMPLATE = os.getenv('EVENT_ROUTING_KEY_TEMPLATE', 'management-server.ActionEvent.%s.*.*')
@@ -112,6 +112,7 @@ class DevConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     EVENT_QUEUE_USER = 'guest'
     EVENT_QUEUE_PASSWORD = 'guest'
+    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME'}
 
 
 class TestConfig(Config):
@@ -120,3 +121,4 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME'}

@@ -1,3 +1,4 @@
+import os
 from flask import json
 from dateutil.parser import parse
 from app import db, cache, app
@@ -11,7 +12,11 @@ class CloudstackEventReader(object):
     def __init__(self, region):
         self.region = region
         self.acs = CloudstackClientFactory.get_instance(region)
-        self.rabbit_client = RabbitMQClient()
+        host = os.getenv(region.upper() + '_EVENT_QUEUE_HOST')
+        port = int(os.getenv(region.upper() + '_EVENT_QUEUE_PORT', 5672))
+        username = os.getenv(region.upper() + '_EVENT_QUEUE_USER')
+        password = os.getenv(region.upper() + '_EVENT_QUEUE_PASSWORD')
+        self.rabbit_client = RabbitMQClient(host, port, username, password)
 
     def read_events(self):
         self.log("Event processing started")

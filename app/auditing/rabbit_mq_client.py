@@ -7,13 +7,10 @@ class RabbitMQClient(object):
     QUEUE_NAME = app.config['EVENT_QUEUE_NAME']
     QUEUE_ROUTING_KEY = app.config['EVENT_ROUTING_KEY_TEMPLATE']
     QUEUE_EXCHANGE = app.config['EVENT_QUEUE_EXCHANGE']
-    QUEUE_HOST = app.config['EVENT_QUEUE_HOST']
-    QUEUE_USER = app.config['EVENT_QUEUE_USER']
-    QUEUE_PASSWORD = app.config['EVENT_QUEUE_PASSWORD']
 
-    def __init__(self):
-        credentials = pika.PlainCredentials(self.QUEUE_USER, self.QUEUE_PASSWORD)
-        connection_parameters = pika.ConnectionParameters(host=self.QUEUE_HOST, credentials=credentials)
+    def __init__(self, host, port, username, password):
+        credentials = pika.PlainCredentials(username, password)
+        connection_parameters = pika.ConnectionParameters(host=host, credentials=credentials, port=port)
         self.channel = pika.BlockingConnection(connection_parameters).channel()
 
     def start_consuming(self, insert_function):

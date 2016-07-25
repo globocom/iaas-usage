@@ -1,12 +1,9 @@
 function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) {
-    var regions =  [
-        {key: 'cme', value: 'RJCME'},
-        {key: 'cta', value: 'RJCTA'}
-    ]
+    var regions = $rootScope.regions
 
     return {
         listRegions: function() {
-            return regions
+           return regions
         },
         getCurrentRegion: function(){
             if($stateParams.region){
@@ -29,9 +26,9 @@ function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) 
 
 function ApiService(regionService) {
     return {
-        buildAPIUrl: function(uri, params) {
+        buildAPIUrl: function(uri, params, noRegion) {
             query = params ? '?' + $.param(params) : '';
-            fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
+                fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
             return fullUri
         }
     };

@@ -30,6 +30,7 @@ from app.capacity.resource import CloudCapacityResource
 from app.service_offering.resource import ServiceOfferingResource
 from app.auditing.resource import AuditingEventListResource, ListResourceTypeResource, ListActionResource
 from app.auditing.resource import AuditingEventResource
+from app.region.resource import RegionResource
 from app.health.resource import HealthResource
 
 # Resource URL Mappings
@@ -44,6 +45,7 @@ api.add_resource(AuditingEventListResource, '/api/v1/<region>/auditing_event/', 
 api.add_resource(AuditingEventResource, '/api/v1/<region>/auditing_event/<id>', endpoint='auditing_event')
 api.add_resource(ListResourceTypeResource, '/api/v1/auditing_event/resource_type', endpoint='resource_type')
 api.add_resource(ListActionResource, '/api/v1/auditing_event/action', endpoint='action')
+api.add_resource(RegionResource, '/api/v1/region/', endpoint='region')
 api.add_resource(HealthResource, '/health', endpoint='health')
 
 from app import views
