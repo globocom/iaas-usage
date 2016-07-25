@@ -51,6 +51,6 @@ api.add_resource(HealthResource, '/health', endpoint='health')
 from app import views
 from app.auth import views
 
-if app.config['USAGE_ENABLED']:
+if app.config['BATCH_NODE']:
     from app.usage_record.views import index_usage
     from app.auditing.views import consume_audit_queue
