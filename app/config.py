@@ -5,6 +5,7 @@ from flask import json
 
 class Config(object):
 
+    DEBUG = True
     REGIONS = json.loads(os.getenv('REGIONS', '{}'))
     BATCH_NODE = ast.literal_eval(os.getenv('BATCH_NODE', 'False'))
 
@@ -102,12 +103,11 @@ class Config(object):
 
 class ProdConfig(Config):
 
-    DEBUG = False
+    pass
 
 
 class DevConfig(Config):
 
-    DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql://root:@localhost/iaas_usage'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     EVENT_QUEUE_USER = 'guest'
@@ -117,7 +117,6 @@ class DevConfig(Config):
 
 class TestConfig(Config):
 
-    DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
