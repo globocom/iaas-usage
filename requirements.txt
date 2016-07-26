@@ -29,3 +29,4 @@ selenium==2.48.0
 PyVirtualDisplay==0.2
 SQLAlchemy==1.0.13
 marshmallow==2.7.3
+MySQL-python==1.2.5
