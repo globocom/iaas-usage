@@ -621,7 +621,7 @@ function AuditingCtrl($scope, $http, $state, $stateParams, apiService){
         }
 
         if(angular.isUndefined(auditingCtrl.end)){
-            auditingCtrl.end = moment().subtract(1, 'days').format('YYYY-MM-DD')
+            auditingCtrl.end = moment().format('YYYY-MM-DD')
         }
 
         var params =  {

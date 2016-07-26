@@ -105,8 +105,8 @@
                                             <strong>{[ event.resource_name ? event.resource_name + ' - ' : '' ]}</strong>
                                             {[ event.resource_id ? event.resource_id : '-']}
                                         </td>
-                                        <td>{[ event.account ]}</td>
                                         <td>{[ event.username ]}</td>
+                                        <td>{[ event.account ]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -128,7 +128,7 @@
 
 <script type="text/javascript">
     $(function(){
-        $('#reportrange span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().subtract(1, 'days').format('MMMM D, YYYY'));
+        $('#reportrange span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
 
         $('#reportrange').daterangepicker({
             format: 'MM/DD/YYYY',
