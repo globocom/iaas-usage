@@ -4,7 +4,8 @@ from flask import json
 from app import db, app
 from mock import patch, Mock
 from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent,\
-    ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent
+    ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent, \
+    TemplateEvent
 from app.auditing.event_reader import CloudstackEventReader
 
 
@@ -197,6 +198,24 @@ class VolumeEventTestCase(BaseTest):
     def mock_cloudstack_list_volumes(self, volumes):
         list_volumes_mock = Mock(listVolumes=Mock(return_value={'volume': volumes}))
         patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_volumes_mock
+
+
+class TemplateEventTestCase(BaseTest):
+
+    def test_get_resource_name_from_api(self):
+        self.mock_cloudstack_list_templates([{'name': 'template'}])
+        self.assertEquals('template', TemplateEvent('TEMPLATE.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_name_from_api_given_entity_not_found(self):
+        self.mock_cloudstack_list_templates([])
+        self.assertIsNone(TemplateEvent('TEMPLATE.CREATE', resource_id='1').resource_name)
+
+    def test_get_resource_type(self):
+        self.assertEqual('TEMPLATE', TemplateEvent.get_resource_type(None))
+
+    def mock_cloudstack_list_templates(self, templates):
+        list_templates_mock = Mock(listTemplates=Mock(return_value={'template': templates}))
+        patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = list_templates_mock
 
 
 class LoadBalancerEventTestCase(BaseTest):

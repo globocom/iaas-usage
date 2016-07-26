@@ -164,6 +164,18 @@ class VolumeEvent(Event):
         return 'VOLUME'
 
 
+class TemplateEvent(Event):
+
+    def _get_resource_name_from_api(self):
+        params = {'id': self.resource_id, 'templatefilter': 'all', 'listall': 'true'}
+        templates = self.acs.listTemplates(params).get('template')
+        return templates[0].get('name') if templates else None
+
+    @staticmethod
+    def get_resource_type(event_key):
+        return 'TEMPLATE'
+
+
 class LoadBalancerEvent(Event):
 
     def _get_resource_id(self):
