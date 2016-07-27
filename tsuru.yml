@@ -1,0 +1,6 @@
+healthcheck:
+  path: /health
+  method: GET
+  status: 200
+  allowed_failures: 0
+  use_in_router: false
