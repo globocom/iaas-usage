@@ -42,7 +42,7 @@ class HealthResource(Resource):
             return False
 
     def _test_cloudstack(self):
-        for region in app.config['REGION_LIST']:
+        for region in app.config['REGIONS']:
             try:
                 CloudstackClientFactory.get_instance(region).listDomains({'listall': 'true'})
             except:
