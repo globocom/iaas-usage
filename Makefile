@@ -1,7 +1,7 @@
-.PHONY: clean pip test test-js run run-skip-test
+.PHONY: clean pip test test-js test-selenium run
 
 default:
-	@awk -F\: '/^[a-z_]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
+	@awk -F\: '/^[a-z_-]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
 
 
 clean: # remove temporary files
@@ -25,6 +25,7 @@ compile: # compile to check syntax
 test: # run tests
 	$(eval export ENV=app.config.TestConfig)
 	@python -m unittest discover -p tests\.py
+
 
 test-selenium: # run functional tests written for selenium engine
 	$(eval export ENV=app.config.TestConfig)

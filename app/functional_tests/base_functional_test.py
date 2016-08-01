@@ -60,8 +60,6 @@ class FunctionalTestCaseBase(unittest.TestCase):
         self.driver.find_element_by_id("password").clear()
         self.driver.find_element_by_id("password").send_keys(os.getenv('SELENIUM_PASSWORD'))
         self.driver.find_element_by_xpath("//*[@id=\"login-form\"]/button").click()
-        self.driver.find_element_by_xpath("//div[@id='page-wrapper']/div/div/div/nav/ul/li/a/small").click()
-        self.driver.find_element_by_xpath("//div[@id='tab-1']/ul/li[3]/div/div/a/span").click()
 
     def wait_for(self, func):
         for i in range(60):
