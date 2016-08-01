@@ -121,4 +121,4 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME'}
+    REGIONS = {'cme': 'RJCME', 'lab': 'RJLAB', 'cta': 'RJCTA'}
