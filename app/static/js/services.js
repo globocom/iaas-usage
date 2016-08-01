@@ -1,8 +1,7 @@
 function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) {
     var regions =  [
-        {key: 'ebt', value: 'RJEBT'},
-        {key: 'cta', value: 'RJCTA'},
         {key: 'cme', value: 'RJCME'},
+        {key: 'cta', value: 'RJCTA'}
     ]
 
     return {

@@ -472,6 +472,7 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     .withButtons([
         $.extend(true, {}, buttonCommon, { extend: 'copyHtml5' }),
         $.extend(true, {}, buttonCommon, { extend: 'excelHtml5' }),
+        $.extend(true, {}, buttonCommon, { extend: 'csv' }),
         $.extend(true, {}, buttonCommon, { extend: 'print' })
     ]);
 
