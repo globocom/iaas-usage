@@ -588,10 +588,12 @@ function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBu
     projectCtrl.listProjects = function(event, user) {
         console.log('Loading projects')
 
+        url = apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
+        console.info(url)
         userService.getCurrentUser(function(user){
             $http({
                 method: 'GET',
-                url: apiService.buildAPIUrl('/project/', {account_name: user.account_name, domain_id: user.domain_id, is_admin: user.is_admin})
+                url: url
             }).then(function successCallback(response){
                 projectCtrl.projects = response.data;
             });

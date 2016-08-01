@@ -10,7 +10,7 @@
     }]).run(function($rootScope, $window, $location, $http){
          // get region list needed for all the operations in the app
          // the list must me filled before anything starts to run
-         $http({ cache: true, method: 'GET', url: '/api/v1/region' }).then(function successCallback(response){
+         $http({ cache: true, method: 'GET', url: '/api/v1/region/' }).then(function successCallback(response){
             $rootScope.regions = []
             for (var key in response.data) {
                 $rootScope.regions.push({key: key, value: response.data[key]})

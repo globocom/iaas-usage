@@ -60,6 +60,7 @@ describe('Testing RegionService', function() {
     beforeEach(function (done){
         module('iaasusage');
         inject(function(regionService, $rootScope) {
+            $rootScope.regions = [{key: 'cme', value: 'RJCME'}, {key: 'cta', value: 'RJCTA'}]
             service = regionService;
             $scope = $rootScope.$new();
         });

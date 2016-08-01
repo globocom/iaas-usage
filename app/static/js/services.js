@@ -1,16 +1,14 @@
 function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) {
-    var regions = $rootScope.regions
-
     return {
         listRegions: function() {
-           return regions
+           return $rootScope.regions
         },
         getCurrentRegion: function(){
             if($stateParams.region){
-                $rootScope.region = $filter('filter')(regions, {key: $stateParams.region})[0]
+                $rootScope.region = $filter('filter')($rootScope.regions, {key: $stateParams.region})[0]
             }
             if(!$rootScope.region){
-                $rootScope.region = regions[0]
+                $rootScope.region = $rootScope.regions[0]
             }
            return $rootScope.region
         },
@@ -26,10 +24,9 @@ function RegionService($rootScope, $stateParams, $filter, $stateParams, $state) 
 
 function ApiService(regionService) {
     return {
-        buildAPIUrl: function(uri, params, noRegion) {
+        buildAPIUrl: function(uri, params) {
             query = params ? '?' + $.param(params) : '';
-                fullUri = '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
-            return fullUri
+            return '/api/v1/'+ regionService.getCurrentRegion().key + uri + query
         }
     };
 }
