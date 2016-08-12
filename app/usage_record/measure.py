@@ -29,7 +29,7 @@ class MeasureClient:
             'lte': parse(end).date().isoformat()
         })[0:0]
 
-        s.aggs.bucket('by_project', 'terms', field='project.raw', size=0) \
+        s.aggs.bucket('by_project', 'terms', field='projectid.raw', size=0) \
             .bucket('by_type', 'terms', field='usagetype.raw') \
             .bucket('by_offering', 'terms', field='offeringid.raw') \
             .metric('rawusage_sum', 'sum', field='rawusage')
