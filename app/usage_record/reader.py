@@ -42,8 +42,8 @@ class UsageRecordReader:
                     self.log("Processing  %s usage records " % len(records))
 
                     for r in records:
-                        if r.get('project') is not None:
-                            project = next((x for x in projects if x.get('name') == r.get('project')), dict())
+                        if r.get('projectid') is not None:
+                            project = next((x for x in projects if x.get('id') == r.get('projectid')), dict())
                             account = project.get('account')
                             self.measure.create(self.build_usage_record(r, account, usage_type))
 
@@ -60,7 +60,7 @@ class UsageRecordReader:
         usage_record = dict()
         usage_record['rawusage'] = float(r.get('rawusage'))
         usage_record['offeringid'] = r.get('offeringid', '-')
-        usage_record['project'] = r['project']
+        usage_record['projectid'] = r['projectid']
         usage_record['usagetype'] = usage_type
         usage_record['date'] = parse(r['startdate']).date().isoformat()
         usage_record['account'] = account

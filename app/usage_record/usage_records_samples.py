@@ -2,7 +2,7 @@ full_record_sample = {
   "by_project": {
     "buckets": [
       {
-        "key": "Project",
+        "key": "1",
         "by_type": {
           "buckets": [
             {
@@ -54,7 +54,7 @@ record_sample_with_low_usage = {
   "by_project": {
     "buckets": [
       {
-        "key": "Project",
+        "key": "1",
         "by_type": {
           "buckets": [
             {
@@ -81,7 +81,7 @@ records_with_overlapping_running_and_allocated = {
   "by_project": {
     "buckets": [
       {
-        "key": "Project",
+        "key": "1",
         "by_type": {
           "buckets": [
             {
@@ -121,7 +121,7 @@ record_with_running_time_equals_allocated_time = {
   "by_project": {
     "buckets": [
       {
-        "key": "Project",
+        "key": "1",
         "by_type": {
           "buckets": [
             {
