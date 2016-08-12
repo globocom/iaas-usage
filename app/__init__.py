@@ -6,6 +6,7 @@ from flask import Flask
 from flask.ext.cache import Cache
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
+from sqlalchemy.orm import Session
 
 app = Flask(__name__)
 api = Api(app)
@@ -17,9 +18,11 @@ app.config.from_object(os.getenv('ENV', 'app.config.DevConfig'))
 logger = app.logger
 db = SQLAlchemy(app)
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db.session.remove()
+@app.teardown_request
+def session_clear(exception=None):
+    db.session.close()
+    if exception and Session.is_active:
+        db.session.rollback()
 
 if app.config['SENTRY_DSN']:
     sentry = Sentry(app)

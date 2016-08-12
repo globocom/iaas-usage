@@ -104,7 +104,7 @@ class Config(object):
 class ProdConfig(Config):
 
     SQLALCHEMY_POOL_SIZE = 20
-    SQLALCHEMY_POOL_RECYCLE = 30
+    SQLALCHEMY_POOL_RECYCLE = 20
 
 
 class DevConfig(Config):
