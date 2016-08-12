@@ -17,8 +17,8 @@ class UsageRecordBuilder:
         records_grouped_by_type = {'Running VM': [], 'Allocated VM': [], 'Volume': [], 'Volume Snapshot': []}
 
         for project_bucket in aggregations['by_project']['buckets']:
-            project_name = project_bucket['key']
-            project = next((x for x in self.projects if x.get('name') == project_name), None)
+            project_id = project_bucket['key']
+            project = next((x for x in self.projects if x.get('id') == project_id), None)
 
             for resource_type_bucket in project_bucket['by_type']['buckets']:
                 usage_type = resource_type_bucket['key']
@@ -33,7 +33,8 @@ class UsageRecordBuilder:
                         domain = project.get('domain', '-')
 
                         usage_record = {
-                            'project': project_name, 'type': usage_type, 'start_date': start, 'end_date': end,
+                            'project_id': project_id, 'project_name': project['name'],
+                            'type': usage_type, 'start_date': start, 'end_date': end,
                             "offering_name": offering_name, 'usage': raw_usage, 'account': account, 'domain': domain,
                             'region': self.region.upper()
                         }
@@ -46,11 +47,11 @@ class UsageRecordBuilder:
 
     def _calculate_allocated_vm_time(self, grouped_usage, result):
         for allocated_vm in grouped_usage['Allocated VM']:
-            prj = allocated_vm['project']
+            prj = allocated_vm['project_id']
             offering = allocated_vm['offering_name']
             running_vms = grouped_usage['Running VM']
 
-            running_vm = filter(lambda x: x['project'] == prj and x['offering_name'] == offering, running_vms)
+            running_vm = filter(lambda x: x['project_id'] == prj and x['offering_name'] == offering, running_vms)
 
             if running_vm:
                 allocated_vm_time = allocated_vm['usage'] - running_vm[0]['usage']
