@@ -1,1 +1,1 @@
-web: gunicorn -w 4 run --max-requests 100 -t 6000 -b 0.0.0.0:$PORT
+web: python manage.py gunicorn --max-requests 100 -w 4 -t 6000 -b 0.0.0.0:$PORT

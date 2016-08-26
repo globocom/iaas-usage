@@ -1,0 +1,22 @@
+#-*- coding:utf-8 -*-
+SQL_UP = u"""
+CREATE TABLE `event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(30) NOT NULL,
+  `resource_type` varchar(30) NOT NULL,
+  `resource_id` varchar(50) DEFAULT NULL,
+  `resource_name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `username` varchar(80) DEFAULT NULL,
+  `account` varchar(80) DEFAULT NULL,
+  `date` datetime NOT NULL,
+  `region` varchar(5) NOT NULL,
+  `original_event` varchar(3000) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `DATE_INDEX` (`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=latin1
+"""
+
+SQL_DOWN = u"""
+DROP DATABASE `event`;
+"""

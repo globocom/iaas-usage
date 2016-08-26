@@ -17,6 +17,7 @@
     </head>
 
     <body>
+        <div id="backstage-bar-widget"></div>
         <div ui-view></div>
 
         <!-- jQuery and Bootstrap -->
@@ -67,5 +68,16 @@
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
         </script>
+
+        {% if config.BACKSTAGE_BAR_ADDRESS %}
+            <script src="{{ config.BACKSTAGE_BAR_ADDRESS }}"></script>
+            <script>
+                window.bsBar = window.bsBar || {};
+                bsBar.config = {
+                    'logoutCallbackUrl': '{{config.OAUTH_REDIRECT_URL}}logout'
+                };
+                bsBar.Bar.render();
+            </script>
+        {% endif %}
     </body>
 </html>
