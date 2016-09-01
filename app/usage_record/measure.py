@@ -44,3 +44,6 @@ class MeasureClient:
             .filter('term', region=region) \
             .filter('term', date=date)
         self.es.delete_by_query(index=index, doc_type=doc_type, body=s.to_dict())
+
+    def health(self):
+        return self.es.cluster.health()

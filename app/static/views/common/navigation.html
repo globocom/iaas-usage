@@ -2,15 +2,18 @@
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
-                <div class="dropdown profile-element"> <span>
+                <div class="dropdown profile-element">
+                    <span>
                         <img alt="image" class="img-circle" src="{[userCtrl.user.picture]}" height="50" width="50" />
-                         </span>
+                    </span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{[userCtrl.user.first_name]} {[userCtrl.user.last_name]}</strong>
-                         </span> <span class="text-muted text-xs block">{[userCtrl.user.account_name]}<b class="caret"></b></span> </span> </a>
-                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="/logout">Logout</a></li>
-                    </ul>
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                <strong class="font-bold">{[userCtrl.user.first_name]} {[userCtrl.user.last_name]}</strong>
+                            </span>
+                            <span class="text-muted text-xs block">{[userCtrl.user.account_name]}</span>
+                        </span>
+                    </a>
                 </div>
                 <div class="logo-element">
                     IAAS
@@ -44,6 +47,12 @@
                 <a ui-sref="index.capacity({'region': region.key})">
                     <i class="fa fa-cloud"></i>
                     <span class="nav-label">Cloud Capacity</span>
+                </a>
+            </li>
+            <li ng-class="{active: $state.includes('index.auditing') || $state.includes('index.auditing_show')}">
+                <a ui-sref="index.auditing({'region': region.key})">
+                    <i class="fa fa-eye"></i>
+                    <span class="nav-label">Auditing</span>
                 </a>
             </li>
         </ul>

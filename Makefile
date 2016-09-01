@@ -1,8 +1,7 @@
-.PHONY: clean pip test test-selenium test-js run run-skip-test
+.PHONY: clean pip test test-js test-selenium run
 
 default:
-	@awk -F\: '/^[a-z_]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
-
+	@awk -F\: '/^[a-z_-]+:/ && !/default/ {printf "- %-20s %s\n", $$1, $$2}' Makefile
 
 clean: # remove temporary files
 	@find . -name \*.pyc -delete
@@ -23,21 +22,20 @@ compile: # compile to check syntax
 
 
 test: # run tests
+	$(eval export ENV=app.config.TestConfig)
 	@python -m unittest discover -p tests\.py
 
+
 test-selenium: # run functional tests written for selenium engine
+	$(eval export ENV=app.config.TestConfig)
 	@python -m unittest discover -s app/functional_tests
 
 
 test-js: #run javascript tests
+	$(eval export ENV=app.config.TestConfig)
 	@jasmine-ci
 
 
-run-skip-test: # run local server skipping test
-	@python run.py
-
-
-run: # run local server at 8080 after running tests
-	@jasmine-ci
-	@python run.py
+run: # run local server at 8080
+	@python manage.py runserver
 
