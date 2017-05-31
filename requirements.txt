@@ -33,3 +33,4 @@ SQLAlchemy==1.0.13
 marshmallow==2.7.3
 MySQL-python==1.2.5
 simple-db-migrate==2.2.0
+urllib3==1.21.1
