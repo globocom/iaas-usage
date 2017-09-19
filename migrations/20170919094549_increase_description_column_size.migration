@@ -1,0 +1,7 @@
+#-*- coding:utf-8 -*-
+SQL_UP = u"""
+ALTER TABLE `event` CHANGE COLUMN `description` `description` VARCHAR(2000) NULL DEFAULT NULL;
+"""
+
+SQL_DOWN = u"""
+"""
