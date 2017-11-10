@@ -525,7 +525,28 @@ function CapacityCtrl($scope, $http, $state, $filter, apiService){
         }).then(function successCallback(response){
             capacityCtrl.capacityReport = response.data;
             capacityCtrl.zones = Object.keys(capacityCtrl.capacityReport)
-        });
+
+            regionCapacityReport = {}
+            angular.forEach(capacityCtrl.zones, function(zoneName) {
+                zoneCapacities = capacityCtrl.capacityReport[zoneName]
+
+                angular.forEach(zoneCapacities, function(resourceCapacity) {
+                    resourceType = regionCapacityReport[resourceCapacity.type]
+                    if(!resourceType){
+                        resourceType = {
+                            capacity_total: 0, capacity_used:0, type: resourceCapacity.type
+                        }
+                        regionCapacityReport[resourceCapacity.type] = resourceType
+                    }
+
+                    resourceType.capacity_total += resourceCapacity.capacity_total
+                    resourceType.capacity_used += resourceCapacity.capacity_used
+                    resourceType.percent_used = parseFloat((resourceCapacity.capacity_used  * 100) / resourceCapacity.capacity_total).toFixed(2);
+                });
+            });
+
+            capacityCtrl.regionCapacityReport = Object.values(regionCapacityReport)
+        })
     }
 
     capacityCtrl.getCapacity = function(type, value){

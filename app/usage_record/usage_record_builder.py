@@ -33,7 +33,7 @@ class UsageRecordBuilder:
                         domain = project.get('domain', '-')
 
                         usage_record = {
-                            'project_id': project_id, 'project_name': project['name'],
+                            'project_id': project_id, 'project_name': project.get('name'),
                             'type': usage_type, 'start_date': start, 'end_date': end,
                             "offering_name": offering_name, 'usage': raw_usage, 'account': account, 'domain': domain,
                             'region': self.region.upper()
