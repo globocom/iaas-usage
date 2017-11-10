@@ -541,11 +541,13 @@ function CapacityCtrl($scope, $http, $state, $filter, apiService){
 
                     resourceType.capacity_total += resourceCapacity.capacity_total
                     resourceType.capacity_used += resourceCapacity.capacity_used
-                    resourceType.percent_used = parseFloat((resourceCapacity.capacity_used  * 100) / resourceCapacity.capacity_total).toFixed(2);
                 });
             });
 
             capacityCtrl.regionCapacityReport = Object.values(regionCapacityReport)
+            angular.forEach(capacityCtrl.regionCapacityReport, function(resource) {
+                resource.percent_used = parseFloat((resource.capacity_used  * 100) / resource.capacity_total).toFixed(2);
+            });
         })
     }
 
