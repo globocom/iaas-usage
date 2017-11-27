@@ -31,6 +31,7 @@
                         <table datatable="ng" dt-options="dtOptions" class="table table-striped table-bordered table-hover" >
                             <thead>
                                 <tr>
+                                    <th class="export_csv_field">Project name</th>
                                     <th>Project name</th>
                                     <th ng-show="projectCtrl.context == 'Instances'">Number of instances</th>
                                     <th ng-show="userCtrl.user.is_admin">Account</th>
@@ -38,6 +39,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="project in projectCtrl.projects">
+                                    <td class="export_csv_field">{[project.name]}</td>
                                     <td>
                                         <div ng-show="project.vm_count > 0">
                                             <a  ui-sref="{[ projectCtrl.link ]}" >

@@ -129,8 +129,12 @@ describe('Testing Project controller', function() {
                     newOptions: function(){
                         return{
                             withOption: function(){
-                             return {
-                                    withOption:function(){}
+                                return {
+                                    withOption:function(){
+                                        return {
+                                            withOption:function(){}
+                                        }
+                                    }
                                 }
                             }
                         }

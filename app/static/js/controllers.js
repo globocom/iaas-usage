@@ -605,9 +605,23 @@ function ProjectCtrl($scope, $http, $state, apiService, userService, DTOptionsBu
     projectCtrl.context = $state.current.data.context
     projectCtrl.link = $state.current.data.link
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    if(projectCtrl.context == 'Instances'){
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+        .withDOM('<"html5buttons"B>lTfgitp')
         .withOption('responsive', true)
-        .withOption('aaSorting', [[1, 'desc']]);
+        .withOption('aaSorting', [[2, 'desc']])
+        .withOption('columnDefs', [{ "visible": false, "targets": 0 }])
+        .withButtons([{extend: 'csv',
+            filename: "projects",
+            exportOptions: {
+            columns: [0, 2, 3]
+        }}]);
+    }else{
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+        .withOption('responsive', true)
+        .withOption('aaSorting', [[1, 'desc']])
+        .withOption('columnDefs', [{ "visible": false, "targets": 0 }]);
+    }
 
     projectCtrl.listProjects = function(event, user) {
         console.log('Loading projects')
