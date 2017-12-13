@@ -48,33 +48,33 @@
                                 <thead>
                                     <tr>
                                         <th>Project Name</th>
+                                        <th>Project ID</th>
                                         <th>Account</th>
-                                        <th>Domain</th>
                                         <th>Region</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Resource</th>
                                         <th>Offering</th>
+                                        <th>Offering ID</th>
+                                        <th>CPU cores</th>
+                                        <th>RAM size (MB)</th>
                                         <th>Usage (hours)</th>
-                                        <th>Project ID</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="record in usageCtrl.getRecords()" >
                                         <td>{[record.project_name]}</td>
+                                        <td>{[record.project_id]}</td>
                                         <td>{[record.account]}</td>
-                                        <td>{[record.domain]}</td>
                                         <td>{[record.region]}</td>
                                         <td>{[record.start_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.end_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.type]}</td>
-                                        <td class="service-offering">
-                                            <service-offering-tooltip name="{[record.offering_name]}">
-                                                {[record.offering_name]}
-                                            </service-offering-tooltip>
-                                        </td>
+                                        <td>{[record.offering_name]}</td>
+                                        <td>{[record.offering_id]}</td>
+                                        <td>{[record.offering_cpu]}</td>
+                                        <td>{[record.offering_ram]}</td>
                                         <td>{[record.usage | number:0]}</td>
-                                        <td>{[record.project_id]}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -103,10 +103,6 @@
         }, function(start, end, label) {
             $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
             usageCtrl.listUsageRecords(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'))
-        });
-
-        $(document).arrive(".service-offering", function(){
-            $('[data-toggle="offering-tip"]').tooltip({html: true});
         });
     });
 </script>

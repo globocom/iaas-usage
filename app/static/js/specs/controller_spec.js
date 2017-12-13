@@ -387,7 +387,11 @@ describe('Testing Usage controller', function() {
                                 return {
                                     withOption: function(){
                                         return {
-                                            withButtons:function(){}
+                                            withOption: function(){
+                                                return{
+                                                    withButtons:function(){}
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -451,29 +451,19 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     usageCtrl.title = 'Resource Usage';
     usageCtrl.records
 
-    var buttonCommon = {
-        exportOptions: {
-            format: {
-                body: function ( data, column, row ) {
-                    if(column == 7){
-                        //remove offering tooltips for print/export
-                        return $($('<div>').append(data).find('a')[0]).text()
-                    }else{
-                        return data;
-                    }
-                }
-            }
-        }
-    }
-
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
     .withOption('responsive', true)
+    .withOption('columnDefs', [
+        { "visible": false, "targets": 1 },
+        { "visible": false, "targets": 3 },
+        { "visible": false, "targets": 8 }
+    ])
     .withButtons([
-        $.extend(true, {}, buttonCommon, { extend: 'copyHtml5' }),
-        $.extend(true, {}, buttonCommon, { extend: 'excelHtml5' }),
-        $.extend(true, {}, buttonCommon, { extend: 'csv' }),
-        $.extend(true, {}, buttonCommon, { extend: 'print' })
+        $.extend(true, {}, {}, { extend: 'copyHtml5' }),
+        $.extend(true, {}, {}, { extend: 'excelHtml5' }),
+        $.extend(true, {}, {}, { extend: 'csv' }),
+        $.extend(true, {}, {}, { extend: 'print' })
     ]);
 
     usageCtrl.listUsageRecords = function(start, end) {

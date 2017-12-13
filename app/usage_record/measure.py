@@ -31,7 +31,7 @@ class MeasureClient:
 
         s.aggs.bucket('by_project', 'terms', field='projectid.raw', size=0) \
             .bucket('by_type', 'terms', field='usagetype.raw') \
-            .bucket('by_offering', 'terms', field='offeringid.raw') \
+            .bucket('by_offering', 'terms', field='offering_struct.raw') \
             .metric('rawusage_sum', 'sum', field='rawusage')
 
         return s.execute().aggregations.to_dict()

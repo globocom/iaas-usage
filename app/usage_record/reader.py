@@ -7,11 +7,12 @@ from dateutil.parser import parse
 
 class UsageRecordReader:
 
-    USAGE_TYPES = {1: 'Running VM', 2: 'Allocated VM', 6: 'Volume', 9: 'Volume Snapshot'}
+    USAGE_TYPES = {1: 'Running VM', 2: 'Allocated VM'}
 
     def __init__(self, region):
         self.region = region
         self.acs = CloudstackResource().get_cloudstack(region)
+        self.compute_offerings = self.get_offerings()
         self.measure = MeasureClient()
 
     def index_usage(self, date=None):
@@ -53,22 +54,36 @@ class UsageRecordReader:
 
             self.log("Execution ended %s records processed." % record_count)
         except:
-            self.log("Error reading usage data. Date: " + date)
+            self.log("Error reading usage data. Date: %s" % date)
             self.rollback(date)
 
     def build_usage_record(self, r, account, usage_type):
         usage_record = dict()
         usage_record['rawusage'] = float(r.get('rawusage'))
-        usage_record['offeringid'] = r.get('offeringid', '-')
         usage_record['projectid'] = r['projectid']
         usage_record['usagetype'] = usage_type
         usage_record['date'] = parse(r['startdate']).date().isoformat()
         usage_record['account'] = account
         usage_record['region'] = self.region
+
+        offering_id = r.get('offeringid', '-')
+        compute_offering = self.find_compute_offering(offering_id) or dict()
+
+        usage_record['offering_struct'] = "%s|%s|%s|%s" % (
+            offering_id,
+            compute_offering.get('name', ''),
+            compute_offering.get('cpunumber', ''),
+            compute_offering.get('memory', '')
+        )
+        usage_record['offeringid'] = offering_id
+        usage_record['offering_name'] = compute_offering.get('name')
+        usage_record['cpu_cores'] = compute_offering.get('cpunumber')
+        usage_record['memory'] = compute_offering.get('memory')
+
         return usage_record
 
     def log(self, message, level='info'):
-        getattr(app.logger, level)(('[%s] ' % self.region.upper()) + message)
+        getattr(app.logger, level)('[%s] %s' % (self.region.upper(), message))
 
     def rollback(self, date):
         self.log("Rolling back operation Date: " + date)
@@ -79,3 +94,9 @@ class UsageRecordReader:
 
     def get_projects(self):
         return self.acs.listProjects({'simple': 'true', 'listall': 'true'}).get('project')
+
+    def get_offerings(self):
+        return self.acs.listServiceOfferings({}).get('serviceoffering')
+
+    def find_compute_offering(self, id):
+        return next((x for x in self.compute_offerings if x.get('id') == id), None)
