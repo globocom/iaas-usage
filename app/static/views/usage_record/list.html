@@ -70,10 +70,10 @@
                                         <td>{[record.start_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.end_date | date: 'dd/MM/yyyy']}</td>
                                         <td>{[record.type]}</td>
-                                        <td>{[record.offering_name]}</td>
+                                        <td>{[record.offering_name || '-']}</td>
                                         <td>{[record.offering_id]}</td>
-                                        <td>{[record.offering_cpu]}</td>
-                                        <td>{[record.offering_ram]}</td>
+                                        <td>{[record.offering_cpu || '-']}</td>
+                                        <td>{[record.offering_ram || '-']}</td>
                                         <td>{[record.usage | number:0]}</td>
                                     </tr>
                                 </tbody>
