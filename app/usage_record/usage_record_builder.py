@@ -1,5 +1,6 @@
 from app import app, cache
 from app.cloudstack.cloudstack_base_resource import CloudstackClientFactory
+from app.projects.models import Project
 
 
 class UsageRecordBuilder:
@@ -16,7 +17,8 @@ class UsageRecordBuilder:
 
         for project_bucket in aggregations['by_project']['buckets']:
             project_id = project_bucket['key']
-            project = next((x for x in self.projects if x.get('id') == project_id), None)
+            project = next((x for x in self.projects if x.get('id') == project_id), dict())
+            local_project = Project.find_by_uuid(project_id)
 
             for resource_type_bucket in project_bucket['by_type']['buckets']:
                 usage_type = resource_type_bucket['key']
@@ -29,13 +31,13 @@ class UsageRecordBuilder:
                     offering_ram = offering_struct[3] or None
                     raw_usage = float(offering_bucket['rawusage_sum']['value'])
 
-                    if raw_usage > app.config['USAGE_MINIMUM_TIME'] and project is not None:
+                    if raw_usage > app.config['USAGE_MINIMUM_TIME']:
                         account = project.get('account', '-')
                         domain = project.get('domain', '-')
 
                         usage_record = {
-                            'project_id': project_id,
-                            'project_name': project.get('name'),
+                            'project_id': local_project.uuid if local_project else project_id,
+                            'project_name': local_project.name if local_project else '-',
                             'type': usage_type,
                             'start_date': start,
                             'end_date': end,

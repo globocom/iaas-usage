@@ -1,0 +1,20 @@
+#-*- coding:utf-8 -*-
+SQL_UP = u"""
+CREATE TABLE `project` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `process_id` varchar(100) NOT NULL,
+  `business_service_id` varchar(100) DEFAULT NULL,
+  `client_id` varchar(100) DEFAULT NULL,
+  `component_id` varchar(100) DEFAULT NULL,
+  `sub_component_id` varchar(100) DEFAULT NULL,
+  `product_id` varchar(100) DEFAULT NULL,
+  `detailed_usage` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=581 DEFAULT CHARSET=latin1;
+"""
+
+SQL_DOWN = u"""
+DROP TABLE `project`;
+"""

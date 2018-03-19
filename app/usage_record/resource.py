@@ -3,7 +3,7 @@ from flask_restful import reqparse
 from flask_restful import Resource
 from app.auth.utils import required_login
 from app.cloudstack.cloudstack_base_resource import handle_errors
-from app.usage_record.measure import MeasureClient
+from app.usage_record.elk import ELKClient
 from app.usage_record.usage_record_builder import UsageRecordBuilder
 
 
@@ -22,5 +22,5 @@ class UsageRecordResource(Resource):
         end = args.get('end_date')
         account = args.get('account_name')
 
-        usage_records = MeasureClient().find(region, account, start, end)
+        usage_records = ELKClient().find_usage_records(region, account, start, end)
         return UsageRecordBuilder(region).build_usage_report(usage_records, start, end)

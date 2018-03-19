@@ -5,7 +5,7 @@ from dateutil.parser import parse
 from measures import Measure
 
 
-class MeasureClient:
+class ELKClient:
 
     def __init__(self):
         es_url = app.config['ELASTICSEARCH_URL']
@@ -16,10 +16,10 @@ class MeasureClient:
         self.measure = Measure(app.config['ELASTICSEARCH_CLIENT'], (logstash_host, logstash_port))
         self.es = connections.create_connection(hosts=[es_url + ':' + es_port])
 
-    def create(self, data):
+    def create_usage_record(self, data):
         self.measure.count(app.config['ELASTICSEARCH_TYPE'], dimensions=data)
 
-    def find(self, region, account, start, end):
+    def find_usage_records(self, region, account, start, end):
         s = Search(using=self.es, index=app.config['ELASTICSEARCH_INDEX'], doc_type=app.config['ELASTICSEARCH_TYPE'])
         s = s.filter('term', region=region)
         if account is not None:
@@ -36,7 +36,7 @@ class MeasureClient:
 
         return s.execute().aggregations.to_dict()
 
-    def delete(self, region, date):
+    def delete_usage_records(self, region, date):
         index = app.config['ELASTICSEARCH_INDEX']
         doc_type = app.config['ELASTICSEARCH_TYPE']
 

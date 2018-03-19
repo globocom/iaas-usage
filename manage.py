@@ -7,6 +7,7 @@ manager = Manager(app)
 def create_db():
     """Creates the MySQL database schema"""
     import app.auditing.models
+    import app.projects.models
     app.logger.info("Creating database")
     app.db.create_all()
 
@@ -15,6 +16,7 @@ def create_db():
 def destroy_db():
     """Drops the MySQL database schema"""
     import app.auditing.models
+    import app.projects.models
     app.logger.info("Destroying database")
     app.db.drop_all()
 

@@ -1,26 +1,31 @@
 import unittest
 from mock import patch, Mock
-from app import cache
+from app import cache, db
 from app.usage_record.usage_record_builder import UsageRecordBuilder
-from app.usage_record.usage_records_samples import full_record_sample, record_sample_with_low_usage, \
+from app.usage_record.usage_records_samples import full_record_sample, \
     records_with_overlapping_running_and_allocated, record_with_running_time_equals_allocated_time
 from app.usage_record.reader import UsageRecordReader
 
 
 class UsageRecordReaderTestCase(unittest.TestCase):
 
+    def setUp(self):
+        db.create_all()
+        self.service_offerings = {'name': 'Small', 'id': '8d67bc56-d1dd-4f19-83bd-b3b546a2a4f7'}
+
     def tearDown(self):
+        db.drop_all()
         patch.stopall()
 
     def test_read_usage_records_given_no_records_found(self):
-        acs_mock = self.mock_cloudstack({'project': [{'name': 'name'}]}, {'usagerecord': []})
-        measure_mock = self.mock_measure()
+        acs_mock = self.mock_cloudstack({'project': [{'name': 'name'}]}, {'usagerecord': []}, {'serviceoffering': [self.service_offerings]})
+        measure_mock = self.mock_elk()
         reader = UsageRecordReader('region')
 
         reader.index_usage()
 
-        self.assertEquals(1, measure_mock.delete.call_count)
-        self.assertEquals(0, measure_mock.create.call_count)
+        self.assertEquals(1, measure_mock.delete_usage_records.call_count)
+        self.assertEquals(0, measure_mock.create_usage_record.call_count)
         self.assertEquals(1, acs_mock.listUsageRecords.called)
 
     def test_read_usage_records_given_error(self):
@@ -33,14 +38,14 @@ class UsageRecordReaderTestCase(unittest.TestCase):
             "startdate": "2016-03-14'T'00:00:00-03:00",
             "usagetype": 2
 
-        }]})
-        measure_mock = self.mock_measure(False)
+        }]}, {'serviceoffering': [self.service_offerings]})
+        measure_mock = self.mock_elk(False)
         reader = UsageRecordReader('region')
 
         reader.index_usage()
 
-        self.assertEquals(2, measure_mock.delete.call_count)
-        self.assertEquals(1, measure_mock.create.call_count)
+        self.assertEquals(2, measure_mock.delete_usage_records.call_count)
+        self.assertEquals(1, measure_mock.create_usage_record.call_count)
         self.assertEquals(1, acs_mock.listUsageRecords.call_count)
 
     def test_read_usage_records(self):
@@ -53,26 +58,26 @@ class UsageRecordReaderTestCase(unittest.TestCase):
             "startdate": "2016-03-14'T'00:00:00-03:00",
             "usagetype": 2
 
-        }]})
-        measure_mock = self.mock_measure()
+        }]}, {'serviceoffering': [self.service_offerings]})
+        measure_mock = self.mock_elk()
         reader = UsageRecordReader('region')
 
         reader.index_usage()
 
-        self.assertEquals(1, measure_mock.delete.call_count)
-        self.assertEquals(4, measure_mock.create.call_count)
-        self.assertEquals(8, acs_mock.listUsageRecords.call_count)
+        self.assertEquals(1, measure_mock.delete_usage_records.call_count)
+        self.assertEquals(2, measure_mock.create_usage_record.call_count)
+        self.assertEquals(4, acs_mock.listUsageRecords.call_count)
 
-    def mock_measure(self, success=True):
-        measure_mock = patch('app.usage_record.reader.MeasureClient').start()
-        measure = Mock()
+    def mock_elk(self, success=True):
+        mock = patch('app.usage_record.reader.ELKClient').start()
+        elk_mock = Mock()
         if success is not True:
-            measure.create.side_effect = Exception()
-        measure.delete.return_value = success
-        measure_mock.return_value = measure
-        return measure
+            elk_mock.create_usage_record.side_effect = Exception()
+        elk_mock.delete_usage_records.return_value = success
+        mock.return_value = elk_mock
+        return elk_mock
 
-    def mock_cloudstack(self, projects, records):
+    def mock_cloudstack(self, projects, records, offerings):
         acs_mock = patch('app.usage_record.reader.CloudstackResource.get_cloudstack').start()
         cloudstack = Mock()
         cloudstack.listProjects.return_value = projects
@@ -84,7 +89,7 @@ class UsageRecordReaderTestCase(unittest.TestCase):
                 return {}
 
         cloudstack.listUsageRecords.side_effect = list_record_mock
-
+        cloudstack.listServiceOfferings.return_value = offerings
         acs_mock.return_value = cloudstack
         return cloudstack
 
@@ -92,6 +97,7 @@ class UsageRecordReaderTestCase(unittest.TestCase):
 class UsageRecordBuilderTestCase(unittest.TestCase):
 
     def setUp(self):
+        db.create_all()
         self.projects = [{'account': 'acc', 'domain': 'ROOT', 'name': 'Project', 'id': '1'}]
         self.service_offerings = [{'name': 'Small', 'id': '100'}, {'Large': '20GB', 'id': '200'}]
         self.disk_offerings = [{'name': '10GB', 'id': '1'}, {'name': '20GB', 'id': '2'}]
@@ -102,13 +108,8 @@ class UsageRecordBuilderTestCase(unittest.TestCase):
 
     def tearDown(self):
         cache.clear()
+        db.drop_all()
         patch.stopall()
-
-    def test_build_usage_report_given_records_with_usage_below_minimun(self):
-        response = UsageRecordBuilder('region').build_usage_report(record_sample_with_low_usage, '2016-01-01', '2016-01-01')
-
-        self.assertEquals(0, len(response['usage']))
-        self.assert_acs_mocks()
 
     def test_build_usage_report_given_overlapping_running_and_allocated_vm_offerings(self):
         response = UsageRecordBuilder('region').build_usage_report(records_with_overlapping_running_and_allocated, '2016-01-01', '2016-01-01')
@@ -131,13 +132,11 @@ class UsageRecordBuilderTestCase(unittest.TestCase):
     def test_list_usage_records(self):
         response = UsageRecordBuilder('region').build_usage_report(full_record_sample, '2016-01-01', '2016-01-01')
 
-        self.assertEquals(4, len(response['usage']))
+        self.assertEquals(2, len(response['usage']))
         self.assert_acs_mocks()
 
     def assert_acs_mocks(self):
         self.assertEquals(1, self.acs_mock.listProjects.call_count)
-        self.assertEquals(1, self.acs_mock.listServiceOfferings.call_count)
-        self.assertEquals(1, self.acs_mock.listDiskOfferings.call_count)
 
     def mock_cloudstack(self, projects, compute_offerings, disk_offerings):
         acs_mock = patch('app.usage_record.usage_record_builder.CloudstackClientFactory.get_instance').start()

@@ -4,7 +4,7 @@ from flask_restful import Resource
 from sqlalchemy import text
 from app import db, app
 from app.cloudstack.cloudstack_base_resource import CloudstackClientFactory
-from app.usage_record.measure import MeasureClient
+from app.usage_record.elk import ELKClient
 
 
 class HealthResource(Resource):
@@ -32,7 +32,7 @@ class HealthResource(Resource):
     def _test_elasticsearch(self):
         cluster_status = ''
         try:
-            cluster_status = MeasureClient().health().get('status')
+            cluster_status = ELKClient().health().get('status')
             if cluster_status not in ['green', 'yellow']:
                 raise Exception()
             else:
