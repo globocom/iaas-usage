@@ -62,8 +62,11 @@ class UsageRecordExporter(object):
         }
 
         if project:
+            defaul_business_service = app.config['USAGE_NOT_CLASSIFIED_BUSINESS_SERVICE_ID']
             if project.business_service_id:
                 distribution['servico-de-negocio'] = {"id": project.business_service_id}
+            else:
+                distribution['servico-de-negocio'] = {"id": defaul_business_service}
 
             if project.component_id:
                 distribution['componente'] = {"id": project.component_id}
@@ -99,14 +102,16 @@ class UsageRecordExporter(object):
                 return utilization
 
     def _send(self, payload, retry_count=0):
+        json_payload = json.dumps(payload)
         headers = {'Content-type': 'application/json'}
-        response = requests.post(app.config['BILLING_COLLECTOR_ENDPOINT'], data=json.dumps(payload), headers=headers)
+        response = requests.post(app.config['BILLING_COLLECTOR_ENDPOINT'], data=json_payload, headers=headers)
         if response.status_code == 201 or response.status_code == 200:
             self.log("Usage report sent successfully: %s " % response.content)
             return
         else:
             self.log('Error sending data to enpoint', 'error')
             self.log('Status: %s' % response.status_code, 'error')
+            app.logger.error('Request: {}'.format(json_payload))
             app.logger.error('Response: {}'.format(response.content))
             if retry_count < 3:
                 self._send(payload, retry_count + 1)
