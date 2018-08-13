@@ -29,14 +29,16 @@ class CloudstackEventReader(object):
             if event_data['status'] == 'Completed':
                 self.log("Saving event %s" % event_json_string, 'debug')
 
-                event = self._create_event(event_data, event_json_string)
-                db.session.add(event)
-                db.session.commit()
+                if self._verify_eventdata(event_data):
+                    event = self._create_event(event_data, event_json_string)
+                    db.session.add(event)
+                    db.session.commit()
         except Exception, e:
             self.log("Error when trying to save event: %s" % event_json_string,  'error')
             raise e
 
     def _create_event(self, event_data, event_json_string):
+
         params = dict(
             resource_id=event_data.get('entityuuid'),
             description=event_data.get('description'),
@@ -68,3 +70,16 @@ class CloudstackEventReader(object):
 
     def log(self, message, level='info'):
         getattr(app.logger, level)(('[%s] ' % self.region.upper()) + message)
+
+    def _verify_eventdata(self, event_data):
+        if event_data.get('entityuuid') is None:
+            return False
+        if event_data.get('description') is None:
+            return False
+        if event_data.get('user') is None:
+            return False
+        if event_data.get('account') is None:
+            return False
+        if event_data.get('eventDateTime') is None:
+            return False
+        return True
