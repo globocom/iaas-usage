@@ -125,7 +125,7 @@ class DevConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     EVENT_QUEUE_USER = 'guest'
     EVENT_QUEUE_PASSWORD = 'guest'
-    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME'}
+    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME', 'dev': 'RJDEV'}
 
 
 class TestConfig(Config):
@@ -133,4 +133,4 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    REGIONS = {'cme': 'RJCME', 'lab': 'RJLAB', 'cta': 'RJCTA'}
+    REGIONS = {'cme': 'RJCME', 'lab': 'RJLAB', 'cta': 'RJCTA', 'dev': 'RJDEV'}

@@ -63,7 +63,11 @@ class UsageRecordReader:
 
     def build_usage_record(self, project, r, account, usage_type):
         usage_record = dict()
-        usage_record['rawusage'] = float(r.get('rawusage'))
+        if str(r.get('rawusage')).find(','):
+            usage_record['rawusage'] = float(str(r.get('rawusage')).replace(',', '.'))
+        else:
+            usage_record['rawusage'] = float(r.get('rawusage'))
+
         usage_record['projectid'] = project.uuid
         usage_record['usagetype'] = usage_type
         usage_record['date'] = parse(r['startdate']).date().isoformat()
