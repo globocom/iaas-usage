@@ -20,7 +20,6 @@ def destroy_db():
     app.logger.info("Destroying database")
     app.db.drop_all()
 
-
 @manager.command
 def runserver():
     """"Runs the application on the default port (8080)"""

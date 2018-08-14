@@ -32,7 +32,7 @@ class Config(object):
     ELASTICSEARCH_INDEX = os.getenv('ELASTICSEARCH_INDEX')
     ELASTICSEARCH_TYPE = os.getenv('ELASTICSEARCH_TYPE')
     LOGSTASH_HOST = os.getenv('LOGSTASH_HOST')
-    LOGSTASH_PORT = os.getenv('LOGSTASH_PORT', 1985)
+    LOGSTASH_PORT = os.getenv('LOGSTASH_PORT')
 
     USAGE_API_BATCH_SIZE = os.getenv('USAGE_API_BATCH_SIZE', '100')
     USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
