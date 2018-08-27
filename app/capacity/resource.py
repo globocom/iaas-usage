@@ -22,7 +22,7 @@ class CloudCapacityResource(CloudstackResource):
                     "type": type,
                     "capacity_total": c.get('capacitytotal'),
                     "capacity_used": c.get('capacityused'),
-                    "percent_used": float(c.get('percentused')),
+                    "percent_used": c.get('percentused'),
                     "zone_name": zone_name,
                     "zone_id": c.get('zoneid')
                 }
