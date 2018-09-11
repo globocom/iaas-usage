@@ -32,7 +32,7 @@ class Config(object):
     ELASTICSEARCH_INDEX = os.getenv('ELASTICSEARCH_INDEX')
     ELASTICSEARCH_TYPE = os.getenv('ELASTICSEARCH_TYPE')
     LOGSTASH_HOST = os.getenv('LOGSTASH_HOST')
-    LOGSTASH_PORT = os.getenv('LOGSTASH_PORT', 1985)
+    LOGSTASH_PORT = os.getenv('LOGSTASH_PORT')
 
     USAGE_API_BATCH_SIZE = os.getenv('USAGE_API_BATCH_SIZE', '100')
     USAGE_REGIONS = os.getenv('USAGE_REGIONS', '').split(',')
@@ -45,6 +45,7 @@ class Config(object):
     USAGE_DEFAULT_PROJECT_ID = os.getenv('USAGE_DEFAULT_PROJECT_ID', 'default')
     USAGE_DEFAULT_PROJECT_NAME = os.getenv('USAGE_DEFAULT_PROJECT_NAME','Default ACS project')
     USAGE_DEFAULT_PROCESS_ID = os.getenv('USAGE_DEFAULT_PROCESS_ID', '7a9456320f328700fd7f91dbe1050e27')
+    USAGE_DEFAULT_PROCESS_ID_DEV = os.getenv('USAGE_DEFAULT_PROCESS_ID_DEV', 'f29456320f328700fd7f91dbe1050e28')
     USAGE_DEFAULT_BUSINESS_SERVICE_ID = os.getenv('USAGE_DEFAULT_BUSINESS_SERVICE_ID', 'f8246ff9db9f43409fc15458dc9619a0')
     USAGE_NOT_CLASSIFIED_BUSINESS_SERVICE_ID = os.getenv('USAGE_NOT_CLASSIFIED_BUSINESS_SERVICE_ID', '3dcf5f75db9f43409fc15458dc961992')
     USAGE_DEFAULT_CLIENT_ID = os.getenv('USAGE_DEFAULT_CLIENT_ID', 'f57e85f9db6fcf409fc15458dc961936')
@@ -125,7 +126,7 @@ class DevConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     EVENT_QUEUE_USER = 'guest'
     EVENT_QUEUE_PASSWORD = 'guest'
-    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME'}
+    REGIONS = {'lab': 'RJLAB', 'cta': 'RJCTA', 'cme': 'RJCME', 'dev': 'RJDEV'}
 
 
 class TestConfig(Config):
@@ -133,4 +134,4 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    REGIONS = {'cme': 'RJCME', 'lab': 'RJLAB', 'cta': 'RJCTA'}
+    REGIONS = {'cme': 'RJCME', 'lab': 'RJLAB', 'cta': 'RJCTA', 'dev': 'RJDEV'}

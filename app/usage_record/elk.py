@@ -1,9 +1,8 @@
-import json
-import socket
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
 from app import app
 from dateutil.parser import parse
+from measures import Measure
 
 
 class ELKClient:
@@ -11,30 +10,15 @@ class ELKClient:
     def __init__(self):
         es_url = app.config['ELASTICSEARCH_URL']
         es_port = app.config['ELASTICSEARCH_PORT']
+        logstash_host = app.config['LOGSTASH_HOST']
+        logstash_port = int(app.config['LOGSTASH_PORT'])
+
+        self.measure = Measure(app.config['ELASTICSEARCH_CLIENT'], (logstash_host, logstash_port))
         self.es = connections.create_connection(hosts=[es_url + ':' + es_port])
-        self.logstash_host = app.config['LOGSTASH_HOST']
-        self.logstash_port = int(app.config['LOGSTASH_PORT'])
 
     def create_usage_record(self, data):
-        message = {
-            'client': app.config['ELASTICSEARCH_CLIENT'],
-            'metric': app.config['ELASTICSEARCH_TYPE'],
-        }
-        data.update(message)
+        self.measure.count(app.config['ELASTICSEARCH_TYPE'], dimensions=data)
 
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        except socket.error, msg:
-            app.logger.error("Error creating socket to logstash: %s" % msg)
-            raise Exception("Error sending usage record to Logstash")
-
-        try:
-            sock.connect((self.logstash_host, self.logstash_port))
-        except socket.error, msg:
-            app.logger.error("Error sending TCP message to logstash: %s" % msg)
-            raise Exception("Error sending usage record to Logstash")
-
-        sock.send(json.dumps(data).encode('utf-8'))
 
     def find_usage_records(self, region, account, start, end):
         s = Search(using=self.es, index=app.config['ELASTICSEARCH_INDEX'], doc_type=app.config['ELASTICSEARCH_TYPE'])

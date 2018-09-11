@@ -48,7 +48,7 @@ class UsageRecordReader:
                     for r in records:
                         project = next((x for x in projects if x.get('id') == r.get('projectid')), dict())
                         account = project.get('account')
-                        project = self.save_project(projects, project.get('id', app.config['USAGE_DEFAULT_PROJECT_ID']))
+                        project = self.save_project(projects, project.get('id', app.config['USAGE_DEFAULT_PROJECT_ID']), self.region)
                         self.elk_client.create_usage_record(self.build_usage_record(project, r, account, usage_type))
 
                     params['page'] = str(int(params['page']) + 1)
@@ -63,7 +63,11 @@ class UsageRecordReader:
 
     def build_usage_record(self, project, r, account, usage_type):
         usage_record = dict()
-        usage_record['rawusage'] = float(r.get('rawusage'))
+        if str(r.get('rawusage')).find(','):
+            usage_record['rawusage'] = float(str(r.get('rawusage')).replace(',', '.'))
+        else:
+            usage_record['rawusage'] = float(r.get('rawusage'))
+
         usage_record['projectid'] = project.uuid
         usage_record['usagetype'] = usage_type
         usage_record['date'] = parse(r['startdate']).date().isoformat()
@@ -99,11 +103,11 @@ class UsageRecordReader:
     def get_projects(self):
         return self.acs.listProjects({'simple': 'true', 'listall': 'true'}).get('project')
 
-    def save_project(self, projects, project_id):
+    def save_project(self, projects, project_id, region):
         decorator = cache.cached(timeout=300, key_prefix='projects_' + project_id)
-        return decorator(lambda: self._save_project(projects, project_id))()
+        return decorator(lambda: self._save_project(projects, project_id, region))()
 
-    def _save_project(self, projects, project_id):
+    def _save_project(self, projects, project_id, region):
         acs_project = self.find_project(projects, project_id)
         if acs_project:
             local_project = self.find_local_project(project_id)
@@ -113,7 +117,11 @@ class UsageRecordReader:
 
             local_project.uuid = acs_project['id']
             local_project.name = acs_project['name']
-            local_project.process_id = app.config['USAGE_DEFAULT_PROCESS_ID']
+
+            if region == 'dev' or region == 'rjdev':
+                local_project.process_id = app.config['USAGE_DEFAULT_PROCESS_ID_DEV']
+            else:
+                local_project.process_id = app.config['USAGE_DEFAULT_PROCESS_ID']
 
             if acs_project.get('businessserviceid'):
                 local_project.business_service_id = acs_project.get('businessserviceid')
