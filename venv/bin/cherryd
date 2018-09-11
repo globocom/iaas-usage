@@ -1,6 +1,0 @@
-#!/Users/matheus.costa/Documents/projetos/iaas-usage/venv/bin/python2.7
-
-import cherrypy.daemon
-
-if __name__ == '__main__':
-    cherrypy.daemon.run()
