@@ -14,7 +14,7 @@ class ProjectResource(CloudstackResource):
         account_name = self.args['account_name']
         domain_id = self.args['domain_id']
 
-        parameters = {"domainid": domain_id, "listall": "true"}
+        parameters = {"domainid": domain_id, "listall": "true", "isrecursive": "true"}
         if self.args.get('id') is not None:
             parameters['id'] = self.args.get('id')
         else:
