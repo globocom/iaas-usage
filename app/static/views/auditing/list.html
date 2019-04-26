@@ -1,8 +1,8 @@
 <div ng-controller="AuditingCtrl as auditingCtrl">
-    <div class="row wrapper border-bottom white-bg page-heading" >
+    <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
             <h2>
-               {[ auditingCtrl.title ]}
+                {[ auditingCtrl.title ]}
             </h2>
             <ol class="breadcrumb">
                 <li>
@@ -28,38 +28,55 @@
                                         <div id="reportrange" class="form-control">
                                             <i class="fa fa-calendar"></i>
                                             <span></span> <b class="caret"></b>
-                                            <input type="hidden" id="start_date" class="form-control" ng-model="auditingCtrl.start">
-                                            <input type="hidden" id="end_date" class="form-control" ng-model="auditingCtrl.end">
+                                            <input type="hidden" id="start_date" class="form-control"
+                                                   ng-model="auditingCtrl.start">
+                                            <input type="hidden" id="end_date" class="form-control"
+                                                   ng-model="auditingCtrl.end">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Account name</label>
-                                        <input type="text" placeholder="Account name" class="form-control" ng-model="auditingCtrl.account">
+                                        <input type="text" placeholder="Account name" class="form-control"
+                                               ng-model="auditingCtrl.account">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <label>Resource Type</label>
-                                        <select ng-init="auditingCtrl.listResourceTypes()" ng-model="auditingCtrl.type" class="form-control">
-                                              <option value="">Resource Type</option>
-                                              <option ng-repeat="type in auditingCtrl.types | orderBy:'toString()'" value="{[type]}">{[type]}</option>
+                                        <select ng-init="auditingCtrl.listResourceTypes()" ng-model="auditingCtrl.type"
+                                                class="form-control">
+                                            <option value="">Resource Type</option>
+                                            <option ng-repeat="type in auditingCtrl.types | orderBy:'toString()'"
+                                                    value="{[type]}">{[type]}
+                                            </option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label>Resource ID</label>
-                                        <input type="text" placeholder="Resource ID" class="form-control" ng-model="auditingCtrl.resource_id">
+                                        <input type="text" placeholder="Resource ID" class="form-control"
+                                               ng-model="auditingCtrl.resource_id">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 b-r">
                                     <div class="form-group">
                                         <label>Action</label>
-                                        <select ng-init="auditingCtrl.listActions()" ng-model="auditingCtrl.action" class="form-control">
-                                              <option value="">Action</option>
-                                              <option ng-repeat="action in auditingCtrl.actions | orderBy:'toString()'" value="{[action]}">{[action]}</option>
+                                        <select ng-init="auditingCtrl.listActions()" ng-model="auditingCtrl.action"
+                                                class="form-control">
+                                            <option value="">Action</option>
+                                            <option ng-repeat="action in auditingCtrl.actions | orderBy:'toString()'"
+                                                    value="{[action]}">{[action]}
+                                            </option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="submit" style="margin-top: 23px" class="btn btn-primary" ng-click="auditingCtrl.listEvents()" value="Find"/>
+                                        <label>User</label>
+                                        <input type="text" placeholder="User" class="form-control"
+                                               ng-model="auditingCtrl.username">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" style="margin-top: 23px" class="btn btn-primary"
+                                               ng-click="auditingCtrl.listEvents()" value="Find"/>
                                     </div>
                                 </div>
                             </form>
@@ -70,7 +87,7 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-12" >
+            <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>{[ auditingCtrl.title ]}</h5>
@@ -78,44 +95,48 @@
                     <div class="ibox-content">
                         <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                             <div class="dataTables_info" id="DataTables_Table_1_info" role="status" aria-live="polite">
-                                Showing {[ auditingCtrl.getCurrentPageOffset() ]} to {[ auditingCtrl.getLastElementIndex() ]} of {[ auditingCtrl.count ]} entries
+                                Showing {[ auditingCtrl.getCurrentPageOffset() ]} to {[
+                                auditingCtrl.getLastElementIndex() ]} of {[ auditingCtrl.count ]} entries
                             </div>
                             <table class="table table-striped table-bordered table-hover dataTables-example ng-isolate-scope no-footer dtr-inline dataTable">
                                 <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Action</th>
-                                        <th>Resource (Name - ID)</th>
-                                        <th>User</th>
-                                        <th>Account</th>
-                                    </tr>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Action</th>
+                                    <th>Resource (Name - ID)</th>
+                                    <th>User</th>
+                                    <th>Account</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-show="auditingCtrl.getEvents().length == 0"><td colspan="5" style="text-align:center;">Loading data.</td></tr>
-                                    <tr dir-paginate="event in auditingCtrl.getEvents()|itemsPerPage:auditingCtrl.itemsPerPage" total-items="auditingCtrl.count">
-                                        <td>
-                                            <a ui-sref="index.auditing_show({'region': region.key, 'id': event.id})">
-                                                {[ event.date_time ]}
-                                            </a>
-                                        </td>
-                                        <td>{[ event.resource_type ]}</td>
-                                        <td>{[ event.action ]}</td>
-                                        <td>
-                                            <strong>{[ event.resource_name ? event.resource_name + ' - ' : '' ]}</strong>
-                                            {[ event.resource_id ? event.resource_id : '-']}
-                                        </td>
-                                        <td>{[ event.username ]}</td>
-                                        <td>{[ event.account ]}</td>
-                                    </tr>
+                                <tr ng-show="auditingCtrl.getEvents().length == 0">
+                                    <td colspan="5" style="text-align:center;">Loading data.</td>
+                                </tr>
+                                <tr dir-paginate="event in auditingCtrl.getEvents()|itemsPerPage:auditingCtrl.itemsPerPage"
+                                    total-items="auditingCtrl.count">
+                                    <td>
+                                        <a ui-sref="index.auditing_show({'region': region.key, 'id': event.id})">
+                                            {[ event.date_time ]}
+                                        </a>
+                                    </td>
+                                    <td>{[ event.resource_type ]}</td>
+                                    <td>{[ event.action ]}</td>
+                                    <td>
+                                        <strong>{[ event.resource_name ? event.resource_name + ' - ' : '' ]}</strong>
+                                        {[ event.resource_id ? event.resource_id : '-']}
+                                    </td>
+                                    <td>{[ event.username ]}</td>
+                                    <td>{[ event.account ]}</td>
+                                </tr>
                                 </tbody>
                             </table>
                             <div class="dataTables_paginate paging_simple_numbers">
                                 <dir-pagination-controls
-                                   max-size="8"
-                                   direction-links="true"
-                                   boundary-links="true"
-                                   on-page-change="auditingCtrl.listEvents(newPageNumber)" >
+                                        max-size="8"
+                                        direction-links="true"
+                                        boundary-links="true"
+                                        on-page-change="auditingCtrl.listEvents(newPageNumber)">
                                 </dir-pagination-controls>
                             </div>
                         </div>
@@ -144,4 +165,5 @@
             auditingCtrl.end = end.format('YYYY-MM-DD')
         });
     });
+
 </script>

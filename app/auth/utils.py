@@ -28,7 +28,7 @@ def required_login(func):
             oauth2_session = OAuth2Session(client_id, scope=[], redirect_uri=redirect_url + 'login')
 
             authorization_url, state = oauth2_session.authorization_url(authorization_url)
-            return redirect(authorization_url)
+            redirect(authorization_url)
         return func(*args, **kwargs)
     return decorated_view
 

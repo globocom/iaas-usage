@@ -63,6 +63,9 @@ class AbstractEvent(db.Model):
         if params.get('resource_id'):
             query = query.filter(Event.resource_id == params.get('resource_id'))
 
+        if params.get('username'):
+            query = query.filter(Event.username == params.get('username'))
+
         return query.order_by(Event.date.desc()).paginate(1 if page is None else page, min(page_size, 100))
 
     @staticmethod

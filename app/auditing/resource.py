@@ -41,6 +41,7 @@ class AuditingEventListResource(Resource):
         parser.add_argument('action', required=False)
         parser.add_argument('type', required=False)
         parser.add_argument('resource_id', required=False)
+        parser.add_argument('username', required=False)
         return parser.parse_args(req=request)
 
     @staticmethod
