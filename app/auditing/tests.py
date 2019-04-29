@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import json
 from app import db, app
 from mock import patch, Mock
-from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent,\
+from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent, \
     ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent, \
     TemplateEvent
 from app.auditing.event_reader import CloudstackEventReader
@@ -22,7 +22,7 @@ class BaseTest(unittest.TestCase):
 
     def _create_event(self, region='reg', account='adm', resource_id='1', event_key='USER.LOGIN', date=datetime.now()):
         return Event(
-            event_key, resource_id=resource_id, description='User has logged', username='username',account=account,
+            event_key, resource_id=resource_id, description='User has logged', username='username', account=account,
             date=date, region=region, original_event='{"action":"USER.LOGIN"}'
         )
 
@@ -246,7 +246,6 @@ class ProjectEventTestCase(BaseTest):
         self.mock_cloudstack_list_projects([])
         self.assertIsNone(ProjectEvent('PROJECT.CREATE', resource_id='1').resource_name)
 
-
     def test_get_resource_type(self):
         self.assertEqual('PROJECT', ProjectEvent.get_resource_type(None))
 
@@ -287,7 +286,8 @@ class RouterEventTestCase(BaseTest):
 
     def test_get_resource_name_from_api(self):
         self.mock_cloudstack_list_routers([{'name': 'router'}])
-        self.assertEquals('router', RouterEvent('ROUTER.REBOOT', original_event='{"VirtualMachine": "2"}').resource_name)
+        self.assertEquals('router',
+                          RouterEvent('ROUTER.REBOOT', original_event='{"VirtualMachine": "2"}').resource_name)
 
     def test_get_resource_name_from_api_given_entity_not_found(self):
         self.mock_cloudstack_list_routers([])
@@ -305,17 +305,20 @@ class VirtualMachineSnapshotEventTestCase(BaseTest):
 
     def test_get_resource_id(self):
         self.mock_cloudstack_list_vms([])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id=None,
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertEquals('2', event.resource_id)
 
     def test_get_resource_name_from_api(self):
         self.mock_cloudstack_list_vms([{'name': 'vm-name'}])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1',
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertEquals('vm-name', event.resource_name)
 
     def test_get_resource_name_from_api_given_entity_not_found(self):
         self.mock_cloudstack_list_vms([])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1',
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertIsNone(event.resource_name)
 
     def test_get_resource_type(self):
@@ -473,10 +476,11 @@ class CloudstackEventReaderTestCase(BaseTest):
         self.assertEquals(0, len(events))
 
     def _get_event_json_string(self, status='Completed'):
-        return ('{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
+        return (
+                    '{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
 
     def mock_cloudstack(self):
-        acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user':[]}))
+        acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user': []}))
         patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = acs_mock
 
     def mock_rabbitmq_client(self):
