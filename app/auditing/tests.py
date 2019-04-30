@@ -96,50 +96,69 @@ class EventTestCase(BaseTest):
         event = self._create_event()
         self.assertEquals('USER', event.resource_type)
 
-    def test_get_resource_name_from_api(self):
+    def test_get_username(self):
         event = self._create_event()
-        self.assertIsNone(event._get_resource_name_from_api())
+        self.assertEquals("USERNAME", event.username)
 
-    def test_find_by_region(self):
-        db.session.add(self._create_event(region='reg1'))
-        db.session.add(self._create_event(region='reg2'))
-        self.assertEquals(1, len(Event.find_all_by({'region': 'reg1'}).items))
 
-    def test_find_by_account(self):
-        db.session.add(self._create_event(account='account_a'))
-        db.session.add(self._create_event(account='account_b'))
-        self.assertEquals(1, len(Event.find_all_by({'account': 'account_b'}).items))
+def test_get_resource_name_from_api(self):
+    event = self._create_event()
+    self.assertIsNone(event._get_resource_name_from_api())
 
-    def test_find_by_resource_id(self):
-        db.session.add(self._create_event(resource_id='1'))
-        db.session.add(self._create_event(resource_id='2'))
-        self.assertEquals(1, len(Event.find_all_by({'resource_id': '2'}).items))
 
-    def test_find_by_action(self):
-        db.session.add(self._create_event(event_key='LB.CREATE'))
-        db.session.add(self._create_event(event_key='LB.DELETE'))
-        self.assertEquals(1, len(Event.find_all_by({'action': 'DELETE'}).items))
+def test_find_by_region(self):
+    db.session.add(self._create_event(region='reg1'))
+    db.session.add(self._create_event(region='reg2'))
+    self.assertEquals(1, len(Event.find_all_by({'region': 'reg1'}).items))
 
-    def test_find_by_type(self):
-        db.session.add(self._create_event(event_key='LB.CREATE'))
-        db.session.add(self._create_event(event_key='VM.CREATE'))
-        self.assertEquals(1, len(Event.find_all_by({'type': 'VM'}).items))
 
-    def test_find_by_date_interval(self):
-        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
-        db.session.add(self._create_event(date=datetime.now()))
+def test_find_by_account(self):
+    db.session.add(self._create_event(account='account_a'))
+    db.session.add(self._create_event(account='account_b'))
+    self.assertEquals(1, len(Event.find_all_by({'account': 'account_b'}).items))
 
-        start_date = datetime.now() - timedelta(days=1)
-        end_date = datetime.now() + timedelta(days=1)
-        self.assertEquals(1, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
 
-    def test_find_by_date_interval_given_no_events_on_time_range(self):
-        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
-        db.session.add(self._create_event(date=datetime.now() - timedelta(days=10)))
+def test_find_by_resource_id(self):
+    db.session.add(self._create_event(resource_id='1'))
+    db.session.add(self._create_event(resource_id='2'))
+    self.assertEquals(1, len(Event.find_all_by({'resource_id': '2'}).items))
 
-        start_date = datetime.now() - timedelta(days=1)
-        end_date = datetime.now() + timedelta(days=1)
-        self.assertEquals(0, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+def test_find_by_action(self):
+    db.session.add(self._create_event(event_key='LB.CREATE'))
+    db.session.add(self._create_event(event_key='LB.DELETE'))
+    self.assertEquals(1, len(Event.find_all_by({'action': 'DELETE'}).items))
+
+
+def test_find_by_type(self):
+    db.session.add(self._create_event(event_key='LB.CREATE'))
+    db.session.add(self._create_event(event_key='VM.CREATE'))
+    self.assertEquals(1, len(Event.find_all_by({'type': 'VM'}).items))
+
+
+def test_find_by_date_interval(self):
+    db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+    db.session.add(self._create_event(date=datetime.now()))
+
+    start_date = datetime.now() - timedelta(days=1)
+    end_date = datetime.now() + timedelta(days=1)
+    self.assertEquals(1, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+
+def test_find_by_date_interval_given_no_events_on_time_range(self):
+    db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+    db.session.add(self._create_event(date=datetime.now() - timedelta(days=10)))
+
+    start_date = datetime.now() - timedelta(days=1)
+    end_date = datetime.now() + timedelta(days=1)
+    self.assertEquals(0, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+
+def test_find_by_username(self):
+    db.session.add(self._create_event(username='test1'))
+    db.session.add(self._create_event(username='test2'))
+
+    self.assertEquals(1, len(Event.find_all_by({'username': 'test1'}).items))
 
 
 class VirtualMachineEventTestCase(BaseTest):
@@ -450,6 +469,12 @@ class AuditingEventListResourceTestCase(BaseTest):
         self.assertEquals(400, response.status_code)
         self.assertEquals("Not a valid date: '2016/01/13'.", json.loads(response.data)['message'])
 
+    def test_list_events_by_username(self):
+        response = self.app.get('/api/v1/reg/auditing_event/?username=username')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(2, len(json.loads(response.data)['events']))
+        self.assertEquals(2, json.loads(response.data)['count'])
+
 
 class CloudstackEventReaderTestCase(BaseTest):
 
@@ -477,7 +502,7 @@ class CloudstackEventReaderTestCase(BaseTest):
 
     def _get_event_json_string(self, status='Completed'):
         return (
-                    '{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
+                '{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
 
     def mock_cloudstack(self):
         acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user': []}))
