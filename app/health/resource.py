@@ -57,4 +57,3 @@ class HealthResource(Resource):
         except:
             app.logger.exception("Error connecting to database")
             return False
-

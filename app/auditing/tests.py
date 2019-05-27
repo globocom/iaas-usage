@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import json
 from app import db, app
 from mock import patch, Mock
-from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent,\
+from app.auditing.models import EventFactory, Event, VirtualMachineEvent, NetworkEvent, VolumeEvent, LoadBalancerEvent, \
     ProjectEvent, ServiceOfferingEvent, RouterEvent, VirtualMachineSnapshotEvent, SSVMEvent, ConsoleProxyEvent, \
     TemplateEvent
 from app.auditing.event_reader import CloudstackEventReader
@@ -22,7 +22,7 @@ class BaseTest(unittest.TestCase):
 
     def _create_event(self, region='reg', account='adm', resource_id='1', event_key='USER.LOGIN', date=datetime.now()):
         return Event(
-            event_key, resource_id=resource_id, description='User has logged', username='username',account=account,
+            event_key, resource_id=resource_id, description='User has logged', username='username', account=account,
             date=date, region=region, original_event='{"action":"USER.LOGIN"}'
         )
 
@@ -96,50 +96,69 @@ class EventTestCase(BaseTest):
         event = self._create_event()
         self.assertEquals('USER', event.resource_type)
 
-    def test_get_resource_name_from_api(self):
+    def test_get_username(self):
         event = self._create_event()
-        self.assertIsNone(event._get_resource_name_from_api())
+        self.assertEquals("USERNAME", event.username)
 
-    def test_find_by_region(self):
-        db.session.add(self._create_event(region='reg1'))
-        db.session.add(self._create_event(region='reg2'))
-        self.assertEquals(1, len(Event.find_all_by({'region': 'reg1'}).items))
 
-    def test_find_by_account(self):
-        db.session.add(self._create_event(account='account_a'))
-        db.session.add(self._create_event(account='account_b'))
-        self.assertEquals(1, len(Event.find_all_by({'account': 'account_b'}).items))
+def test_get_resource_name_from_api(self):
+    event = self._create_event()
+    self.assertIsNone(event._get_resource_name_from_api())
 
-    def test_find_by_resource_id(self):
-        db.session.add(self._create_event(resource_id='1'))
-        db.session.add(self._create_event(resource_id='2'))
-        self.assertEquals(1, len(Event.find_all_by({'resource_id': '2'}).items))
 
-    def test_find_by_action(self):
-        db.session.add(self._create_event(event_key='LB.CREATE'))
-        db.session.add(self._create_event(event_key='LB.DELETE'))
-        self.assertEquals(1, len(Event.find_all_by({'action': 'DELETE'}).items))
+def test_find_by_region(self):
+    db.session.add(self._create_event(region='reg1'))
+    db.session.add(self._create_event(region='reg2'))
+    self.assertEquals(1, len(Event.find_all_by({'region': 'reg1'}).items))
 
-    def test_find_by_type(self):
-        db.session.add(self._create_event(event_key='LB.CREATE'))
-        db.session.add(self._create_event(event_key='VM.CREATE'))
-        self.assertEquals(1, len(Event.find_all_by({'type': 'VM'}).items))
 
-    def test_find_by_date_interval(self):
-        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
-        db.session.add(self._create_event(date=datetime.now()))
+def test_find_by_account(self):
+    db.session.add(self._create_event(account='account_a'))
+    db.session.add(self._create_event(account='account_b'))
+    self.assertEquals(1, len(Event.find_all_by({'account': 'account_b'}).items))
 
-        start_date = datetime.now() - timedelta(days=1)
-        end_date = datetime.now() + timedelta(days=1)
-        self.assertEquals(1, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
 
-    def test_find_by_date_interval_given_no_events_on_time_range(self):
-        db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
-        db.session.add(self._create_event(date=datetime.now() - timedelta(days=10)))
+def test_find_by_resource_id(self):
+    db.session.add(self._create_event(resource_id='1'))
+    db.session.add(self._create_event(resource_id='2'))
+    self.assertEquals(1, len(Event.find_all_by({'resource_id': '2'}).items))
 
-        start_date = datetime.now() - timedelta(days=1)
-        end_date = datetime.now() + timedelta(days=1)
-        self.assertEquals(0, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+def test_find_by_action(self):
+    db.session.add(self._create_event(event_key='LB.CREATE'))
+    db.session.add(self._create_event(event_key='LB.DELETE'))
+    self.assertEquals(1, len(Event.find_all_by({'action': 'DELETE'}).items))
+
+
+def test_find_by_type(self):
+    db.session.add(self._create_event(event_key='LB.CREATE'))
+    db.session.add(self._create_event(event_key='VM.CREATE'))
+    self.assertEquals(1, len(Event.find_all_by({'type': 'VM'}).items))
+
+
+def test_find_by_date_interval(self):
+    db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+    db.session.add(self._create_event(date=datetime.now()))
+
+    start_date = datetime.now() - timedelta(days=1)
+    end_date = datetime.now() + timedelta(days=1)
+    self.assertEquals(1, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+
+def test_find_by_date_interval_given_no_events_on_time_range(self):
+    db.session.add(self._create_event(date=datetime.now() + timedelta(days=10)))
+    db.session.add(self._create_event(date=datetime.now() - timedelta(days=10)))
+
+    start_date = datetime.now() - timedelta(days=1)
+    end_date = datetime.now() + timedelta(days=1)
+    self.assertEquals(0, len(Event.find_all_by({'start_date': start_date, 'end_date': end_date}).items))
+
+
+def test_find_by_username(self):
+    db.session.add(self._create_event(username='test1'))
+    db.session.add(self._create_event(username='test2'))
+
+    self.assertEquals(1, len(Event.find_all_by({'username': 'test1'}).items))
 
 
 class VirtualMachineEventTestCase(BaseTest):
@@ -246,7 +265,6 @@ class ProjectEventTestCase(BaseTest):
         self.mock_cloudstack_list_projects([])
         self.assertIsNone(ProjectEvent('PROJECT.CREATE', resource_id='1').resource_name)
 
-
     def test_get_resource_type(self):
         self.assertEqual('PROJECT', ProjectEvent.get_resource_type(None))
 
@@ -287,7 +305,8 @@ class RouterEventTestCase(BaseTest):
 
     def test_get_resource_name_from_api(self):
         self.mock_cloudstack_list_routers([{'name': 'router'}])
-        self.assertEquals('router', RouterEvent('ROUTER.REBOOT', original_event='{"VirtualMachine": "2"}').resource_name)
+        self.assertEquals('router',
+                          RouterEvent('ROUTER.REBOOT', original_event='{"VirtualMachine": "2"}').resource_name)
 
     def test_get_resource_name_from_api_given_entity_not_found(self):
         self.mock_cloudstack_list_routers([])
@@ -305,17 +324,20 @@ class VirtualMachineSnapshotEventTestCase(BaseTest):
 
     def test_get_resource_id(self):
         self.mock_cloudstack_list_vms([])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id=None, original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id=None,
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertEquals('2', event.resource_id)
 
     def test_get_resource_name_from_api(self):
         self.mock_cloudstack_list_vms([{'name': 'vm-name'}])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1',
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertEquals('vm-name', event.resource_name)
 
     def test_get_resource_name_from_api_given_entity_not_found(self):
         self.mock_cloudstack_list_vms([])
-        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1', original_event='{"VirtualMachine": "2"}')
+        event = VirtualMachineSnapshotEvent('VMSNAPSHOT.CREATE', resource_id='1',
+                                            original_event='{"VirtualMachine": "2"}')
         self.assertIsNone(event.resource_name)
 
     def test_get_resource_type(self):
@@ -447,6 +469,12 @@ class AuditingEventListResourceTestCase(BaseTest):
         self.assertEquals(400, response.status_code)
         self.assertEquals("Not a valid date: '2016/01/13'.", json.loads(response.data)['message'])
 
+    def test_list_events_by_username(self):
+        response = self.app.get('/api/v1/reg/auditing_event/?username=username')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(2, len(json.loads(response.data)['events']))
+        self.assertEquals(2, json.loads(response.data)['count'])
+
 
 class CloudstackEventReaderTestCase(BaseTest):
 
@@ -473,10 +501,11 @@ class CloudstackEventReaderTestCase(BaseTest):
         self.assertEquals(0, len(events))
 
     def _get_event_json_string(self, status='Completed'):
-        return ('{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
+        return (
+                '{"eventDateTime":"2016-07-18 16:08:00 -0300","status":"%s","description":"user has logged i","event":"USER.LOGIN","account":"1","user":"1"}' % status)
 
     def mock_cloudstack(self):
-        acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user':[]}))
+        acs_mock = Mock(listAccounts=Mock(return_value={'account': []}), listUsers=Mock(return_value={'user': []}))
         patch('app.auditing.models.CloudstackClientFactory.get_instance').start().return_value = acs_mock
 
     def mock_rabbitmq_client(self):

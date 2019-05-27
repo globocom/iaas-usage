@@ -661,6 +661,7 @@ function AuditingCtrl($scope, $http, $state, $stateParams, apiService){
             type: auditingCtrl.type,
             account: auditingCtrl.account,
             resource_id: auditingCtrl.resource_id,
+            username: auditingCtrl.username
         }
 
         $http({

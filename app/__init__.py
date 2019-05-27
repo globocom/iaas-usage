@@ -18,11 +18,13 @@ app.config.from_object(os.getenv('ENV', 'app.config.DevConfig'))
 logger = app.logger
 db = SQLAlchemy(app)
 
+
 @app.teardown_request
 def session_clear(exception=None):
     db.session.close()
     if exception and Session.is_active:
         db.session.rollback()
+
 
 if app.config['SENTRY_DSN']:
     sentry = Sentry(app)
