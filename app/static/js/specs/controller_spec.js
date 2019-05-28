@@ -524,3 +524,58 @@ describe('Testing Auditing controller', function() {
         expect(ctrl.count).toEqual(2)
     });
 });
+
+describe('Testing Service Offering controller', function() {
+
+    var ctrl, httpBackend, $scope, DTOptionsBuilder
+
+    beforeEach(function (done){
+        module('iaasusage');
+
+        apiServiceMock = jasmine.createSpyObj('apiService', ['buildAPIUrl']);
+
+        inject(function($rootScope, $controller, $http, $httpBackend, $stateParams,  apiService) {
+            $scope = $rootScope.$new();
+            httpBackend = $httpBackend
+
+            apiServiceMock.buildAPIUrl.and.returnValue('/service_offering/');
+
+            $httpBackend.when('GET', '/api/v1/service_offering/').respond([{key: 'cme', value: 'RJCME'}]);
+            $httpBackend.when('GET', '/service_offering/').respond({count: 2, events: [{}, {}]});
+            httpBackend.expectGET('/api/v1/service_offering/');
+
+            ctrl = $controller('ServiceOfferingCtrl', {
+                $scope: $scope,
+                $http: $http,
+                $stateParams: $stateParams,
+                apiService: apiServiceMock,
+                DTOptionsBuilder: {
+                    newOptions: function(){
+                        return{
+                            withOption: function(){
+                                return {
+                                    withOption:function(){
+                                        return {
+                                            withOption:function(){}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            });
+        });
+
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+        return setTimeout((function() { return done(); }), 500);
+    });
+
+    it('should return the list of service offerings', function() {
+        ctrl.listServiceOffering()
+        httpBackend.expectGET('/service_offering/');
+        httpBackend.flush();
+
+        expect(ctrl.getOfferings().length).toEqual(33)
+    });
+});
