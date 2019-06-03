@@ -454,11 +454,6 @@ function UsageCtrl($scope, $http, $stateParams, userService, apiService, DTOptio
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withDOM('<"html5buttons"B>lTfgitp')
     .withOption('responsive', true)
-    .withOption('columnDefs', [
-        { "visible": false, "targets": 1 },
-        { "visible": false, "targets": 3 },
-        { "visible": false, "targets": 8 }
-    ])
     .withButtons([
         $.extend(true, {}, {}, { extend: 'copyHtml5' }),
         $.extend(true, {}, {}, { extend: 'excelHtml5' }),
@@ -717,6 +712,34 @@ function AuditingCtrl($scope, $http, $state, $stateParams, apiService){
     }
 }
 
+function ServiceOfferingCtrl($scope, $http, $state, apiService, DTOptionsBuilder) {
+    serviceOfferingCtrl = this;
+    serviceOfferingCtrl.offering;
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    .withDOM('<"html5buttons"B>lTfgitp')
+    .withOption('responsive', true)
+    .withButtons([
+        $.extend(true, {}, {}, { extend: 'excelHtml5' }),
+        $.extend(true, {}, {}, { extend: 'csv' }),
+        $.extend(true, {}, {}, { extend: 'print' })
+    ]);
+
+    serviceOfferingCtrl.listServiceOffering = function(){
+        $http({
+            method: 'GET',
+            url: apiService.buildAPIUrl('/service_offering/')
+        }).then(function successCallback(response){
+            serviceOfferingCtrl.offering = response.data;
+        });
+    }
+
+    serviceOfferingCtrl.getOfferings = function() {
+        return serviceOfferingCtrl.offering;
+    }
+}
+
+
 angular
     .module('iaasusage')
     .controller('RegionCtrl', RegionCtrl)
@@ -727,4 +750,5 @@ angular
     .controller('CapacityCtrl', CapacityCtrl)
     .controller('QuotaCtrl', QuotaCtrl)
     .controller('StorageCtrl', StorageCtrl)
-    .controller('AuditingCtrl', AuditingCtrl);
+    .controller('AuditingCtrl', AuditingCtrl)
+    .controller('ServiceOfferingCtrl', ServiceOfferingCtrl);

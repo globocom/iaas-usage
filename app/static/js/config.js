@@ -106,6 +106,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: loadPlugins
             }
         })
+        .state('index.service_offering', {
+            url: '/:region/serviceOffering/',
+            templateUrl: viewPrefix + 'service_offering/list.html',
+            resolve: {
+                loadPlugin: loadPlugins
+            }
+        })
 }
 
 function loadPlugins($ocLazyLoad) {
