@@ -122,7 +122,7 @@ class ProdConfig(Config):
 
 class DevConfig(Config):
 
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:@localhost/iaas_usage'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:@0.0.0.0/iaas_usage'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     EVENT_QUEUE_USER = 'guest'
     EVENT_QUEUE_PASSWORD = 'guest'
