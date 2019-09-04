@@ -3,10 +3,11 @@ import os
 from flask_restful import Api
 from flask_login import LoginManager
 from flask import Flask
-from flask.ext.cache import Cache
+from flask_caching  import Cache
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 from sqlalchemy.orm import Session
+import config
 
 app = Flask(__name__)
 api = Api(app)
